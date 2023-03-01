@@ -204,4 +204,25 @@
   <data name="EulaWarning" xml:space="preserve">
     <value>ASFEnhance.EULA not agreed, some features is disabled</value>
   </data>
+  <data name="Detail" xml:space="preserve">
+    <value> - Detail: {0}</value>
+  </data>
+  <data name="UpdateTips" xml:space="preserve">
+    <value>Use Command "ASFEUPDATE" / "AU" to update this plugin</value>
+  </data>
+  <data name="SubLink" xml:space="preserve">
+    <value>   - Link: {0}</value>
+  </data>
+  <data name="SubName" xml:space="preserve">
+    <value>   - Name: {0}</value>
+  </data>
+  <data name="SubSize" xml:space="preserve">
+    <value>   - Size: {0:0.000} KB</value>
+  </data>
+  <data name="UpdateFiledWithZip" xml:space="preserve">
+    <value>Plugin update failed, unzip failed</value>
+  </data>
+  <data name="UpdateSuccess" xml:space="preserve">
+    <value>Plugin update finished, restart ASF to apply update, if not compatible, please also update the ASF</value>
+  </data>
 </root>

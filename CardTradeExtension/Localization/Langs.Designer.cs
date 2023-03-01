@@ -160,6 +160,15 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似  - 描述: {0} 的本地化字符串。
+        /// </summary>
+        internal static string Detail {
+            get {
+                return ResourceManager.GetString("Detail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 完成 的本地化字符串。
         /// </summary>
         internal static string Done {
@@ -313,11 +322,65 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似    - 链接: {0} 的本地化字符串。
+        /// </summary>
+        internal static string SubLink {
+            get {
+                return ResourceManager.GetString("SubLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似    - 名称: {0} 的本地化字符串。
+        /// </summary>
+        internal static string SubName {
+            get {
+                return ResourceManager.GetString("SubName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似    - 尺寸: {0:0.000} KB 的本地化字符串。
+        /// </summary>
+        internal static string SubSize {
+            get {
+                return ResourceManager.GetString("SubSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 成功 的本地化字符串。
         /// </summary>
         internal static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 插件更新失败, 压缩包内容解析失败 的本地化字符串。
+        /// </summary>
+        internal static string UpdateFiledWithZip {
+            get {
+                return ResourceManager.GetString("UpdateFiledWithZip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 插件更新完成, 重启ASF即可应用, 如果不兼容请更新ASF版本 的本地化字符串。
+        /// </summary>
+        internal static string UpdateSuccess {
+            get {
+                return ResourceManager.GetString("UpdateSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 可以使用命令 ASFEUPDATE / AU 自动更新插件 的本地化字符串。
+        /// </summary>
+        internal static string UpdateTips {
+            get {
+                return ResourceManager.GetString("UpdateTips", resourceCulture);
             }
         }
     }

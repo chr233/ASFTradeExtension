@@ -204,4 +204,25 @@
   <data name="EulaWarning" xml:space="preserve">
     <value>尚未同意 EULA , 部分命令已禁用</value>
   </data>
+  <data name="Detail" xml:space="preserve">
+    <value> - 描述: {0}</value>
+  </data>
+  <data name="UpdateTips" xml:space="preserve">
+    <value>可以使用命令 ASFEUPDATE / AU 自动更新插件</value>
+  </data>
+  <data name="SubLink" xml:space="preserve">
+    <value>   - 链接: {0}</value>
+  </data>
+  <data name="SubName" xml:space="preserve">
+    <value>   - 名称: {0}</value>
+  </data>
+  <data name="SubSize" xml:space="preserve">
+    <value>   - 尺寸: {0:0.000} KB</value>
+  </data>
+  <data name="UpdateFiledWithZip" xml:space="preserve">
+    <value>插件更新失败, 压缩包内容解析失败</value>
+  </data>
+  <data name="UpdateSuccess" xml:space="preserve">
+    <value>插件更新完成, 重启ASF即可应用, 如果不兼容请更新ASF版本</value>
+  </data>
 </root>

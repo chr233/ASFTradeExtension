@@ -204,4 +204,25 @@
   <data name="EulaWarning" xml:space="preserve">
     <value>"ASFEnhance.EULA" не принят, некоторые функции отключены</value>
   </data>
+  <data name="Detail" xml:space="preserve">
+    <value> - Описание: {0}</value>
+  </data>
+  <data name="UpdateTips" xml:space="preserve">
+    <value>Используй команду "ASFEUPDATE" / "AU" для обновления плагина</value>
+  </data>
+  <data name="SubLink" xml:space="preserve">
+    <value>   - Ссылка: {0}</value>
+  </data>
+  <data name="SubName" xml:space="preserve">
+    <value>   - Название: {0}</value>
+  </data>
+  <data name="SubSize" xml:space="preserve">
+    <value>   - Размер: {0:0.000} KB</value>
+  </data>
+  <data name="UpdateFiledWithZip" xml:space="preserve">
+    <value>Ошибка обновления плагина - не удалось распаковать архив</value>
+  </data>
+  <data name="UpdateSuccess" xml:space="preserve">
+    <value>Обновление плагина завершено, перезапустите ASF, чтобы применить обновление, если оно несовместимо, пожалуйста, также обновите ASF</value>
+  </data>
 </root>

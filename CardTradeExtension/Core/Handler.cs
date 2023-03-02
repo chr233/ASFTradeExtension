@@ -1,3 +1,4 @@
+using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
@@ -42,7 +43,6 @@ namespace CardTradeExtension.Core
 
             return "";
         }
-
 
         internal static async Task<string?> ResponseGetSetCountOfGame(Bot bot,uint appId)
         {

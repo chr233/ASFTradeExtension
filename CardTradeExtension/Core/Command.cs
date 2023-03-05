@@ -2,6 +2,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
+using System.Text;
 
 namespace CardTradeExtension.Core
 {
@@ -12,46 +13,40 @@ namespace CardTradeExtension.Core
         /// </summary>
         /// <param name="bot"></param>
         /// <returns></returns>
-        internal static async Task<string?> ResponseGetFullSetList(Bot bot, string? extraArgs)
+        internal static async Task<string?> ResponseGetCardSetCountOfGame(Bot bot, string query)
         {
-            string? keyword = null;
-            uint page = 1;
-            uint num = 30;
-
-            if (!string.IsNullOrEmpty(extraArgs))
+            if (string.IsNullOrEmpty(query))
             {
-                var args = extraArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < args.Length; i += 2)
+                return bot.FormatBotResponse(Strings.BotNotConnected);
+            }
+
+            List<uint> appIds = new();
+
+            var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            if (!queries.Any())
+            {
+                return bot.FormatBotResponse("输入的游戏ID无效");
+            }
+
+            foreach (var q in queries)
+            {
+                if (uint.TryParse(q, out uint appId))
                 {
-                    string key = args[i];
-                    string value = args[i + 1];
-                    if (key != null)
-                    {
-                        switch (key)
-                        {
-                            case "-k":
-                            case "-key":
-                                keyword = value;
-                                break;
-                            case "-p":
-                            case "-page":
-                                if (uint.TryParse(value, out uint p))
-                                {
-                                    page = p;
-                                }
-                                break;
-                            case "-n":
-                            case "-num":
-                                if (uint.TryParse(value, out uint n))
-                                {
-                                    num = n;
-                                }
-                                break;
-                        }
-                    }
+                    appIds.Add(appId);
                 }
             }
-            return await Handler.ResponseGetFullSetList(bot, keyword, page, num).ConfigureAwait(false);
+
+            if (appIds.Any())
+            {
+                var inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
+                IList<int> results = await Utilities.InParallel(appIds.Select(appId => CacheHelper.GetCacheCardSetCount(bot, appId))).ConfigureAwait(false);
+
+            }
+
+            StringBuilder sb = new();
+
+            return null;
         }
 
         /// <summary>
@@ -60,7 +55,7 @@ namespace CardTradeExtension.Core
         /// <param name="botNames"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static async Task<string?> ResponseGetFullSetList(string botNames, string? extraArgs)
+        internal static async Task<string?> ResponseGetCardSetCountOfGame(string botNames, string query)
         {
             if (string.IsNullOrEmpty(botNames))
             {
@@ -74,81 +69,7 @@ namespace CardTradeExtension.Core
                 return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
             }
 
-            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseGetFullSetList(bot, extraArgs))).ConfigureAwait(false);
-
-            List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
-
-            return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-        }
-
-        /// <summary>
-        /// 获取成套卡牌套数列表
-        /// </summary>
-        /// <param name="bot"></param>
-        /// <returns></returns>
-        internal static async Task<string?> ResponseGetCardSetCountOfGame(Bot bot, string appIds)
-        {
-            string? keyword = null;
-            uint page = 1;
-            uint num = 30;
-
-            if (!string.IsNullOrEmpty(appIds))
-            {
-                var args = appIds.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < args.Length; i += 2)
-                {
-                    string key = args[i];
-                    string value = args[i + 1];
-                    if (key != null)
-                    {
-                        switch (key)
-                        {
-                            case "-k":
-                            case "-key":
-                                keyword = value;
-                                break;
-                            case "-p":
-                            case "-page":
-                                if (uint.TryParse(value, out uint p))
-                                {
-                                    page = p;
-                                }
-                                break;
-                            case "-n":
-                            case "-num":
-                                if (uint.TryParse(value, out uint n))
-                                {
-                                    num = n;
-                                }
-                                break;
-                        }
-                    }
-                }
-            }
-            return await Handler.ResponseGetSetCountOfGame(bot, keyword, page, num).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// 获取成套卡牌套数 (多个Bot)
-        /// </summary>
-        /// <param name="botNames"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        internal static async Task<string?> ResponseGetCardSetCountOfGame(string botNames, string appIds)
-        {
-            if (string.IsNullOrEmpty(botNames))
-            {
-                throw new ArgumentNullException(nameof(botNames));
-            }
-
-            HashSet<Bot>? bots = Bot.GetBots(botNames);
-
-            if (bots == null || bots.Count == 0)
-            {
-                return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
-            }
-
-            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseGetCardSetCountOfGame(bot, appIds))).ConfigureAwait(false);
+            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseGetCardSetCountOfGame(bot, query))).ConfigureAwait(false);
 
             List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 

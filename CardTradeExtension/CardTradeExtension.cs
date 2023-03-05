@@ -155,7 +155,7 @@ namespace CardTradeExtension
 
             if (cmd.StartsWith("CTE."))
             {
-                cmd = cmd.Substring(5);
+                cmd = cmd.Substring(4);
             }
             else
             {
@@ -175,9 +175,7 @@ namespace CardTradeExtension
                 case 1: //不带参数
                     switch (cmd)
                     {
-                        case "FULLSET" when access >= EAccess.Operator:
-                        case "FS" when access >= EAccess.Operator:
-                            return await Core.Command.ResponseGetFullSetList(bot, null).ConfigureAwait(false);
+
 
                         default:
                             return null;
@@ -185,9 +183,13 @@ namespace CardTradeExtension
                 default: //带参数
                     switch (cmd)
                     {
+                        case "FULLSET" when argLength >= 3 && access >= EAccess.Operator:
+                        case "FS" when argLength >= 3 && access >= EAccess.Operator:
+                            return await Core.Command.ResponseGetCardSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+
                         case "FULLSET" when access >= EAccess.Operator:
                         case "FS" when access >= EAccess.Operator:
-                            return await Core.Command.ResponseGetFullSetList(args[1], args[2]).ConfigureAwait(false);
+                            return await Core.Command.ResponseGetCardSetCountOfGame(bot, args[1]).ConfigureAwait(false);
 
 
 

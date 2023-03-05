@@ -2,6 +2,7 @@
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
+using CardTradeExtension.Core;
 using CardTradeExtension.Data;
 using System;
 using System.Collections.Generic;

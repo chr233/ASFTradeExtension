@@ -7,7 +7,7 @@ namespace CardTradeExtension.Data
         /// <summary>
         /// 卡牌列表
         /// </summary>
-        public IList<Asset>? Assets { get; set; }
+        public IEnumerable<Asset>? Assets { get; set; }
         /// <summary>
         /// 一套卡牌的数量, 5~15
         /// </summary>
@@ -21,8 +21,12 @@ namespace CardTradeExtension.Data
         /// </summary>
         public int TotalSetCount { get; set; }
         /// <summary>
+        /// 多余可交易张数
+        /// </summary>
+        public int ExtraTradableCount { get; set; }
+        /// <summary>
         /// 多余张数
         /// </summary>
-        public int ExtraCount { get; set; }
+        public int ExtraTotalCount { get; set; }
     }
 }

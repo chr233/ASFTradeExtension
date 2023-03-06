@@ -32,23 +32,13 @@ namespace CardTradeExtension.Core
             }
         }
 
-        internal static IDictionary<uint, IList<Asset>> GroupCardsByAppId(IEnumerable<Asset> inventory)
-        {
-            Dictionary<uint, IList<Asset>> result = new();
-            foreach (var item in inventory)
-            {
-                if (result.TryGetValue(item.RealAppID, out var list))
-                {
-                    list.Add(item);
-                }
-                else
-                {
-                    result.TryAdd(item.RealAppID, new List<Asset> { item });
-                }
-            }
-            return result;
-        }
-
+        /// <summary>
+        /// 获取卡牌套数信息
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="appIds"></param>
+        /// <param name="inventory"></param>
+        /// <returns></returns>
         internal static async Task<IDictionary<uint, AssetBundle>> GetAppCardGroup(Bot bot, IList<uint> appIds, IEnumerable<Asset> inventory)
         {
             var countPerSets = await Utilities.InParallel(appIds.Select(appId => CacheHelper.GetCacheCardSetCount(bot, appId))).ConfigureAwait(false);
@@ -61,9 +51,51 @@ namespace CardTradeExtension.Core
                 {
                     uint appId = appIds[i];
                     int countPerSet = countPerSets[i];
-                    var assets = inventory.Where(x => x.RealAppID == appId).ToList();
 
+                    int tradableSetCount, totalSetCount, extraTradableCount, extraTotalCount;
 
+                    IEnumerable<Asset>? assets = null;
+
+                    if (countPerSet > 0)
+                    {
+                        assets = inventory.Where(x => x.RealAppID == appId);
+                        var classIds = assets.Select(x => x.ClassID).Distinct();
+
+                        if (classIds.Count() == countPerSet)
+                        {
+                            var tradableCountPerClassId = classIds.Select(x => assets.Where(y => y.Tradable && y.ClassID == x).Count());
+                            var totalCountPerClassId = classIds.Select(x => assets.Where(y => y.ClassID == x).Count());
+                            tradableSetCount = tradableCountPerClassId.Min();
+                            totalSetCount = totalCountPerClassId.Min();
+                            extraTradableCount = tradableCountPerClassId.Sum() - countPerSet * tradableSetCount;
+                            extraTotalCount = totalCountPerClassId.Sum() - countPerSet * totalSetCount;
+                        }
+                        else
+                        {
+                            tradableSetCount = 0;
+                            totalSetCount = 0;
+                            extraTradableCount = assets.Count(x => x.Tradable);
+                            extraTotalCount = assets.Count();
+                        }
+                    }
+                    else
+                    {
+                        tradableSetCount = 0;
+                        totalSetCount = 0;
+                        extraTradableCount = 0;
+                        extraTotalCount = 0;
+                    }
+
+                    AssetBundle bundle = new() {
+                        Assets = assets,
+                        CardCountPerSet = countPerSet,
+                        TradableSetCount = tradableSetCount,
+                        TotalSetCount = totalSetCount,
+                        ExtraTradableCount = extraTradableCount,
+                        ExtraTotalCount = extraTotalCount,
+                    };
+
+                    result.TryAdd(appId, bundle);
                 }
             }
 

@@ -175,7 +175,8 @@ namespace CardTradeExtension
                 case 1: //不带参数
                     switch (cmd)
                     {
-
+                        case "FS" when access >= EAccess.Operator:
+                            return await Core.Command.ResponseGetCardSetCountOfGame(bot, "1262060,1425250,410110,687850").ConfigureAwait(false);
 
                         default:
                             return null;

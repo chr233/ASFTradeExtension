@@ -2,6 +2,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
+using System.Linq;
 using System.Text;
 
 namespace CardTradeExtension.Core
@@ -13,38 +14,66 @@ namespace CardTradeExtension.Core
         /// </summary>
         /// <param name="bot"></param>
         /// <returns></returns>
-        internal static async Task<string?> ResponseGetCardSetCountOfGame(Bot bot, string query)
+        internal static async Task<string?> ResponseGetCardSetCountOfGame(Bot bot, string? query = null)
         {
             if (string.IsNullOrEmpty(query))
             {
                 return bot.FormatBotResponse(Strings.BotNotConnected);
             }
 
-            List<uint> appIds = new();
+            IEnumerable<uint> appIds;
+            IEnumerable<Asset>? inventory;
 
-            var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-            if (!queries.Any())
+            if (!string.IsNullOrEmpty(query))
             {
-                return bot.FormatBotResponse("输入的游戏ID无效");
-            }
+                var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (var q in queries)
-            {
-                if (uint.TryParse(q, out uint appId))
+                if (!queries.Any())
                 {
-                    appIds.Add(appId);
+                    return bot.FormatBotResponse("输入的 AppIds 无效");
                 }
+
+                List<uint> ids = new();
+
+                foreach (var q in queries)
+                {
+                    if (uint.TryParse(q, out uint appId))
+                    {
+                        ids.Add(appId);
+                    }
+                }
+
+                appIds = ids;
             }
-
-            if (appIds.Any())
+            else
             {
-                var inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
-                IList<int> results = await Utilities.InParallel(appIds.Select(appId => CacheHelper.GetCacheCardSetCount(bot, appId))).ConfigureAwait(false);
+                inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
 
+
+                appIds = inventory.Select(x => x.RealAppID).Distinct();
             }
 
             StringBuilder sb = new();
+
+            if (appIds.Any())
+            {
+                inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
+                if (inventory == null)
+                {
+                    return bot.FormatBotResponse(Langs.NetworkError);
+                }
+
+                var cardGroup = Handler.GetAppCardGroup(bot, appIds, inventory);
+
+
+                //for(int i=0;i<)
+
+            }
+            else
+            {
+
+            }
+
 
             return null;
         }

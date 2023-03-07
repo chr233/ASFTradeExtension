@@ -70,17 +70,17 @@ jobs:
           name: CardTradeExtension-zh-Hans.zip
           path: out
 
-      - name: Download CardTradeExtension-en-US artifact from windows-latest
-        uses: actions/download-artifact@v3.0.1
-        with:
-          name: CardTradeExtension-en-US.zip
-          path: out
+      # - name: Download CardTradeExtension-en-US artifact from windows-latest
+      #   uses: actions/download-artifact@v3.0.1
+      #   with:
+      #     name: CardTradeExtension-en-US.zip
+      #     path: out
 
-      - name: Download CardTradeExtension-ru-RU artifact from windows-latest
-        uses: actions/download-artifact@v3.0.1
-        with:
-          name: CardTradeExtension-ru-RU.zip
-          path: out
+      # - name: Download CardTradeExtension-ru-RU artifact from windows-latest
+      #   uses: actions/download-artifact@v3.0.1
+      #   with:
+      #     name: CardTradeExtension-ru-RU.zip
+      #     path: out
 
       - name: Create CardTradeExtension GitHub release
         id: github_release

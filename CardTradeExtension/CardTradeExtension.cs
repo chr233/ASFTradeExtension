@@ -92,6 +92,10 @@ namespace CardTradeExtension
                     Config.DisabledCmds[i] = Config.DisabledCmds[i].ToUpperInvariant();
                 }
             }
+            if (Config.MaxItemPerTrade < byte.MaxValue)
+            {
+                Config.MaxItemPerTrade = byte.MaxValue;
+            }
 
             return Task.CompletedTask;
         }
@@ -216,10 +220,17 @@ namespace CardTradeExtension
 
                         case "SENDCARDSET" when access >= EAccess.Master && argLength == 5:
                         case "SCS" when access >= EAccess.Master && argLength == 5:
-                            return await Core.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4]).ConfigureAwait(false);
+                            return await Core.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false).ConfigureAwait(false);
                         case "SENDCARDSET" when access >= EAccess.Master && argLength == 4:
                         case "SCS" when access >= EAccess.Master && argLength == 4:
-                            return await Core.Command.ResponseSendCardSet(bot, args[1], args[2], args[3]).ConfigureAwait(false);
+                            return await Core.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false).ConfigureAwait(false);
+
+                        case "2SENDCARDSET" when access >= EAccess.Master && argLength == 5:
+                        case "2SCS" when access >= EAccess.Master && argLength == 5:
+                            return await Core.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true).ConfigureAwait(false);
+                        case "2SENDCARDSET" when access >= EAccess.Master && argLength == 4:
+                        case "2SCS" when access >= EAccess.Master && argLength == 4:
+                            return await Core.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
 
                         default:
                             return null;

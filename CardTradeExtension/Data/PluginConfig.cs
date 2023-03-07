@@ -4,7 +4,6 @@ namespace CardTradeExtension.Data
 {
     public sealed record PluginConfig
     {
-
         [JsonProperty(Required = Required.DisallowNull)]
         public bool EULA { get; set; } = true;
 
@@ -13,5 +12,8 @@ namespace CardTradeExtension.Data
 
         [JsonProperty(Required = Required.Default)]
         public List<string>? DisabledCmds { get; set; }
+
+        [JsonProperty(Required = Required.Default)]
+        public ushort MaxItemPerTrade { get; set; } = byte.MaxValue;
     }
 }

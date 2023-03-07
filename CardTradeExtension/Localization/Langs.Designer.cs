@@ -142,7 +142,7 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 使用命令 ASFEUPDATE / AU 自动更新插件 的本地化字符串。
+        ///   查找类似 使用命令 CTEUPDATE / CTEU 自动更新插件 的本地化字符串。
         /// </summary>
         internal static string ASFEUpdateTips {
             get {
@@ -151,7 +151,7 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 使用命令 ASFEVERSION / AV 检查插件更新 的本地化字符串。
+        ///   查找类似 使用命令 CTEVERSION / CTEV 检查插件更新 的本地化字符串。
         /// </summary>
         internal static string ASFEVersionTips {
             get {
@@ -516,6 +516,15 @@ namespace CardTradeExtension.Localization {
         internal static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 2FA自动确认{0} 的本地化字符串。
+        /// </summary>
+        internal static string TFAConfirmResult {
+            get {
+                return ResourceManager.GetString("TFAConfirmResult", resourceCulture);
             }
         }
         

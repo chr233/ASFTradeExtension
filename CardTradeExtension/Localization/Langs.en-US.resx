@@ -225,4 +225,7 @@
   <data name="UpdateSuccess" xml:space="preserve">
     <value>Plugin update finished, restart ASF to apply update, if not compatible, please also update the ASF</value>
   </data>
+  <data name="TwoItem" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
 </root>

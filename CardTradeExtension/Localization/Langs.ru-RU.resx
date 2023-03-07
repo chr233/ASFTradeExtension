@@ -225,4 +225,7 @@
   <data name="UpdateSuccess" xml:space="preserve">
     <value>Обновление плагина завершено, перезапустите ASF, чтобы применить обновление, если оно несовместимо, пожалуйста, также обновите ASF</value>
   </data>
+  <data name="TwoItem" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
 </root>

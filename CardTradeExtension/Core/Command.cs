@@ -19,7 +19,7 @@ namespace CardTradeExtension.Core
         /// </summary>
         /// <param name="bot"></param>
         /// <returns></returns>
-        internal static async Task<string?> ResponseCardSetList(Bot bot, string? query)
+        internal static async Task<string?> ResponseFullSetList(Bot bot, string? query)
         {
             if (!bot.IsConnectedAndLoggedOn)
             {
@@ -34,7 +34,7 @@ namespace CardTradeExtension.Core
                 var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
                 if (queries.Length % 2 != 0)
                 {
-                    return bot.FormatBotResponse("参数有误, 示例: -p 2 -l 20 (第二页, 每页20条)");
+                    return bot.FormatBotResponse(Langs.ArgumentInvalidFSL);
                 }
                 for (int i = 0; i < queries.Length; i += 2)
                 {
@@ -64,19 +64,19 @@ namespace CardTradeExtension.Core
             var inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
             if (inventory == null)
             {
-                return bot.FormatBotResponse("网络异常, 读取库存信息失败");
+                return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
             }
 
             if (!inventory.Any())
             {
-                return bot.FormatBotResponse("卡片库存为空");
+                return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
             }
 
             var appIds = inventory.Select(x => x.RealAppID).Distinct().OrderBy(x => inventory.Count(y => y.RealAppID == x)).Reverse();
             var keys = appIds.Skip(page * count).Take(count);
             if (!keys.Any())
             {
-                return bot.FormatBotResponse("当前设置下无可显示的内容");
+                return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
             }
 
             var cardGroup = await Handler.GetAppCardGroup(bot, appIds, inventory).ConfigureAwait(false);
@@ -91,7 +91,7 @@ namespace CardTradeExtension.Core
                     if (bundle.Assets != null)
                     {
                         sb.AppendLine(
-                            string.Format("{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 + {4}张, 可交易 {5}套 +{6}张",
+                            string.Format(Langs.CurrentCardInventoryShow,
                             appId, bundle.Assets.Count(), bundle.CardCountPerSet,
                             bundle.TotalSetCount, bundle.ExtraTotalCount,
                             bundle.TradableSetCount, bundle.ExtraTradableCount)
@@ -101,17 +101,17 @@ namespace CardTradeExtension.Core
                     {
                         if (bundle.CardCountPerSet == -1)
                         {
-                            sb.AppendLine(string.Format("{0}: {1}", appId, "网络错误"));
+                            sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NetworkError));
                         }
                         else
                         {
-                            sb.AppendLine(string.Format("{0}: {1}", appId, "无卡牌"));
+                            sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
                         }
                     }
                 }
                 else
                 {
-                    sb.AppendLine(string.Format("{0}: {1}", appId, "无信息"));
+                    sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoInformation));
                 }
             }
 
@@ -124,7 +124,7 @@ namespace CardTradeExtension.Core
         /// <param name="botNames"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static async Task<string?> ResponseCardSetList(string botNames, string? query)
+        internal static async Task<string?> ResponseFullSetList(string botNames, string? query)
         {
             if (string.IsNullOrEmpty(botNames))
             {
@@ -138,7 +138,7 @@ namespace CardTradeExtension.Core
                 return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
             }
 
-            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseCardSetList(bot, query))).ConfigureAwait(false);
+            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetList(bot, query))).ConfigureAwait(false);
 
             List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 
@@ -150,7 +150,7 @@ namespace CardTradeExtension.Core
         /// </summary>
         /// <param name="bot"></param>
         /// <returns></returns>
-        internal static async Task<string?> ResponseGetCardSetCountOfGame(Bot bot, string query)
+        internal static async Task<string?> ResponseFullSetCountOfGame(Bot bot, string query)
         {
             if (!bot.IsConnectedAndLoggedOn)
             {
@@ -160,7 +160,7 @@ namespace CardTradeExtension.Core
             var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
             if (!queries.Any())
             {
-                return bot.FormatBotResponse("输入参数 AppIds 无效");
+                return bot.FormatBotResponse(Langs.ArgumentInvalidAppIds);
             }
 
             var appIds = queries.Select(q => uint.TryParse(q, out uint appId) ? appId : 0);
@@ -173,12 +173,12 @@ namespace CardTradeExtension.Core
                 var inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
                 if (inventory == null)
                 {
-                    return bot.FormatBotResponse("网络异常, 读取库存信息失败");
+                    return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
                 }
 
                 if (!inventory.Any())
                 {
-                    return bot.FormatBotResponse("卡片库存为空");
+                    return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
                 }
 
                 var cardGroup = await Handler.GetAppCardGroup(bot, appIds, inventory).ConfigureAwait(false);
@@ -188,7 +188,7 @@ namespace CardTradeExtension.Core
                 {
                     if (appId == 0)
                     {
-                        sb.AppendLine(string.Format("{0}: {1}", queries[i], "无效 AppId"));
+                        sb.AppendLine(string.Format(Langs.TwoItem, queries[i], Langs.AppIdInvalid));
                     }
                     else
                     {
@@ -197,7 +197,7 @@ namespace CardTradeExtension.Core
                             if (bundle.Assets != null)
                             {
                                 sb.AppendLine(
-                                    string.Format("{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 + {4}张, 可交易 {5}套 +{6}张",
+                                    string.Format(Langs.CurrentCardInventoryShow,
                                     appId, bundle.Assets.Count(), bundle.CardCountPerSet,
                                     bundle.TotalSetCount, bundle.ExtraTotalCount,
                                     bundle.TradableSetCount, bundle.ExtraTradableCount)
@@ -207,17 +207,17 @@ namespace CardTradeExtension.Core
                             {
                                 if (bundle.CardCountPerSet == -1)
                                 {
-                                    sb.AppendLine(string.Format("{0}: {1}", appId, "网络错误"));
+                                    sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NetworkError));
                                 }
                                 else
                                 {
-                                    sb.AppendLine(string.Format("{0}: {1}", appId, "无卡牌"));
+                                    sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
                                 }
                             }
                         }
                         else
                         {
-                            sb.AppendLine(string.Format("{0}: {1}", appId, "无信息"));
+                            sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoInformation));
                         }
                     }
                     i++;
@@ -227,7 +227,7 @@ namespace CardTradeExtension.Core
             {
                 foreach (var q in queries)
                 {
-                    sb.AppendLine(string.Format("{0}: {1}", q, "无效 AppId"));
+                    sb.AppendLine(string.Format(Langs.TwoItem, q, Langs.AppIdInvalid));
                 }
             }
 
@@ -240,7 +240,7 @@ namespace CardTradeExtension.Core
         /// <param name="botNames"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static async Task<string?> ResponseGetCardSetCountOfGame(string botNames, string query)
+        internal static async Task<string?> ResponseFullSetCountOfGame(string botNames, string query)
         {
             if (string.IsNullOrEmpty(botNames))
             {
@@ -254,7 +254,7 @@ namespace CardTradeExtension.Core
                 return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
             }
 
-            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseGetCardSetCountOfGame(bot, query))).ConfigureAwait(false);
+            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query))).ConfigureAwait(false);
 
             List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 
@@ -281,26 +281,26 @@ namespace CardTradeExtension.Core
 
             if (!uint.TryParse(strAppId, out uint appId) || !uint.TryParse(strSetCount, out uint setCount) || !match.Success)
             {
-                return bot.FormatBotResponse("参数无效, 示例 730 2 交易链接");
+                return bot.FormatBotResponse(Langs.ArgumentInvalidSCS);
             }
 
             if (appId == 0 || setCount == 0)
             {
-                return bot.FormatBotResponse("AppId 和 SetCount 必须大于0");
+                return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
             }
 
-            ulong targetSteamId = ulong.Parse(match.Groups[1].Value);
+            ulong targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
             string tradeToken = match.Groups[2].Value;
 
             if (!new SteamID(targetSteamId).IsIndividualAccount)
             {
-                return bot.FormatBotResponse("SteamId 无效");
+                return bot.FormatBotResponse(Langs.SteamIdInvalid);
             }
 
             var inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
             if (inventory == null)
             {
-                return bot.FormatBotResponse("网络异常, 读取库存信息失败");
+                return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
             }
 
             var bundle = await Handler.GetAppCardBundle(bot, appId, inventory).ConfigureAwait(false);
@@ -310,9 +310,9 @@ namespace CardTradeExtension.Core
 
             if (bundle.Assets != null)
             {
-                sb.AppendLine("交易前库存状态:");
+                sb.AppendLine(Langs.InventoryStatusBeforeTrade);
                 sb.AppendLine(
-                    string.Format("{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 + {4}张, 可交易 {5}套 +{6}张",
+                    string.Format(Langs.CurrentCardInventoryShow,
                     appId, bundle.Assets.Count(), bundle.CardCountPerSet,
                     bundle.TotalSetCount, bundle.ExtraTotalCount,
                     bundle.TradableSetCount, bundle.ExtraTradableCount)
@@ -320,7 +320,7 @@ namespace CardTradeExtension.Core
 
                 if (bundle.TradableSetCount < setCount)
                 {
-                    sb.AppendLine("交易报价发送成功失败, 可交易卡牌数量不足");
+                    sb.AppendLine(Langs.SendTradeFailedNoEnoughCards);
                 }
                 else
                 {
@@ -339,12 +339,13 @@ namespace CardTradeExtension.Core
 
                     if (offer.Any())
                     {
+                        sb.AppendLine(string.Format("预计发送 {0} 套, 共 {1} 张 卡牌", setCount, setCount * bundle.CardCountPerSet))
                         var (success, _, _) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, byte.MaxValue).ConfigureAwait(false);
-                        sb.AppendLine(success ? "交易报价发送成功" : "交易报价发送失败");
+                        sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
                     }
                     else
                     {
-                        sb.AppendLine("交易报价发送成功失败, 可交易卡牌数量不足");
+                        sb.AppendLine(Langs.SendTradeFailedNoEnoughCards);
                     }
                 }
             }
@@ -352,13 +353,13 @@ namespace CardTradeExtension.Core
             {
                 if (bundle.CardCountPerSet == -1)
                 {
-                    sb.AppendLine(string.Format("{0}: {1}", appId, "网络错误"));
+                    sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NetworkError));
                 }
                 else
                 {
-                    sb.AppendLine(string.Format("{0}: {1}", appId, "无卡牌"));
+                    sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
                 }
-                sb.AppendLine("发送交易失败, AppId 可能无效");
+                sb.AppendLine(Langs.SendTradeFailedAppIdInvalid);
             }
 
             return sb.ToString();

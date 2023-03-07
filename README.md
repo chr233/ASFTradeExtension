@@ -1,90 +1,124 @@
-# ASF-PluginTemplate
+# CardTradeExtension
 
-[![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-ea4aaa.svg?logo=github-sponsors)](https://github.com/sponsors/JustArchi)
-[![Crypto donate](https://img.shields.io/badge/Crypto-donate-f7931a.svg?logo=bitcoin)](https://commerce.coinbase.com/checkout/0c23b844-c51b-45f4-9135-8db7c6fcf98e)
-[![PayPal.me donate](https://img.shields.io/badge/PayPal.me-donate-00457c.svg?logo=paypal)](https://paypal.me/JustArchi)
-[![PayPal donate](https://img.shields.io/badge/PayPal-donate-00457c.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
-[![Revolut donate](https://img.shields.io/badge/Revolut-donate-0075eb.svg?logo=revolut)](https://pay.revolut.com/justarchi)
-[![Steam donate](https://img.shields.io/badge/Steam-donate-000000.svg?logo=steam)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/45b50288f8b14ebda915ed89e0382648)](https://www.codacy.com/gh/chr233/CardTradeExtension/dashboard)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/chr233/CardTradeExtension/autobuild.yml?logo=github)
+[![License](https://img.shields.io/github/license/chr233/CardTradeExtension?logo=apache)](https://github.com/chr233/CardTradeExtension/blob/master/license)
+
+[![GitHub Release](https://img.shields.io/github/v/release/chr233/CardTradeExtension?logo=github)](https://github.com/chr233/CardTradeExtension/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/chr233/CardTradeExtension?include_prereleases&label=pre-release&logo=github)](https://github.com/chr233/CardTradeExtension/releases)
+![GitHub last commit](https://img.shields.io/github/last-commit/chr233/CardTradeExtension?logo=github)
+
+![GitHub Repo stars](https://img.shields.io/github/stars/chr233/CardTradeExtension?logo=github)
+[![GitHub Download](https://img.shields.io/github/downloads/chr233/CardTradeExtension/total?logo=github)](https://img.shields.io/github/v/release/chr233/CardTradeExtension)
+
+[![Bilibili](https://img.shields.io/badge/bilibili-Chr__-00A2D8.svg?logo=bilibili)](https://space.bilibili.com/5805394)
+[![Steam](https://img.shields.io/badge/steam-Chr__-1B2838.svg?logo=steam)](https://steamcommunity.com/id/Chr_)
+
+[![Steam](https://img.shields.io/badge/steam-donate-1B2838.svg?logo=steam)](https://steamcommunity.com/tradeoffer/new/?partner=221260487&token=xgqMgL-i)
+[![爱发电](https://img.shields.io/badge/爱发电-chr__-ea4aaa.svg?logo=github-sponsors)](https://afdian.net/@chr233)
+
+CardTradeExtension 介绍 & 使用指南: TODO
+
+## EULA
+
+> 请不要使用本插件来进行不受欢迎的行为, 包括但不限于: 刷好评, 发布广告 等.
+>
+> 详见 [插件配置说明](#插件配置说明)
+
+## 安装方式
+
+### 初次安装 / 手动更新
+
+1. 从 [GitHub Releases](https://github.com/chr233/CardTradeExtension/releases) 下载插件的最新版本
+2. 解压后将 `CardTradeExtension.dll` 丢进 `ArchiSteamFarm` 目录下的 `plugins` 文件夹
+3. 重新启动 `ArchiSteamFarm` , 使用命令 `CTE` 来检查插件是否正常工作
+
+### 使用命令升级插件
+
+> 可以使用插件自带的命令自带更新插件
+> ASF 版本升级有可能出现不兼容情况, 如果发现插件无法加载请尝试更新 ASF
+
+- `CTEVERSION` / `CTEV` 检查插件更新
+- `CTEUPDATE` / `CTEU` 自动更新插件到最新版本 (需要手动重启 ASF)
+
+### 更新日志
+
+| CardTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明   |
+| ---------------------------------------------------------------------------- | :-----------: | ---------- |
+| [1.0.0.0](https://github.com/chr233/CardTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本 |
+
+<details>
+  <summary>历史版本</summary>
+
+| CardTradeExtension 版本 | 依赖 ASF 版本 | 5.3.1.2 | 5.3.2.4 | 5.4.0.3 | 5.4.1.11 |
+| ----------------------- | :-----------: | :-----: | :-----: | :-----: | :------: |
+| -                       |       -       |   ❌    |   ❌    |   ✔️    |    ✔️    |
+
+</details>
+
+## 插件配置说明
+
+> 本插件的配置不是必须的, 保持默认配置即可使用大部分功能
+
+ASF.json
+
+```json
+{
+  //ASF 配置
+  "CurrentCulture": "...",
+  "IPCPassword": "...",
+  "...": "...",
+  //CardTradeExtension 配置
+  "CardTradeExtension": {
+    "EULA": true,
+    "Statistic": true,
+    "DisabledCmds": ["foo", "bar"],
+    "MaxItemPerTrade": 255
+  }
+}
+```
+
+| 配置项            | 类型   | 默认值 | 说明                                                                                      |
+| ----------------- | ------ | ------ | ----------------------------------------------------------------------------------------- |
+| `EULA`            | bool   | `true` | 是否同意 [EULA](#EULA)\*                                                                  |
+| `Statistic`       | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                        |
+| `DisabledCmds`    | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `CardTradeExtension` 中的命令生效 |
+| `MaxItemPerTrade` | ushort | `255`  | 单个交易最多物品数量, ASF 的默认值是 255, 如果报价中的物品超过此数量会自动拆分成多个报价  |
+
+> \* 同意 [EULA](#EULA) 后, CardTradeExtension 将会开放全部命令
+>
+> \* 禁用 [EULA](#EULA) 后, CardTradeExtension 将无法使用大部分命令
+>
+> \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `CardTradeExtension` 中的命令有效
+> 例如配置为 `["foo","BAR"]` , 则代表 `FOO` 和 `BAR` 命令将会被禁用
+> 如果无需禁用任何命令, 请将此项配置为 `null` 或者 `[]`
+> 当某条命令被禁用时, 仍然可以使用 `CTE.xxx` 的形式调用被禁用的命令, 例如 `CTE.FULLSETLIST`
+
+## 插件指令说明
+
+### 插件更新
+
+| 命令                 | 缩写   | 权限            | 说明                                                      |
+| -------------------- | ------ | --------------- | --------------------------------------------------------- |
+| `CardTradeExtension` | `CTE`  | `FamilySharing` | 查看 CardTradeExtension 的版本                            |
+| `CTEVERSION`         | `CTEV` | `Operator`      | 检查 CardTradeExtension 是否为最新版本                    |
+| `CTEUPDATE`          | `CTEU` | `Owner`         | 自动更新 CardTradeExtension 到最新版本 (需要手动重启 ASF) |
+
+### 主要功能
+
+| 命令                                           | 缩写   | 权限       | 说明                                                         |
+| ---------------------------------------------- | ------ | ---------- | ------------------------------------------------------------ |
+| `FULLSETLIST [Bots] [Config]`                  | `FSL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
+| `FULLSET [Bots] <appIds>`                      | `FS`   | `Operator` | 显示指定 App 的卡牌套数信息                                  |
+| `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的卡牌          |
+| `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)      |
 
 ---
 
-[![Repobeats analytics image](https://repobeats.axiom.co/api/embed/4aa3ac833c7593826ac47ccfdc49c46ae27abb3d.svg "Repobeats analytics image")](https://github.com/JustArchiNET/ASF-PluginTemplate/pulse)
+[![Repobeats analytics image](https://repobeats.axiom.co/api/embed/c7bad85b243c7305a5de1fa591469f64125c4048.svg "Repobeats analytics image")](https://github.com/chr233/CardTradeExtension/pulse)
 
 ---
 
-## Description
-
-ASF-PluginTemplate is a template repository that you can use for creating custom **[plugins](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins)** for **[ArchiSteamFarm](https://github.com/JustArchiNET/ArchiSteamFarm)**. This template has everything needed to kickstart the structure of your custom ASF plugin. Most importantly, from viewpoint of a project not related to ASF whatsoever while making use of its best practices.
+[![Stargazers over time](https://starchart.cc/chr233/CardTradeExtension.svg)](https://github.com/chr233/CardTradeExtension/stargazers)
 
 ---
-
-## How to use this template
-
-Simply click the "Use this template" button in the top-right of the **[main repository page](https://github.com/JustArchiNET/ASF-PluginTemplate)** in order to get started.
-
-For cloning your git repository, use `git clone --recursive` option in order to pull ASF reference along with your plugin, which you'll require during compilation. See **[git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)** for more info.
-
-After using the template and cloning git repo, assuming you have everything required as specified in **[compilation](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation)** page on our wiki, try to build your project with `dotnet build CardTradeExtension`, it should succeed without any issues, which means you're all set.
-
-In theory, you don't need to do anything special further, just edit **[`CardTradeExtension/CardTradeExtension.cs`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/CardTradeExtension/CardTradeExtension.cs)** file and get going with your plugin logic. However, there are some things we recommend on doing in addition to above steps, and some we highlight as a possibility in case you'd be interested in them. It's now up to you what you want to do next.
-
----
-
-## What's included
-
-- Sample `CardTradeExtension` ASF plugin project with `ArchiSteamFarm` reference in git subtree.
-- Seamless hook into the ASF build process, which simplifies the project structure, as you effectively inherit the default settings official ASF projects are built with. Of course, free to override.
-- GitHub actions CI script, which verifies whether your project is possible to build. You can easily enhance it with unit tests when/if you'll have any.
-- GitHub actions publish script, heavily inspired by ASF build process. Publish script allows you to `git tag` and `git push` selected tag, while CI will build, pack, create release on GitHub and upload the resulting artifacts, automatically. By default, it publishes `generic` and `generic-netf` variant of your plugin.
-- GitHub actions ASF reference update script, which by default runs every day and ensures that your git submodule is tracking latest ASF (stable) release. Please note that this is a reference update only, the actual commit your plugin is built against is developer's responsibility not covered by this action, as it requires actual testing and verification. Because of that, commit created through this workflow can't possibly create any kind of build regression, it's a helper for you to more easily track latest ASF stable release.
-- Configuration file for **[Renovate](https://github.com/renovatebot/renovate)** bot, which you can optionally decide to use. Using renovate, apart from bumping your library dependencies, can also cover bumping ASF commit that your plugin is built against, which together with above workflow will ensure that you're effectively tracking latest ASF (stable) release.
-- Code style that matches the one we use at ASF, feel free to modify it to suit you.
-- Other misc files for integration with `git` and GitHub.
-
----
-
-## Recommended steps
-
-Here we list steps that are **not mandatory**, but worthy to consider after using this repo as a template. While we'd recommend to cover all of those, it's totally alright if you don't. We ordered those according to our recommended priority.
-
-- Choose license based on which you want to share your work. If you'd like to use the same one we do, so Apache 2.0, then you don't need to do anything as the plugin template comes with it. If you'd like to use different one, remove **[`LICENSE.txt`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/LICENSE.txt)** file and provide your own. If you've decided to use different license, it's probably also a good idea to update `PackageLicenseExpression` in **[`Directory.Build.props`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/Directory.Build.props#L17)**.
-- Change this **[`README.md`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/README.md)** in any way you want to. You can check **[ASF's README](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/README.md)** for some inspiration. We recommend at least a short description of what your plugin can do. Updating `<Description>` in **[`Directory.Build.props`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/Directory.Build.props#L15)** also sounds like a good idea.
-- Fill **[`SUPPORT.md`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/.github/SUPPORT.md)** file, so your users can learn where they can ask for help in regards to your plugin.
-- Fill **[`SECURITY.md`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/.github/SECURITY.md)** file, so your users can learn where they should report critical security issues in regards to your plugin.
-- If you want to use **[Renovate bot](https://github.com/renovatebot/renovate)** like we do, we recommend to modify the `:assignee()` block in our **[`renovate.json5`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/.github/renovate.json5#L5)** config file and putting your own GitHub username there. This will allow Renovate bot to assign failing PR to you so you can take a look at it. Everything else can stay as it is, unless you want to modify it of course.
-- Provide your own **[`CODE_OF_CONDUCT.md`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/.github/CODE_OF_CONDUCT.md#enforcement)** if you'd like to. If you're fine with ours, you can simply replace `TODO@example.com` e-mail with your own.
-- Provide your own **[`FUNDING.yml`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/.github/FUNDING.yml)** if you'd like to. By default the template comes with the funding available for the main ASF project, which you're free to keep, remove, or replace with your own.
-
----
-
-## Worth mentioning
-
-Here we list things that do not require your immediate attention, but we consider worthy to know.
-
-### Compilation
-
-Simply execute `dotnet build CardTradeExtension` and find your binaries in `CardTradeExtension/bin` folder, which you can drag to ASF's `plugins` folder. Keep in mind however that your plugin build created this way is based on existence of your .NET SDK and might not work on other machines or other SDK versions - for creating actual package with your plugin use `dotnet publish CardTradeExtension -c Release -o out` command instead, which will create a more general, packaged version in `out` directory. Likewise, omit `-c Release` if for some reason you'd like more general `Debug` build instead.
-
-### Library references
-
-Our plugin template uses centrally-managed packages. Simply add a `PackageVersion` reference below our `Import` clause in **[`Directory.Packages.props`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/Directory.Packages.props#L2)**. Afterwards add a `PackageReference` to your **[`CardTradeExtension.csproj`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/CardTradeExtension/CardTradeExtension.csproj#L6-L10)** as usual, but without specifying a version (which we've just specified in `Directory.Packages.props` instead).
-
-Using centrally-managed NuGet packages is crucial in regards to integration with library versions used in the ASF submodule, especially the `System.Composition.AttributedModel` which your plugin should always have in the ASF matching version. This also means that you don't have to (and actually shouldn't) specify versions for all of the libraries that ASF defines on its own in **[`Directory.Packages.props`](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/Directory.Packages.props)** (that you conveniently inherit from).
-
-### Renaming `CardTradeExtension`
-
-You might be interested in renaming `CardTradeExtension` project into the one that suits your plugin. We've tried to keep the minimum amount of references, and we're listing here all of the places you should keep in mind:
-- **[`CardTradeExtension.csproj`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/CardTradeExtension/CardTradeExtension.csproj)**, renaming should be enough.
-- **[`CardTradeExtension.cs`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/CardTradeExtension/CardTradeExtension.cs#L6-L16)**, along with the update of `CardTradeExtension` class name (and included references to it).
-- **[`CardTradeExtension`](https://github.com/JustArchiNET/ASF-PluginTemplate/tree/main/CardTradeExtension)** directory, which holds above files.
-- **[`CardTradeExtension.sln`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/CardTradeExtension.sln#L6)**, along with the update of `CardTradeExtension` reference in the `sln` file.
-- **[`CardTradeExtension.sln.DotSettings`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/CardTradeExtension.sln.DotSettings)**, renaming to match the `sln` file above should be enough.
-- **[`Directory.Build.props`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/Directory.Build.props#L5)**, in particular `<PluginName>CardTradeExtension</PluginName>` line.
-- **[`publish.yml`](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/.github/workflows/publish.yml#L12)**, in particular `PLUGIN_NAME: CardTradeExtension` line.
-
-Nothing else should be required to the best of our knowledge.
-
-### Need help?
-
-Feel free to ask in one of our **[support channels](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/SUPPORT.md)**, where we'll be happy to offer you a helpful hand 😎.

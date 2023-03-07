@@ -2,14 +2,8 @@
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
-using CardTradeExtension.Core;
 using CardTradeExtension.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CardTradeExtension
 {

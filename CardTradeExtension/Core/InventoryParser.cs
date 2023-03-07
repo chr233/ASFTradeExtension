@@ -1,8 +1,4 @@
-﻿using AngleSharp.Dom;
-using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Exchange;
-using ArchiSteamFarm.Web.Responses;
-using System.Text.RegularExpressions;
+﻿using ArchiSteamFarm.Steam.Data;
 
 namespace CardTradeExtension.Core
 {
@@ -13,7 +9,7 @@ namespace CardTradeExtension.Core
         private static Dictionary<string, HashSet<Asset>> _botInventorys = new();
         private static Dictionary<string, DateTime> _botUpdateTime = new();
 
-        
+
         public static HashSet<Asset> GetFullSetList(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract)
         {
             if ((inventory == null) || (inventory.Count == 0))
@@ -25,7 +21,7 @@ namespace CardTradeExtension.Core
             {
                 throw new ArgumentNullException(nameof(amountsToExtract));
             }
-            
+
             HashSet<Asset> result = new();
             Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(static item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(static grouping => grouping.Key, static grouping => grouping.GroupBy(static item => item.ClassID).ToDictionary(static group => group.Key, static group => group.ToHashSet()));
 

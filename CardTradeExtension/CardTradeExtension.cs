@@ -175,8 +175,23 @@ namespace CardTradeExtension
                 case 1: //不带参数
                     switch (cmd)
                     {
-                        case "FS" when access >= EAccess.Operator:
-                            return await Core.Command.ResponseGetCardSetCountOfGame(bot, "1262060,1425250,410110,687850").ConfigureAwait(false);
+                        //Core
+                        case "FULLSETLIST" when access >= EAccess.Operator:
+                        case "FSL" when access >= EAccess.Operator:
+                            return await Core.Command.ResponseCardSetList(bot, null).ConfigureAwait(false);
+
+                        //Update
+                        case "CARDTRADEXTENSION" when access >= EAccess.FamilySharing:
+                        case "CTE" when access >= EAccess.FamilySharing:
+                            return Update.Command.ResponseCardTradeExtensionVersion();
+
+                        case "CTEVERSION" when access >= EAccess.Operator:
+                        case "CTEV" when access >= EAccess.Operator:
+                            return await Update.Command.ResponseCheckLatestVersion().ConfigureAwait(false);
+
+                        case "CTEUPDATE" when access >= EAccess.Owner:
+                        case "CTEU" when access >= EAccess.Owner:
+                            return await Update.Command.ResponseUpdatePlugin().ConfigureAwait(false);
 
                         default:
                             return null;
@@ -184,6 +199,13 @@ namespace CardTradeExtension
                 default: //带参数
                     switch (cmd)
                     {
+                        case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 0:
+                        case "FSL" when access >= EAccess.Operator && argLength % 2 == 0:
+                            return await Core.Command.ResponseCardSetList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+                        case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 1:
+                        case "FSL" when access >= EAccess.Operator && argLength % 2 == 1:
+                            return await Core.Command.ResponseCardSetList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+
                         case "FULLSET" when argLength >= 3 && access >= EAccess.Operator:
                         case "FS" when argLength >= 3 && access >= EAccess.Operator:
                             return await Core.Command.ResponseGetCardSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
@@ -192,7 +214,12 @@ namespace CardTradeExtension
                         case "FS" when access >= EAccess.Operator:
                             return await Core.Command.ResponseGetCardSetCountOfGame(bot, args[1]).ConfigureAwait(false);
 
-
+                        case "SENDCARDSET" when access >= EAccess.Master && argLength == 5:
+                        case "SCS" when access >= EAccess.Master && argLength == 5:
+                            return await Core.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4]).ConfigureAwait(false);
+                        case "SENDCARDSET" when access >= EAccess.Master && argLength == 4:
+                        case "SCS" when access >= EAccess.Master && argLength == 4:
+                            return await Core.Command.ResponseSendCardSet(bot, args[1], args[2], args[3]).ConfigureAwait(false);
 
                         default:
                             return null;

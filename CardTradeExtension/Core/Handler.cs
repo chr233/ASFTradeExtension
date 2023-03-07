@@ -1,6 +1,7 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Steam.Security;
 using CardTradeExtension.Data;
 
 namespace CardTradeExtension.Core
@@ -20,11 +21,6 @@ namespace CardTradeExtension.Core
                 var filtedInventory = inventory.Where(x => x.Type == Asset.EType.TradingCard || x.Type == Asset.EType.FoilTradingCard).ToList();
                 return filtedInventory;
             }
-            catch (HttpRequestException e)
-            {
-                ASFLogger.LogGenericWarningException(e);
-                return null;
-            }
             catch (Exception e)
             {
                 ASFLogger.LogGenericException(e);
@@ -39,17 +35,17 @@ namespace CardTradeExtension.Core
         /// <param name="appIds"></param>
         /// <param name="inventory"></param>
         /// <returns></returns>
-        internal static async Task<IDictionary<uint, AssetBundle>> GetAppCardGroup(Bot bot, IList<uint> appIds, IEnumerable<Asset> inventory)
+        internal static async Task<IDictionary<uint, AssetBundle>> GetAppCardGroup(Bot bot, IEnumerable<uint> appIds, IEnumerable<Asset> inventory)
         {
             var countPerSets = await Utilities.InParallel(appIds.Select(appId => CacheHelper.GetCacheCardSetCount(bot, appId))).ConfigureAwait(false);
 
             Dictionary<uint, AssetBundle> result = new();
 
-            if (countPerSets.Count >= appIds.Count)
+            if (countPerSets.Count >= appIds.Count())
             {
-                for (int i = 0; i < appIds.Count; i++)
+                for (int i = 0; i < appIds.Count(); i++)
                 {
-                    uint appId = appIds[i];
+                    uint appId = appIds.ElementAt(i);
                     int countPerSet = countPerSets[i];
 
                     int tradableSetCount, totalSetCount, extraTradableCount, extraTotalCount;
@@ -102,8 +98,60 @@ namespace CardTradeExtension.Core
             return result;
         }
 
+        /// <summary>
+        /// 获取单个App的库存卡牌套数
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="appIds"></param>
+        /// <param name="inventory"></param>
+        /// <returns></returns>
+        internal static async Task<AssetBundle> GetAppCardBundle(Bot bot, uint appId, IEnumerable<Asset> inventory)
+        {
+            int countPerSet = await CacheHelper.GetCacheCardSetCount(bot, appId).ConfigureAwait(false);
+            int tradableSetCount, totalSetCount, extraTradableCount, extraTotalCount;
 
+            IEnumerable<Asset>? assets = null;
 
+            if (countPerSet > 0)
+            {
+                assets = inventory.Where(x => x.RealAppID == appId);
+                var classIds = assets.Select(x => x.ClassID).Distinct();
 
+                if (classIds.Count() == countPerSet)
+                {
+                    var tradableCountPerClassId = classIds.Select(x => assets.Where(y => y.Tradable && y.ClassID == x).Count());
+                    var totalCountPerClassId = classIds.Select(x => assets.Where(y => y.ClassID == x).Count());
+                    tradableSetCount = tradableCountPerClassId.Min();
+                    totalSetCount = totalCountPerClassId.Min();
+                    extraTradableCount = tradableCountPerClassId.Sum() - countPerSet * tradableSetCount;
+                    extraTotalCount = totalCountPerClassId.Sum() - countPerSet * totalSetCount;
+                }
+                else
+                {
+                    tradableSetCount = 0;
+                    totalSetCount = 0;
+                    extraTradableCount = assets.Count(x => x.Tradable);
+                    extraTotalCount = assets.Count();
+                }
+            }
+            else
+            {
+                tradableSetCount = 0;
+                totalSetCount = 0;
+                extraTradableCount = 0;
+                extraTotalCount = 0;
+            }
+
+            AssetBundle bundle = new() {
+                Assets = assets,
+                CardCountPerSet = countPerSet,
+                TradableSetCount = tradableSetCount,
+                TotalSetCount = totalSetCount,
+                ExtraTradableCount = extraTradableCount,
+                ExtraTotalCount = extraTotalCount,
+            };
+
+            return bundle;
+        }
     }
 }

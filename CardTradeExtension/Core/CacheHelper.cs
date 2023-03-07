@@ -8,12 +8,6 @@ namespace CardTradeExtension.Core
     {
         private static ConcurrentDictionary<uint, int> FullSetCount { get; } = new();
 
-        /// <summary>
-        /// 读取缓存的每个游戏的每套卡牌张数
-        /// </summary>
-        /// <param name="bot"></param>
-        /// <param name="appId"></param>
-        /// <returns>-1网络错误 0无卡牌</returns>
         public static async Task<int> GetCacheCardSetCount(Bot bot, uint appId)
         {
             if (FullSetCount.TryGetValue(appId, out int value))
@@ -23,12 +17,6 @@ namespace CardTradeExtension.Core
             return await FetchCardSetCount(bot, appId).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// 读取缓存的每个游戏的每套卡牌张数
-        /// </summary>
-        /// <param name="bot"></param>
-        /// <param name="appId"></param>
-        /// <returns>-1网络错误 0无卡牌</returns>
         private static async Task<int> FetchCardSetCount(Bot bot, uint appId)
         {
             Uri request = new(SteamCommunityURL, $"/profiles/{bot.SteamID}/gamecards/{appId}/");
@@ -50,12 +38,10 @@ namespace CardTradeExtension.Core
             {
                 return -1;
             }
-            else
-            {
-                int count = response.Content.QuerySelectorAll("div.badge_card_set_card").Length;
-                FullSetCount.TryAdd(appId, count);
-                return count;
-            }
+
+            int count = response.Content.QuerySelectorAll("div.badge_card_set_card").Length;
+            FullSetCount.TryAdd(appId, count);
+            return count;
         }
     }
 }

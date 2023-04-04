@@ -1,6 +1,6 @@
 ﻿using ArchiSteamFarm.Steam.Data;
 
-namespace CardTradeExtension.Core
+namespace CardTradeExtension.Card
 {
     internal static class InventoryParser
     {
@@ -12,12 +12,12 @@ namespace CardTradeExtension.Core
 
         public static HashSet<Asset> GetFullSetList(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract)
         {
-            if ((inventory == null) || (inventory.Count == 0))
+            if (inventory == null || inventory.Count == 0)
             {
                 throw new ArgumentNullException(nameof(inventory));
             }
 
-            if ((amountsToExtract == null) || (amountsToExtract.Count == 0))
+            if (amountsToExtract == null || amountsToExtract.Count == 0)
             {
                 throw new ArgumentNullException(nameof(amountsToExtract));
             }

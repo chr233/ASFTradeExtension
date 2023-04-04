@@ -203,6 +203,10 @@ namespace CardTradeExtension
                 default: //带参数
                     switch (cmd)
                     {
+                        //Core
+                        case "FULLSETLIST" when access >= EAccess.Operator && argLength == 2:
+                        case "FSL" when access >= EAccess.Operator && argLength == 2:
+                            return await Core.Command.ResponseFullSetList(args[1], null).ConfigureAwait(false);
                         case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 0:
                         case "FSL" when access >= EAccess.Operator && argLength % 2 == 0:
                             return await Core.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
@@ -213,7 +217,6 @@ namespace CardTradeExtension
                         case "FULLSET" when argLength >= 3 && access >= EAccess.Operator:
                         case "FS" when argLength >= 3 && access >= EAccess.Operator:
                             return await Core.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-
                         case "FULLSET" when access >= EAccess.Operator:
                         case "FS" when access >= EAccess.Operator:
                             return await Core.Command.ResponseFullSetCountOfGame(bot, args[1]).ConfigureAwait(false);

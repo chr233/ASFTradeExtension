@@ -1,10 +1,9 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Security;
 using CardTradeExtension.Data;
 
-namespace CardTradeExtension.Core
+namespace CardTradeExtension.Card
 {
     internal static class Handler
     {
@@ -18,7 +17,7 @@ namespace CardTradeExtension.Core
             try
             {
                 var inventory = await bot.ArchiWebHandler.GetInventoryAsync(0, 753, 6).ToListAsync().ConfigureAwait(false);
-                var filtedInventory = inventory.Where(x => x.Type == Asset.EType.TradingCard || x.Type == Asset.EType.FoilTradingCard).ToList();
+                var filtedInventory = inventory.Where(x => x.Type == Asset.EType.TradingCard).ToList();
                 return filtedInventory;
             }
             catch (Exception e)

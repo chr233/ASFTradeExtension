@@ -44,7 +44,7 @@ namespace CardTradeExtension
         {
             string flag = UpdateFlag();
 
-            return $"<ASFE{flag}> {message}";
+            return $"<ASF{flag}> {message}";
         }
 
         /// <summary>

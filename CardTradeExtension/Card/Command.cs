@@ -2,14 +2,10 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Security;
-using Microsoft.AspNetCore.Mvc;
+using CardTradeExtension.Card;
 using SteamKit2;
-using SteamKit2.GC.Dota.Internal;
-using System.Data.Common;
 using System.Text;
 using System.Text.RegularExpressions;
-using static SteamKit2.GC.Underlords.Internal.CUserMessageVGUIMenu;
 
 namespace CardTradeExtension.Core
 {
@@ -341,17 +337,17 @@ namespace CardTradeExtension.Core
                     if (offer.Any())
                     {
                         sb.AppendLine(string.Format(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet));
-                        var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
+                        //var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
-                        if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
-                        {
-                            (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+                        //if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+                        //{
+                        //    (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
-                            sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
+                        //    sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
 
-                        }
+                        //}
 
-                        sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
+                        //sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
                     }
                     else
                     {
@@ -401,6 +397,5 @@ namespace CardTradeExtension.Core
 
             return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
         }
-
     }
 }

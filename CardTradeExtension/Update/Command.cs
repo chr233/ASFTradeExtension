@@ -113,7 +113,7 @@ namespace CardTradeExtension.Update
                     {
                         if (entry.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                         {
-                            entry.ExtractToFile(currentPath);
+                            entry.ExtractToFile(currentPath, true);
                             UpdatePadding = true;
 
                             StringBuilder sb = new();

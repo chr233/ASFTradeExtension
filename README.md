@@ -45,6 +45,7 @@ CardTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https
 
 | CardTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明   |
 | ---------------------------------------------------------------------------- | :-----------: | ---------- |
+| [1.0.2.0](https://github.com/chr233/CardTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复   |
 | [1.0.0.0](https://github.com/chr233/CardTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本 |
 
 <details>

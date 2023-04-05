@@ -2,12 +2,10 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using CardTradeExtension.Card;
 using SteamKit2;
 using System.Text;
-using System.Text.RegularExpressions;
 
-namespace CardTradeExtension.Core
+namespace CardTradeExtension.Card
 {
     internal static partial class Command
     {
@@ -258,10 +256,6 @@ namespace CardTradeExtension.Core
             return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
         }
 
-
-        [GeneratedRegex("(?:https?:\\/\\/steamcommunity\\.com\\/tradeoffer\\/new\\/\\?)?partner=(\\d+)&token=(\\S+)")]
-        private static partial Regex MatchTradeLink();
-
         /// <summary>
         /// 根据指定交易报价发送指定套数的卡牌
         /// </summary>
@@ -274,7 +268,7 @@ namespace CardTradeExtension.Core
                 return bot.FormatBotResponse(Strings.BotNotConnected);
             }
 
-            var match = MatchTradeLink().Match(tradeLink);
+            var match = RegexUtils.MatchTradeLink().Match(tradeLink);
 
             if (!uint.TryParse(strAppId, out uint appId) || !uint.TryParse(strSetCount, out uint setCount) || !match.Success)
             {
@@ -337,17 +331,17 @@ namespace CardTradeExtension.Core
                     if (offer.Any())
                     {
                         sb.AppendLine(string.Format(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet));
-                        //var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
+                        var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
-                        //if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
-                        //{
-                        //    (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+                        if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+                        {
+                            (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
-                        //    sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
+                            sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
 
-                        //}
+                        }
 
-                        //sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
+                        sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
                     }
                     else
                     {

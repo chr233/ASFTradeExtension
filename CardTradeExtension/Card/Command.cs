@@ -79,7 +79,7 @@ namespace CardTradeExtension.Card
 
             StringBuilder sb = new();
             sb.AppendLine(Langs.MultipleLineResult);
-
+            
             foreach (uint appId in keys)
             {
                 if (cardGroup.TryGetValue(appId, out var bundle))

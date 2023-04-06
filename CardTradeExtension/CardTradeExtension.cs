@@ -1,6 +1,8 @@
 ﻿using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
 using CardTradeExtension.Data;
 using Newtonsoft.Json;
@@ -12,7 +14,7 @@ using System.Text;
 namespace CardTradeExtension
 {
     [Export(typeof(IPlugin))]
-    internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotUserNotifications
+    internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
     {
         public string Name => nameof(CardTradeExtension);
         public Version Version => MyVersion;
@@ -179,10 +181,15 @@ namespace CardTradeExtension
                 case 1: //不带参数
                     switch (cmd)
                     {
-                        //Core
+                        //Card
                         case "FULLSETLIST" when access >= EAccess.Operator:
                         case "FSL" when access >= EAccess.Operator:
                             return await Card.Command.ResponseFullSetList(bot, null).ConfigureAwait(false);
+
+                        //CSGO
+                        case "CSITEMLIST" when access >= EAccess.Operator:
+                        case "CIL" when access >= EAccess.Operator:
+                            return await CSGO.Command.ResponseCSItemList(bot, null).ConfigureAwait(false);
 
                         //Update
                         case "CARDTRADEXTENSION" when access >= EAccess.FamilySharing:
@@ -203,7 +210,7 @@ namespace CardTradeExtension
                 default: //带参数
                     switch (cmd)
                     {
-                        //Core
+                        //Card
                         case "FULLSETLIST" when access >= EAccess.Operator && argLength == 2:
                         case "FSL" when access >= EAccess.Operator && argLength == 2:
                             return await Card.Command.ResponseFullSetList(args[1], null).ConfigureAwait(false);
@@ -234,6 +241,17 @@ namespace CardTradeExtension
                         case "2SENDCARDSET" when access >= EAccess.Master && argLength == 4:
                         case "2SCS" when access >= EAccess.Master && argLength == 4:
                             return await Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
+
+                        //CSGO
+                        case "CSITEMLIST" when access >= EAccess.Operator && argLength == 2:
+                        case "CIL" when access >= EAccess.Operator && argLength == 2:
+                            return await CSGO.Command.ResponseCSItemList(args[1], null).ConfigureAwait(false);
+                        case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 0:
+                        case "CIL" when access >= EAccess.Operator && argLength % 2 == 0:
+                            return await CSGO.Command.ResponseCSItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+                        case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 1:
+                        case "CIL" when access >= EAccess.Operator && argLength % 2 == 1:
+                            return await CSGO.Command.ResponseCSItemList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 
                         default:
                             return null;
@@ -297,7 +315,11 @@ namespace CardTradeExtension
             }
         }
 
-        public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications)
+        public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
+        {
+            return Task.FromResult(true);
+        }
+        public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults)
         {
             return Task.CompletedTask;
         }

@@ -264,9 +264,10 @@ namespace CardTradeExtension.CSGO
                 return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
             }
 
+            int invCount = inventory.Count();
             if (countPerBot == 0)
             {
-                countPerBot = inventory.Count() / bots.Count();
+                countPerBot = invCount / bots.Count();
             }
 
             StringBuilder sb = new();
@@ -294,7 +295,7 @@ namespace CardTradeExtension.CSGO
                 {
                     sb.AppendLine(string.Format("发送交易报价 {0} -> {1} 失败, 无可用物品", b.BotName, bot.BotName));
                 }
-                if (skip >= inventory.Count())
+                if (skip >= invCount)
                 {
                     break;
                 }

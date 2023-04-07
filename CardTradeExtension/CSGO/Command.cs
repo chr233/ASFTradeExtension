@@ -286,7 +286,7 @@ namespace CardTradeExtension.CSGO
                     {
                         foreach (var tradeId in tradeOfferIDs)
                         {
-                            Handler.AddTrade(b.SteamID, tradeId);
+                            Handler.AddTrade(tradeId, b.SteamID);
                         }
                     }
                     sb.AppendLine(string.Format("发送交易报价 {0} -> {1}, 物品数量 {2}, {3}", b.BotName, bot.BotName, offer.Count, success ? Langs.Success : Langs.Failure));

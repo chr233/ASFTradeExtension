@@ -7,6 +7,7 @@ using ArchiSteamFarm.Steam.Integration.Callbacks;
 using CardTradeExtension.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SteamKit2.Internal;
 using System.ComponentModel;
 using System.Composition;
 using System.Text;
@@ -282,7 +283,7 @@ namespace CardTradeExtension
                         case "2CSI" when access >= EAccess.Master && argLength == 2:
                             return await CSGO.Command.ResponseSendCSItem(args[1], null, null, true).ConfigureAwait(false);
 
-                            
+
                         default:
                             return null;
                     }
@@ -348,6 +349,7 @@ namespace CardTradeExtension
         public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
         {
             bool accept = CSGO.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
+            ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
             return Task.FromResult(accept);
         }
 
@@ -356,6 +358,7 @@ namespace CardTradeExtension
             foreach (var tradeResult in tradeResults)
             {
                 CSGO.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
+                ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
             }
             return Task.CompletedTask;
         }

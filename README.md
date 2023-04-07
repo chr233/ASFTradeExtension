@@ -105,7 +105,7 @@ ASF.json
 | `CTEVERSION`         | `CTEV` | `Operator`      | 检查 CardTradeExtension 是否为最新版本                    |
 | `CTEUPDATE`          | `CTEU` | `Owner`         | 自动更新 CardTradeExtension 到最新版本 (需要手动重启 ASF) |
 
-### 主要功能
+### 卡牌交易
 
 | 命令                                           | 缩写   | 权限       | 说明                                                         |
 | ---------------------------------------------- | ------ | ---------- | ------------------------------------------------------------ |
@@ -113,6 +113,16 @@ ASF.json
 | `FULLSET [Bots] <appIds>`                      | `FS`   | `Operator` | 显示指定 App 的卡牌套数信息                                  |
 | `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的卡牌          |
 | `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)      |
+
+### CSGO 库存交易
+
+| 命令                                     | 缩写   | 权限       | 说明                                                                         |
+| ---------------------------------------- | ------ | ---------- | ---------------------------------------------------------------------------- |
+| `CSITEMLIST [Bots] [Config]`             | `CIL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]                 |
+| `CSSENDITEM [Bots]`                      | `CSI`  | `Master`   | 发送 Bots 的 CSGO 库存到其余在线 Bot                                         |
+| `2CSSENDITEM [Bots]`                     | `2CSI` | `Master`   | 同 `CSSENDITEM`, 发送交易后自动确认交易 (需要配置 2FA)                       |
+| `CSSENDITEM [Bots] ClassId CountPerBot`  | `CSI`  | `Master`   | 发送 Bots 的 CSGO 库存到其余在线 Bot, 指定物品 ClassId 和每个 Bot 接收的数量 |
+| `2CSSENDITEM [Bots] ClassId CountPerBot` | `2CSI` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)                      |
 
 ---
 

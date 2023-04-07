@@ -12,7 +12,7 @@ namespace CardTradeExtension.CSGO
         /// </summary>
         /// <param name="bot"></param>
         /// <returns></returns>
-        internal static async Task<string?> GetTradeofferPrivacyPage(Bot bot)
+        internal static async Task<string?> GetTradeToken(Bot bot)
         {
             Uri request = new(SteamCommunityURL, $"/profiles/{bot.SteamID}/tradeoffers/privacy");
             HtmlDocumentResponse? response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, referer: SteamStoreURL).ConfigureAwait(false);
@@ -24,7 +24,14 @@ namespace CardTradeExtension.CSGO
 
             var inputEle = response.Content.SelectSingleNode<IElement>("//input[@id='trade_offer_access_url']");
 
-            return inputEle?.GetAttribute("value"); ;
+            string? tradeLink = inputEle?.GetAttribute("value");
+            if (string.IsNullOrEmpty(tradeLink))
+            {
+                return null;
+            }
+
+            var match = RegexUtils.MatchTradeLink().Match(tradeLink);
+            return match.Success ? match.Groups[2].Value : null;
         }
     }
 }

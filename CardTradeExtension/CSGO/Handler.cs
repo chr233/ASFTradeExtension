@@ -54,22 +54,26 @@ namespace CardTradeExtension.CSGO
         }
 
 
-        private static ConcurrentDictionary<ulong, string> _verifiedTrades = new();
+        /// <summary>
+        /// tradeId, steamId
+        /// </summary>
+        private static ConcurrentDictionary<ulong, ulong> _verifiedTrades = new();
 
-        internal static void AddTrade(ulong steamId, string token)
+        internal static void AddTrade(ulong tradeId, ulong steamId)
         {
-            _verifiedTrades.TryAdd(steamId, token);
+            _verifiedTrades.TryAdd(tradeId, steamId);
         }
 
 
-        internal static bool IsMyTrade(ulong steamId, string token)
+        internal static bool IsMyTrade(ulong tradeId, ulong steamId)
         {
-            return _verifiedTrades.TryGetValue(steamId, out string? value) && value == token;
+            return _verifiedTrades.TryGetValue(tradeId, out ulong value) && value == steamId;
         }
 
-        internal static void RemoveMyTrade(ulong steamId)
+        
+        internal static void RemoveMyTrade(ulong tradeId)
         {
-            _verifiedTrades.TryRemove(steamId, out _);
+            _verifiedTrades.TryRemove(tradeId, out _);
         }
     }
 }

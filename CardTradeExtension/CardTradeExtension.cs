@@ -191,6 +191,13 @@ namespace CardTradeExtension
                         case "CIL" when access >= EAccess.Operator:
                             return await CSGO.Command.ResponseCSItemList(bot, null).ConfigureAwait(false);
 
+                        case "CSSENDITEM" when access >= EAccess.Master:
+                        case "CSI" when access >= EAccess.Master:
+                            return await CSGO.Command.ResponseSendCSItem(bot, null, null, false).ConfigureAwait(false);
+                        case "2CSSENDITEM" when access >= EAccess.Master:
+                        case "2CSI" when access >= EAccess.Master:
+                            return await CSGO.Command.ResponseSendCSItem(bot, null, null, true).ConfigureAwait(false);
+
                         //Update
                         case "CARDTRADEXTENSION" when access >= EAccess.FamilySharing:
                         case "CTE" when access >= EAccess.FamilySharing:
@@ -253,6 +260,29 @@ namespace CardTradeExtension
                         case "CIL" when access >= EAccess.Operator && argLength % 2 == 1:
                             return await CSGO.Command.ResponseCSItemList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 
+
+                        case "CSSENDITEM" when access >= EAccess.Master && argLength == 4:
+                        case "CSI" when access >= EAccess.Master && argLength == 4:
+                            return await CSGO.Command.ResponseSendCSItem(args[1], args[2], args[3], false).ConfigureAwait(false);
+                        case "CSSENDITEM" when access >= EAccess.Master && argLength == 3:
+                        case "CSI" when access >= EAccess.Master && argLength == 3:
+                            return await CSGO.Command.ResponseSendCSItem(bot, args[1], args[2], false).ConfigureAwait(false);
+                        case "CSSENDITEM" when access >= EAccess.Master && argLength == 2:
+                        case "CSI" when access >= EAccess.Master && argLength == 2:
+                            return await CSGO.Command.ResponseSendCSItem(args[1], null, null, false).ConfigureAwait(false);
+
+
+                        case "2CSSENDITEM" when access >= EAccess.Master && argLength == 4:
+                        case "2CSI" when access >= EAccess.Master && argLength == 4:
+                            return await CSGO.Command.ResponseSendCSItem(args[1], args[2], args[3], true).ConfigureAwait(false);
+                        case "2CSSENDITEM" when access >= EAccess.Master && argLength == 3:
+                        case "2CSI" when access >= EAccess.Master && argLength == 3:
+                            return await CSGO.Command.ResponseSendCSItem(bot, args[1], args[2], true).ConfigureAwait(false);
+                        case "2CSSENDITEM" when access >= EAccess.Master && argLength == 2:
+                        case "2CSI" when access >= EAccess.Master && argLength == 2:
+                            return await CSGO.Command.ResponseSendCSItem(args[1], null, null, true).ConfigureAwait(false);
+
+                            
                         default:
                             return null;
                     }
@@ -317,10 +347,16 @@ namespace CardTradeExtension
 
         public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
         {
-            return Task.FromResult(true);
+            bool accept = CSGO.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
+            return Task.FromResult(accept);
         }
+
         public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults)
         {
+            foreach (var tradeResult in tradeResults)
+            {
+                CSGO.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
+            }
             return Task.CompletedTask;
         }
     }

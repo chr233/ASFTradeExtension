@@ -198,35 +198,56 @@ namespace CardTradeExtension.CSGO
         }
 
         /// <summary>
-        /// 根据指定交易报价发送指定套数的卡牌
+        /// 发送指定数量的物品到其余账号
         /// </summary>
         /// <param name="bot"></param>
+        /// <param name="strClassId"></param>
+        /// <param name="strCountPerBot"></param>
+        /// <param name="autoConfirm"></param>
         /// <returns></returns>
-        internal static async Task<string?> ResponseSendCSItem(Bot bot, string strAppId, string strSetCount, bool autoConfirm)
+        internal static async Task<string?> ResponseSendCSItem(Bot bot, string? strClassId, string? strCountPerBot, bool autoConfirm)
         {
             if (!bot.IsConnectedAndLoggedOn)
             {
                 return bot.FormatBotResponse(Strings.BotNotConnected);
             }
 
-            
-
-            if (!uint.TryParse(strAppId, out uint appId) || !uint.TryParse(strSetCount, out uint setCount) || !match.Success)
+            var bots = Bot.GetBots("ASF")?.Where(x => x.IsConnectedAndLoggedOn && x != bot);
+            if (bots == null || !bots.Any())
             {
-                return bot.FormatBotResponse(Langs.ArgumentInvalidSCS);
+                return bot.FormatBotResponse("无可用机器人");
             }
 
-            if (appId == 0 || setCount == 0)
+            var tradeToken = await WebRequests.GetTradeToken(bot).ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(tradeToken))
             {
-                return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
+                return bot.FormatBotResponse("自动获取交易链接失败");
             }
 
-            ulong targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
-            string tradeToken = match.Groups[2].Value;
 
-            if (!new SteamID(targetSteamId).IsIndividualAccount)
+            if (!int.TryParse(strCountPerBot, out int countPerBot))
             {
-                return bot.FormatBotResponse(Langs.SteamIdInvalid);
+                if (!string.IsNullOrEmpty(strCountPerBot))
+                {
+                    return bot.FormatBotResponse("参数无效");
+                }
+                else
+                {
+                    countPerBot = 0;
+                }
+            }
+
+            if (!ulong.TryParse(strClassId, out ulong classId))
+            {
+                if (!string.IsNullOrEmpty(strClassId))
+                {
+                    return bot.FormatBotResponse("参数无效");
+                }
+                else
+                {
+                    classId = 0;
+                }
             }
 
             var inventory = await Handler.FetchBotCSInventory(bot).ConfigureAwait(false);
@@ -234,85 +255,64 @@ namespace CardTradeExtension.CSGO
             {
                 return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
             }
+            if (classId != 0)
+            {
+                inventory = inventory.Where(x => x.ClassID == classId);
+            }
+            if (!inventory.Any())
+            {
+                return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
+            }
 
-            //var bundle = await Handler.GetAppCardBundle(bot, appId, inventory).ConfigureAwait(false);
+            if (countPerBot == 0)
+            {
+                countPerBot = inventory.Count() / bots.Count();
+            }
 
             StringBuilder sb = new();
-            //sb.AppendLine(Langs.MultipleLineResult);
+            sb.AppendLine(bot.FormatBotResponse(Langs.MultipleLineResult));
 
-            //if (bundle.Assets != null)
-            //{
-            //    sb.AppendLine(Langs.InventoryStatusBeforeTrade);
-            //    sb.AppendLine(
-            //        string.Format(Langs.CurrentCardInventoryShow,
-            //        appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-            //        bundle.TotalSetCount, bundle.ExtraTotalCount,
-            //        bundle.TradableSetCount, bundle.ExtraTradableCount)
-            //    );
+            int skip = 0;
+            foreach (var b in bots)
+            {
+                var offer = inventory.Skip(skip).Take(countPerBot).ToList();
+                skip += countPerBot;
+                if (offer.Any())
+                {
+                    var (success, tradeOfferIDs, _) = await b.ArchiWebHandler.SendTradeOffer(bot.SteamID, null, offer, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
-            //    if (bundle.TradableSetCount < setCount)
-            //    {
-            //        sb.AppendLine(Langs.SendTradeFailedNoEnoughCards);
-            //    }
-            //    else
-            //    {
-            //        List<Asset> offer = new();
-            //        var flag = bundle.Assets.Select(x => x.ClassID).Distinct().ToDictionary(x => x, _ => setCount);
-
-            //        foreach (var asset in bundle.Assets)
-            //        {
-            //            ulong clsId = asset.ClassID;
-            //            if (flag[clsId] > 0)
-            //            {
-            //                offer.Add(asset);
-            //                flag[clsId]--;
-            //            }
-            //        }
-
-            //        if (offer.Any())
-            //        {
-            //            sb.AppendLine(string.Format(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet));
-            //            //var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
-
-            //            //if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
-            //            //{
-            //            //    (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
-
-            //            //    sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
-
-            //            //}
-
-            //            //sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
-            //        }
-            //        else
-            //        {
-            //            sb.AppendLine(Langs.SendTradeFailedNoEnoughCards);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    if (bundle.CardCountPerSet == -1)
-            //    {
-            //        sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NetworkError));
-            //    }
-            //    else
-            //    {
-            //        sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
-            //    }
-            //    sb.AppendLine(Langs.SendTradeFailedAppIdInvalid);
-            //}
+                    if (success && tradeOfferIDs != null && autoConfirm)
+                    {
+                        foreach (var tradeId in tradeOfferIDs)
+                        {
+                            Handler.AddTrade(b.SteamID, tradeId);
+                        }
+                    }
+                    sb.AppendLine(string.Format("发送交易报价 {0} -> {1}, 物品数量 {2}, {3}", b.BotName, bot.BotName, offer.Count, success ? Langs.Success : Langs.Failure));
+                }
+                else
+                {
+                    sb.AppendLine(string.Format("发送交易报价 {0} -> {1} 失败, 无可用物品", b.BotName, bot.BotName));
+                }
+                if (skip >= inventory.Count())
+                {
+                    break;
+                }
+            }
 
             return sb.ToString();
         }
 
         /// <summary>
-        /// 根据指定交易报价发送指定套数的卡牌 (多个Bot)
+        /// 发送指定数量的物品到其余账号 (多个Bot)
         /// </summary>
         /// <param name="botNames"></param>
+        /// <param name="strClassId"></param>
+        /// <param name="strCountPerBot"></param>
+        /// <param name="autoConfirm"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static async Task<string?> ResponseSendCSItem(string botNames, string strAppId, string strSetCount, string tradeLink, bool autoConfirm)
+        internal static async Task<string?> ResponseSendCSItem(string botNames, string? strClassId, string? strCountPerBot, bool autoConfirm)
         {
             if (string.IsNullOrEmpty(botNames))
             {
@@ -326,7 +326,7 @@ namespace CardTradeExtension.CSGO
                 return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
             }
 
-            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSendCardSet(bot, strAppId, strSetCount, tradeLink, autoConfirm))).ConfigureAwait(false);
+            IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSendCSItem(bot, strClassId, strCountPerBot, autoConfirm))).ConfigureAwait(false);
 
             List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 

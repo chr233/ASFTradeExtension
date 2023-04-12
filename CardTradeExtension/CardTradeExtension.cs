@@ -15,7 +15,7 @@ using System.Text;
 namespace CardTradeExtension
 {
     [Export(typeof(IPlugin))]
-    internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
+    internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults, IBotUserNotifications
     {
         public string Name => nameof(CardTradeExtension);
         public Version Version => MyVersion;
@@ -360,6 +360,10 @@ namespace CardTradeExtension
                 CSGO.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
                 ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
             }
+            return Task.CompletedTask;
+        }
+
+        public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications) {
             return Task.CompletedTask;
         }
     }

@@ -350,7 +350,7 @@ internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, I
     public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
     {
         bool accept = CSGO.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
-        ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
+        ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
         return Task.FromResult(accept);
     }
 
@@ -359,13 +359,14 @@ internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, I
         foreach (var tradeResult in tradeResults)
         {
             CSGO.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
-            ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
+            ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
         }
         return Task.CompletedTask;
     }
 
     public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications)
     {
+        ASFLogger.LogGenericWarning(newNotifications.ToString());
         return Task.CompletedTask;
     }
 }

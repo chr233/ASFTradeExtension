@@ -1,10 +1,9 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
-namespace CardTradeExtension
+namespace CardTradeExtension;
+
+internal static partial class RegexUtils
 {
-    internal static partial class RegexUtils
-    {
-        [GeneratedRegex(@"(?:https?:\/\/steamcommunity\.com\/tradeoffer\/new\/\?)?partner=(\d+)&token=(\S+)")]
-        public static partial Regex MatchTradeLink();
-    }
+    [GeneratedRegex(@"(?:https?:\/\/steamcommunity\.com\/tradeoffer\/new\/\?)?partner=(\d+)&token=(\S+)")]
+    public static partial Regex MatchTradeLink();
 }

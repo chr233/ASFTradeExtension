@@ -1,4 +1,4 @@
-﻿using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
@@ -7,364 +7,365 @@ using ArchiSteamFarm.Steam.Integration.Callbacks;
 using CardTradeExtension.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SteamKit2.Internal;
 using System.ComponentModel;
 using System.Composition;
 using System.Text;
 
-namespace CardTradeExtension
+namespace CardTradeExtension;
+
+[Export(typeof(IPlugin))]
+internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults, IBotUserNotifications
 {
-    [Export(typeof(IPlugin))]
-    internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults, IBotUserNotifications
+    public string Name => nameof(CardTradeExtension);
+    public Version Version => MyVersion;
+
+    [JsonProperty]
+    public static PluginConfig Config => Utils.Config;
+    /// <summary>
+    /// ASF启动事件
+    /// </summary>
+    /// <param name="additionalConfigProperties"></param>
+    /// <returns></returns>
+    public Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null)
     {
-        public string Name => nameof(CardTradeExtension);
-        public Version Version => MyVersion;
+        StringBuilder sb = new();
 
-        [JsonProperty]
-        public static PluginConfig Config => Utils.Config;
-        /// <summary>
-        /// ASF启动事件
-        /// </summary>
-        /// <param name="additionalConfigProperties"></param>
-        /// <returns></returns>
-        public Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null)
+        PluginConfig? config = null;
+
+        if (additionalConfigProperties != null)
         {
-            StringBuilder sb = new();
-
-            PluginConfig? config = null;
-
-            if (additionalConfigProperties != null)
+            foreach ((string configProperty, JToken configValue) in additionalConfigProperties)
             {
-                foreach ((string configProperty, JToken configValue) in additionalConfigProperties)
+                if (configProperty == "CardTradeExtension" && configValue.Type == JTokenType.Object)
                 {
-                    if (configProperty == "CardTradeExtension" && configValue.Type == JTokenType.Object)
+                    try
                     {
-                        try
+                        config = configValue.ToObject<PluginConfig>();
+                        if (config != null)
                         {
-                            config = configValue.ToObject<PluginConfig>();
-                            if (config != null)
-                            {
-                                break;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ASFLogger.LogGenericException(ex);
+                            break;
                         }
                     }
-                }
-            }
-
-            Utils.Config = config ?? new();
-
-            //使用协议
-            if (!Config.EULA)
-            {
-                sb.AppendLine();
-                sb.AppendLine(Static.Line);
-                sb.AppendLine(Langs.EulaWarning);
-                sb.AppendLine(Static.Line);
-            }
-
-            if (sb.Length > 0)
-            {
-                ASFLogger.LogGenericWarning(sb.ToString());
-            }
-            //统计
-            if (Config.Statistic)
-            {
-                Uri request = new("https://asfe.chrxw.com/");
-                _ = new Timer(
-                    async (_) => {
-                        await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
-                    },
-                    null,
-                    TimeSpan.FromSeconds(30),
-                    TimeSpan.FromHours(24)
-                );
-            }
-            //禁用命令
-            if (Config.DisabledCmds == null)
-            {
-                Config.DisabledCmds = new();
-            }
-            else
-            {
-                for (int i = 0; i < Config.DisabledCmds.Count; i++)
-                {
-                    Config.DisabledCmds[i] = Config.DisabledCmds[i].ToUpperInvariant();
-                }
-            }
-            if (Config.MaxItemPerTrade < byte.MaxValue)
-            {
-                Config.MaxItemPerTrade = byte.MaxValue;
-            }
-
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 插件加载事件
-        /// </summary>
-        /// <returns></returns>
-        public Task OnLoaded()
-        {
-            StringBuilder message = new("\n");
-            message.AppendLine(Static.Line);
-            message.AppendLine(Static.Logo);
-            message.AppendLine(string.Format(Langs.PluginVer, nameof(CardTradeExtension), MyVersion.ToString()));
-            message.AppendLine(Langs.PluginContact);
-            message.AppendLine(Langs.PluginInfo);
-            message.AppendLine(Static.Line);
-
-            string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
-            string backupPath = Path.Combine(pluginFolder, $"{nameof(CardTradeExtension)}.bak");
-            bool existsBackup = File.Exists(backupPath);
-            if (existsBackup)
-            {
-                try
-                {
-                    File.Delete(backupPath);
-                    message.AppendLine(Langs.CleanUpOldBackup);
-                }
-                catch (Exception e)
-                {
-                    ASFLogger.LogGenericException(e);
-                    message.AppendLine(Langs.CleanUpOldBackupFailed);
-                }
-            }
-            else
-            {
-                message.AppendLine(Langs.ASFEVersionTips);
-                message.AppendLine(Langs.ASFEUpdateTips);
-            }
-
-            message.AppendLine(Static.Line);
-
-            ASFLogger.LogGenericInfo(message.ToString());
-
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 处理命令
-        /// </summary>
-        /// <param name="bot"></param>
-        /// <param name="access"></param>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
-        /// <param name="steamId"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId)
-        {
-            string cmd = args[0].ToUpperInvariant();
-
-            if (cmd.StartsWith("CTE."))
-            {
-                cmd = cmd.Substring(4);
-            }
-            else
-            {
-                //跳过禁用命令
-                if (Config.DisabledCmds?.Contains(cmd) == true)
-                {
-                    ASFLogger.LogGenericInfo("Command {0} is disabled!");
-                    return null;
-                }
-            }
-
-            int argLength = args.Length;
-            switch (argLength)
-            {
-                case 0:
-                    throw new InvalidOperationException(nameof(args));
-                case 1: //不带参数
-                    switch (cmd)
+                    catch (Exception ex)
                     {
-                        //Card
-                        case "FULLSETLIST" when access >= EAccess.Operator:
-                        case "FSL" when access >= EAccess.Operator:
-                            return await Card.Command.ResponseFullSetList(bot, null).ConfigureAwait(false);
-
-                        //CSGO
-                        case "CSITEMLIST" when access >= EAccess.Operator:
-                        case "CIL" when access >= EAccess.Operator:
-                            return await CSGO.Command.ResponseCSItemList(bot, null).ConfigureAwait(false);
-
-                        case "CSSENDITEM" when access >= EAccess.Master:
-                        case "CSI" when access >= EAccess.Master:
-                            return await CSGO.Command.ResponseSendCSItem(bot, null, null, false).ConfigureAwait(false);
-                        case "2CSSENDITEM" when access >= EAccess.Master:
-                        case "2CSI" when access >= EAccess.Master:
-                            return await CSGO.Command.ResponseSendCSItem(bot, null, null, true).ConfigureAwait(false);
-
-                        //Update
-                        case "CARDTRADEXTENSION" when access >= EAccess.FamilySharing:
-                        case "CTE" when access >= EAccess.FamilySharing:
-                            return Update.Command.ResponseCardTradeExtensionVersion();
-
-                        case "CTEVERSION" when access >= EAccess.Operator:
-                        case "CTEV" when access >= EAccess.Operator:
-                            return await Update.Command.ResponseCheckLatestVersion().ConfigureAwait(false);
-
-                        case "CTEUPDATE" when access >= EAccess.Owner:
-                        case "CTEU" when access >= EAccess.Owner:
-                            return await Update.Command.ResponseUpdatePlugin().ConfigureAwait(false);
-
-                        default:
-                            return null;
+                        ASFLogger.LogGenericException(ex);
                     }
-                default: //带参数
-                    switch (cmd)
-                    {
-                        //Card
-                        case "FULLSETLIST" when access >= EAccess.Operator && argLength == 2:
-                        case "FSL" when access >= EAccess.Operator && argLength == 2:
-                            return await Card.Command.ResponseFullSetList(args[1], null).ConfigureAwait(false);
-                        case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 0:
-                        case "FSL" when access >= EAccess.Operator && argLength % 2 == 0:
-                            return await Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
-                        case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 1:
-                        case "FSL" when access >= EAccess.Operator && argLength % 2 == 1:
-                            return await Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-
-                        case "FULLSET" when argLength >= 3 && access >= EAccess.Operator:
-                        case "FS" when argLength >= 3 && access >= EAccess.Operator:
-                            return await Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-                        case "FULLSET" when access >= EAccess.Operator:
-                        case "FS" when access >= EAccess.Operator:
-                            return await Card.Command.ResponseFullSetCountOfGame(bot, args[1]).ConfigureAwait(false);
-
-                        case "SENDCARDSET" when access >= EAccess.Master && argLength == 5:
-                        case "SCS" when access >= EAccess.Master && argLength == 5:
-                            return await Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false).ConfigureAwait(false);
-                        case "SENDCARDSET" when access >= EAccess.Master && argLength == 4:
-                        case "SCS" when access >= EAccess.Master && argLength == 4:
-                            return await Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false).ConfigureAwait(false);
-
-                        case "2SENDCARDSET" when access >= EAccess.Master && argLength == 5:
-                        case "2SCS" when access >= EAccess.Master && argLength == 5:
-                            return await Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true).ConfigureAwait(false);
-                        case "2SENDCARDSET" when access >= EAccess.Master && argLength == 4:
-                        case "2SCS" when access >= EAccess.Master && argLength == 4:
-                            return await Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
-
-                        //CSGO
-                        case "CSITEMLIST" when access >= EAccess.Operator && argLength == 2:
-                        case "CIL" when access >= EAccess.Operator && argLength == 2:
-                            return await CSGO.Command.ResponseCSItemList(args[1], null).ConfigureAwait(false);
-                        case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 0:
-                        case "CIL" when access >= EAccess.Operator && argLength % 2 == 0:
-                            return await CSGO.Command.ResponseCSItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
-                        case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 1:
-                        case "CIL" when access >= EAccess.Operator && argLength % 2 == 1:
-                            return await CSGO.Command.ResponseCSItemList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-
-
-                        case "CSSENDITEM" when access >= EAccess.Master && argLength == 4:
-                        case "CSI" when access >= EAccess.Master && argLength == 4:
-                            return await CSGO.Command.ResponseSendCSItem(args[1], args[2], args[3], false).ConfigureAwait(false);
-                        case "CSSENDITEM" when access >= EAccess.Master && argLength == 3:
-                        case "CSI" when access >= EAccess.Master && argLength == 3:
-                            return await CSGO.Command.ResponseSendCSItem(bot, args[1], args[2], false).ConfigureAwait(false);
-                        case "CSSENDITEM" when access >= EAccess.Master && argLength == 2:
-                        case "CSI" when access >= EAccess.Master && argLength == 2:
-                            return await CSGO.Command.ResponseSendCSItem(args[1], null, null, false).ConfigureAwait(false);
-
-
-                        case "2CSSENDITEM" when access >= EAccess.Master && argLength == 4:
-                        case "2CSI" when access >= EAccess.Master && argLength == 4:
-                            return await CSGO.Command.ResponseSendCSItem(args[1], args[2], args[3], true).ConfigureAwait(false);
-                        case "2CSSENDITEM" when access >= EAccess.Master && argLength == 3:
-                        case "2CSI" when access >= EAccess.Master && argLength == 3:
-                            return await CSGO.Command.ResponseSendCSItem(bot, args[1], args[2], true).ConfigureAwait(false);
-                        case "2CSSENDITEM" when access >= EAccess.Master && argLength == 2:
-                        case "2CSI" when access >= EAccess.Master && argLength == 2:
-                            return await CSGO.Command.ResponseSendCSItem(args[1], null, null, true).ConfigureAwait(false);
-
-
-                        default:
-                            return null;
-                    }
+                }
             }
         }
 
-        /// <summary>
-        /// 处理命令事件
-        /// </summary>
-        /// <param name="bot"></param>
-        /// <param name="access"></param>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
-        /// <param name="steamId"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidEnumArgumentException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId = 0)
-        {
-            if (!Enum.IsDefined(access))
-            {
-                throw new InvalidEnumArgumentException(nameof(access), (int)access, typeof(EAccess));
-            }
+        Utils.Config = config ?? new();
 
+        //使用协议
+        if (!Config.EULA)
+        {
+            sb.AppendLine();
+            sb.AppendLine(Static.Line);
+            sb.AppendLine(Langs.EulaWarning);
+            sb.AppendLine(Static.Line);
+        }
+
+        if (sb.Length > 0)
+        {
+            ASFLogger.LogGenericWarning(sb.ToString());
+        }
+        //统计
+        if (Config.Statistic)
+        {
+            Uri request = new("https://asfe.chrxw.com/");
+            _ = new Timer(
+                async (_) =>
+                {
+                    await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
+                },
+                null,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromHours(24)
+            );
+        }
+        //禁用命令
+        if (Config.DisabledCmds == null)
+        {
+            Config.DisabledCmds = new();
+        }
+        else
+        {
+            for (int i = 0; i < Config.DisabledCmds.Count; i++)
+            {
+                Config.DisabledCmds[i] = Config.DisabledCmds[i].ToUpperInvariant();
+            }
+        }
+        if (Config.MaxItemPerTrade < byte.MaxValue)
+        {
+            Config.MaxItemPerTrade = byte.MaxValue;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// 插件加载事件
+    /// </summary>
+    /// <returns></returns>
+    public Task OnLoaded()
+    {
+        StringBuilder message = new("\n");
+        message.AppendLine(Static.Line);
+        message.AppendLine(Static.Logo);
+        message.AppendLine(string.Format(Langs.PluginVer, nameof(CardTradeExtension), MyVersion.ToString()));
+        message.AppendLine(Langs.PluginContact);
+        message.AppendLine(Langs.PluginInfo);
+        message.AppendLine(Static.Line);
+
+        string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
+        string backupPath = Path.Combine(pluginFolder, $"{nameof(CardTradeExtension)}.bak");
+        bool existsBackup = File.Exists(backupPath);
+        if (existsBackup)
+        {
             try
             {
-                return await ResponseCommand(bot, access, message, args, steamId).ConfigureAwait(false);
+                File.Delete(backupPath);
+                message.AppendLine(Langs.CleanUpOldBackup);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                string version = await bot.Commands.Response(EAccess.Owner, "VERSION").ConfigureAwait(false) ?? "Unknown";
-                var i = version.LastIndexOf('V');
-                if (i >= 0)
+                ASFLogger.LogGenericException(e);
+                message.AppendLine(Langs.CleanUpOldBackupFailed);
+            }
+        }
+        else
+        {
+            message.AppendLine(Langs.ASFEVersionTips);
+            message.AppendLine(Langs.ASFEUpdateTips);
+        }
+
+        message.AppendLine(Static.Line);
+
+        ASFLogger.LogGenericInfo(message.ToString());
+
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// 处理命令
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="access"></param>
+    /// <param name="message"></param>
+    /// <param name="args"></param>
+    /// <param name="steamId"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId)
+    {
+        string cmd = args[0].ToUpperInvariant();
+
+        if (cmd.StartsWith("CTE."))
+        {
+            cmd = cmd.Substring(4);
+        }
+        else
+        {
+            //跳过禁用命令
+            if (Config.DisabledCmds?.Contains(cmd) == true)
+            {
+                ASFLogger.LogGenericInfo("Command {0} is disabled!");
+                return null;
+            }
+        }
+
+        int argLength = args.Length;
+        switch (argLength)
+        {
+            case 0:
+                throw new InvalidOperationException(nameof(args));
+            case 1: //不带参数
+                switch (cmd)
                 {
-                    version = version[++i..];
+                    //Card
+                    case "FULLSETLIST" when access >= EAccess.Operator:
+                    case "FSL" when access >= EAccess.Operator:
+                        return await Card.Command.ResponseFullSetList(bot, null).ConfigureAwait(false);
+
+                    //CSGO
+                    case "CSITEMLIST" when access >= EAccess.Operator:
+                    case "CIL" when access >= EAccess.Operator:
+                        return await CSGO.Command.ResponseCSItemList(bot, null).ConfigureAwait(false);
+
+                    case "CSSENDITEM" when access >= EAccess.Master:
+                    case "CSI" when access >= EAccess.Master:
+                        return await CSGO.Command.ResponseSendCSItem(bot, null, null, false).ConfigureAwait(false);
+                    case "2CSSENDITEM" when access >= EAccess.Master:
+                    case "2CSI" when access >= EAccess.Master:
+                        return await CSGO.Command.ResponseSendCSItem(bot, null, null, true).ConfigureAwait(false);
+
+                    //Update
+                    case "CARDTRADEXTENSION" when access >= EAccess.FamilySharing:
+                    case "CTE" when access >= EAccess.FamilySharing:
+                        return Update.Command.ResponseCardTradeExtensionVersion();
+
+                    case "CTEVERSION" when access >= EAccess.Operator:
+                    case "CTEV" when access >= EAccess.Operator:
+                        return await Update.Command.ResponseCheckLatestVersion().ConfigureAwait(false);
+
+                    case "CTEUPDATE" when access >= EAccess.Owner:
+                    case "CTEU" when access >= EAccess.Owner:
+                        return await Update.Command.ResponseUpdatePlugin().ConfigureAwait(false);
+
+                    default:
+                        return null;
                 }
-                string cfg = JsonConvert.SerializeObject(Config, Formatting.Indented);
+            default: //带参数
+                switch (cmd)
+                {
+                    //Card
+                    case "FULLSETLIST" when access >= EAccess.Operator && argLength == 2:
+                    case "FSL" when access >= EAccess.Operator && argLength == 2:
+                        return await Card.Command.ResponseFullSetList(args[1], null).ConfigureAwait(false);
+                    case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 0:
+                    case "FSL" when access >= EAccess.Operator && argLength % 2 == 0:
+                        return await Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+                    case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 1:
+                    case "FSL" when access >= EAccess.Operator && argLength % 2 == 1:
+                        return await Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 
-                StringBuilder sb = new();
-                sb.AppendLine(Langs.ErrorLogTitle);
-                sb.AppendLine(Static.Line);
-                sb.AppendLine(string.Format(Langs.ErrorLogOriginMessage, message));
-                sb.AppendLine(string.Format(Langs.ErrorLogAccess, access.ToString()));
-                sb.AppendLine(string.Format(Langs.ErrorLogASFVersion, version));
-                sb.AppendLine(string.Format(Langs.ErrorLogPluginVersion, MyVersion));
-                sb.AppendLine(Static.Line);
-                sb.AppendLine(cfg);
-                sb.AppendLine(Static.Line);
-                sb.AppendLine(string.Format(Langs.ErrorLogErrorName, ex.GetType()));
-                sb.AppendLine(string.Format(Langs.ErrorLogErrorMessage, ex.Message));
-                sb.AppendLine(ex.StackTrace);
+                    case "FULLSET" when argLength >= 3 && access >= EAccess.Operator:
+                    case "FS" when argLength >= 3 && access >= EAccess.Operator:
+                        return await Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                    case "FULLSET" when access >= EAccess.Operator:
+                    case "FS" when access >= EAccess.Operator:
+                        return await Card.Command.ResponseFullSetCountOfGame(bot, args[1]).ConfigureAwait(false);
 
-                _ = Task.Run(async () => {
-                    await Task.Delay(500).ConfigureAwait(false);
-                    sb.Insert(0, '\n');
-                    ASFLogger.LogGenericError(sb.ToString());
-                }).ConfigureAwait(false);
+                    case "SENDCARDSET" when access >= EAccess.Master && argLength == 5:
+                    case "SCS" when access >= EAccess.Master && argLength == 5:
+                        return await Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false).ConfigureAwait(false);
+                    case "SENDCARDSET" when access >= EAccess.Master && argLength == 4:
+                    case "SCS" when access >= EAccess.Master && argLength == 4:
+                        return await Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false).ConfigureAwait(false);
 
-                return sb.ToString();
-            }
+                    case "2SENDCARDSET" when access >= EAccess.Master && argLength == 5:
+                    case "2SCS" when access >= EAccess.Master && argLength == 5:
+                        return await Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true).ConfigureAwait(false);
+                    case "2SENDCARDSET" when access >= EAccess.Master && argLength == 4:
+                    case "2SCS" when access >= EAccess.Master && argLength == 4:
+                        return await Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
+
+                    //CSGO
+                    case "CSITEMLIST" when access >= EAccess.Operator && argLength == 2:
+                    case "CIL" when access >= EAccess.Operator && argLength == 2:
+                        return await CSGO.Command.ResponseCSItemList(args[1], null).ConfigureAwait(false);
+                    case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 0:
+                    case "CIL" when access >= EAccess.Operator && argLength % 2 == 0:
+                        return await CSGO.Command.ResponseCSItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+                    case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 1:
+                    case "CIL" when access >= EAccess.Operator && argLength % 2 == 1:
+                        return await CSGO.Command.ResponseCSItemList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+
+
+                    case "CSSENDITEM" when access >= EAccess.Master && argLength == 4:
+                    case "CSI" when access >= EAccess.Master && argLength == 4:
+                        return await CSGO.Command.ResponseSendCSItem(args[1], args[2], args[3], false).ConfigureAwait(false);
+                    case "CSSENDITEM" when access >= EAccess.Master && argLength == 3:
+                    case "CSI" when access >= EAccess.Master && argLength == 3:
+                        return await CSGO.Command.ResponseSendCSItem(bot, args[1], args[2], false).ConfigureAwait(false);
+                    case "CSSENDITEM" when access >= EAccess.Master && argLength == 2:
+                    case "CSI" when access >= EAccess.Master && argLength == 2:
+                        return await CSGO.Command.ResponseSendCSItem(args[1], null, null, false).ConfigureAwait(false);
+
+
+                    case "2CSSENDITEM" when access >= EAccess.Master && argLength == 4:
+                    case "2CSI" when access >= EAccess.Master && argLength == 4:
+                        return await CSGO.Command.ResponseSendCSItem(args[1], args[2], args[3], true).ConfigureAwait(false);
+                    case "2CSSENDITEM" when access >= EAccess.Master && argLength == 3:
+                    case "2CSI" when access >= EAccess.Master && argLength == 3:
+                        return await CSGO.Command.ResponseSendCSItem(bot, args[1], args[2], true).ConfigureAwait(false);
+                    case "2CSSENDITEM" when access >= EAccess.Master && argLength == 2:
+                    case "2CSI" when access >= EAccess.Master && argLength == 2:
+                        return await CSGO.Command.ResponseSendCSItem(args[1], null, null, true).ConfigureAwait(false);
+
+
+                    default:
+                        return null;
+                }
+        }
+    }
+
+    /// <summary>
+    /// 处理命令事件
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="access"></param>
+    /// <param name="message"></param>
+    /// <param name="args"></param>
+    /// <param name="steamId"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidEnumArgumentException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
+    public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId = 0)
+    {
+        if (!Enum.IsDefined(access))
+        {
+            throw new InvalidEnumArgumentException(nameof(access), (int)access, typeof(EAccess));
         }
 
-        public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
+        try
         {
-            bool accept = CSGO.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
-            ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
-            return Task.FromResult(accept);
+            return await ResponseCommand(bot, access, message, args, steamId).ConfigureAwait(false);
         }
-
-        public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults)
+        catch (Exception ex)
         {
-            foreach (var tradeResult in tradeResults)
+            string version = await bot.Commands.Response(EAccess.Owner, "VERSION").ConfigureAwait(false) ?? "Unknown";
+            var i = version.LastIndexOf('V');
+            if (i >= 0)
             {
-                CSGO.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
-                ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
+                version = version[++i..];
             }
-            return Task.CompletedTask;
-        }
+            string cfg = JsonConvert.SerializeObject(Config, Formatting.Indented);
 
-        public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications) {
-            return Task.CompletedTask;
+            StringBuilder sb = new();
+            sb.AppendLine(Langs.ErrorLogTitle);
+            sb.AppendLine(Static.Line);
+            sb.AppendLine(string.Format(Langs.ErrorLogOriginMessage, message));
+            sb.AppendLine(string.Format(Langs.ErrorLogAccess, access.ToString()));
+            sb.AppendLine(string.Format(Langs.ErrorLogASFVersion, version));
+            sb.AppendLine(string.Format(Langs.ErrorLogPluginVersion, MyVersion));
+            sb.AppendLine(Static.Line);
+            sb.AppendLine(cfg);
+            sb.AppendLine(Static.Line);
+            sb.AppendLine(string.Format(Langs.ErrorLogErrorName, ex.GetType()));
+            sb.AppendLine(string.Format(Langs.ErrorLogErrorMessage, ex.Message));
+            sb.AppendLine(ex.StackTrace);
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(500).ConfigureAwait(false);
+                sb.Insert(0, '\n');
+                ASFLogger.LogGenericError(sb.ToString());
+            }).ConfigureAwait(false);
+
+            return sb.ToString();
         }
+    }
+
+    public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
+    {
+        bool accept = CSGO.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
+        ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
+        return Task.FromResult(accept);
+    }
+
+    public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults)
+    {
+        foreach (var tradeResult in tradeResults)
+        {
+            CSGO.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
+            ASFLogger.LogGenericInfo(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications)
+    {
+        return Task.CompletedTask;
     }
 }

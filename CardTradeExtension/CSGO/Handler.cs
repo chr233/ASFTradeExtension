@@ -11,12 +11,12 @@ internal static class Handler
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<IEnumerable<Asset>?> FetchBotCSInventory(Bot bot)
+    internal static async Task<IEnumerable<Asset>?> FetchBotCSInventory(Bot bot, Func<Asset, bool> func)
     {
         try
         {
             var inventory = await bot.ArchiWebHandler.GetInventoryAsync(0, 730, 2).ToListAsync().ConfigureAwait(false);
-            var filtedInventory = inventory.Where(x => x.Tradable).ToList();
+            var filtedInventory = inventory.Where(func).ToList();
             return filtedInventory;
         }
         catch (Exception e)

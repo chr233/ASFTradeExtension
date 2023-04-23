@@ -284,6 +284,22 @@ internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, I
                         return await CSGO.Command.ResponseSendCSItem(args[1], null, null, true).ConfigureAwait(false);
 
 
+                    case "CSSELLITEM" when access >= EAccess.Master && argLength == 5:
+                    case "CEI" when access >= EAccess.Master && argLength == 5:
+                        return await CSGO.Command.ResponseSellCSItem(args[1], args[2], args[3], args[4], false).ConfigureAwait(false);
+                    case "CSSELLITEM" when access >= EAccess.Master && argLength == 3:
+                    case "CEI" when access >= EAccess.Master && argLength == 3:
+                        return await CSGO.Command.ResponseSellCSItem(bot, args[1], args[2], args[3], false).ConfigureAwait(false);
+
+
+                    case "2CSSELLITEM" when access >= EAccess.Master && argLength == 5:
+                    case "2CEI" when access >= EAccess.Master && argLength == 5:
+                        return await CSGO.Command.ResponseSellCSItem(args[1], args[2], args[3], args[4], true).ConfigureAwait(false);
+                    case "2CSSELLITEM" when access >= EAccess.Master && argLength == 3:
+                    case "2CEI" when access >= EAccess.Master && argLength == 3:
+                        return await CSGO.Command.ResponseSellCSItem(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
+
+
                     default:
                         return null;
                 }

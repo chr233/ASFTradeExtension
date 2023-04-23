@@ -43,7 +43,7 @@ internal static class WebRequests
     /// <param name="asset"></param>
     /// <param name="price"></param>
     /// <returns></returns>
-    internal static async Task<SellItemResponse?> SellItem(Bot bot, Asset asset, ulong price)
+    internal static async Task<SellItemResponse?> SellItem(Bot bot, Asset asset, decimal price)
     {
         Uri request = new(SteamCommunityURL, "/market/sellitem/");
         Dictionary<string, string> data = new(6) {
@@ -51,7 +51,7 @@ internal static class WebRequests
             { "contextid", asset.ContextID.ToString() },
             { "assetid", asset.AssetID.ToString() },
             { "amount", asset.Amount.ToString() },
-            { "price", price.ToString() },
+            { "price", (price*100).ToString() },
         };
 
         var response = await bot.ArchiWebHandler.UrlPostToJsonObjectWithSession<SellItemResponse>(request, data: data).ConfigureAwait(false);

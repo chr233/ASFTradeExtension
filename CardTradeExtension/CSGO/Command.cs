@@ -71,12 +71,11 @@ internal static partial class Command
         Dictionary<ulong, string> itemNames = new();
         Dictionary<ulong, int> itemCount = new();
 
-
         foreach (var asset in inventory)
         {
             if (itemCount.TryGetValue(asset.ClassID, out int total))
             {
-                itemCount[asset.ClassID] = total + 1;
+                itemCount[asset.ClassID] += 1;
             }
             else
             {
@@ -180,10 +179,38 @@ internal static partial class Command
                 return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
             }
 
+            Dictionary<ulong, string> itemNames = new();
+            Dictionary<ulong, int> itemCount = new();
+
+            foreach (var asset in inventory)
+            {
+                if (itemCount.TryGetValue(asset.ClassID, out int total))
+                {
+                    itemCount[asset.ClassID] += 1;
+                }
+                else
+                {
+                    string name;
+                    if (asset.AdditionalPropertiesReadOnly?.TryGetValue("name", out var value) ?? false)
+                    {
+                        name = value.ToString();
+                    }
+                    else
+                    {
+                        name = "null";
+                    }
+
+                    itemNames[asset.ClassID] = name;
+                    itemCount[asset.ClassID] = 1;
+                }
+            }
+
             foreach (var classId in classIds)
             {
-                int total = inventory.Count(x => x.ClassID == classId);
-                sb.AppendLine(string.Format(Langs.TwoItem, classId, total));
+                if (itemNames.TryGetValue(classId, out var name) && itemCount.TryGetValue(classId, out var total))
+                {
+                    sb.AppendLine(string.Format("{0} {1} 数量 {2}", name, classId, total));
+                }
             }
         }
         else
@@ -599,7 +626,6 @@ internal static partial class Command
         {
             return bot.FormatBotResponse(classId == 0 ? "无正在出售的CSGO物品" : "过滤条件下无正在出售的CSGO物品");
         }
-
 
         var match = RegexUtils.MatchCsItemId();
 

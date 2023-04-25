@@ -2,7 +2,6 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Security;
-using CardTradeExtension.Data;
 using System.Globalization;
 using System.Text;
 
@@ -15,7 +14,7 @@ internal static partial class Command
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseCSItemList(Bot bot, string? query)
+    internal static async Task<string?> ResponseCsItemList(Bot bot, string? query)
     {
         if (!bot.IsConnectedAndLoggedOn)
         {
@@ -94,7 +93,7 @@ internal static partial class Command
     /// <param name="botNames"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseCSItemList(string botNames, string? query)
+    internal static async Task<string?> ResponseCsItemList(string botNames, string? query)
     {
         if (string.IsNullOrEmpty(botNames))
         {
@@ -108,7 +107,7 @@ internal static partial class Command
             return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseCSItemList(bot, query))).ConfigureAwait(false);
+        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseCsItemList(bot, query))).ConfigureAwait(false);
 
         List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 
@@ -203,7 +202,7 @@ internal static partial class Command
     /// <param name="strCountPerBot"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendCSItem(Bot bot, string? strClassId, string? strCountPerBot, bool autoConfirm)
+    internal static async Task<string?> ResponseSendCsItem(Bot bot, string? strClassId, string? strCountPerBot, bool autoConfirm)
     {
         if (!bot.IsConnectedAndLoggedOn)
         {
@@ -310,7 +309,7 @@ internal static partial class Command
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseSendCSItem(string botNames, string? strClassId, string? strCountPerBot, bool autoConfirm)
+    internal static async Task<string?> ResponseSendCsItem(string botNames, string? strClassId, string? strCountPerBot, bool autoConfirm)
     {
         if (string.IsNullOrEmpty(botNames))
         {
@@ -324,7 +323,7 @@ internal static partial class Command
             return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSendCSItem(bot, strClassId, strCountPerBot, autoConfirm))).ConfigureAwait(false);
+        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSendCsItem(bot, strClassId, strCountPerBot, autoConfirm))).ConfigureAwait(false);
 
         List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 
@@ -340,7 +339,7 @@ internal static partial class Command
     /// <param name="strCount"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSellCSItem(Bot bot, string strClassId, string strCount, string strPrice, bool autoConfirm)
+    internal static async Task<string?> ResponseSellCsItem(Bot bot, string strClassId, string strCount, string strPrice, bool autoConfirm)
     {
         if (!bot.IsConnectedAndLoggedOn)
         {
@@ -385,15 +384,16 @@ internal static partial class Command
     }
 
     /// <summary>
-    /// 发送指定数量的物品到其余账号 (多个Bot)
+    /// 批量出售物品 (多个Bot)
     /// </summary>
     /// <param name="botNames"></param>
     /// <param name="strClassId"></param>
-    /// <param name="strCountPerBot"></param>
+    /// <param name="strPrice"></param>
+    /// <param name="strCount"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseSellCSItem(string botNames, string strClassId, string strCount, string strPrice, bool autoConfirm)
+    internal static async Task<string?> ResponseSellCsItem(string botNames, string strClassId, string strCount, string strPrice, bool autoConfirm)
     {
         if (string.IsNullOrEmpty(botNames))
         {
@@ -407,7 +407,205 @@ internal static partial class Command
             return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSellCSItem(bot, strClassId, strCount, strPrice, autoConfirm))).ConfigureAwait(false);
+        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSellCsItem(bot, strClassId, strCount, strPrice, autoConfirm))).ConfigureAwait(false);
+
+        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
+    /// 获取市场上架物品列表
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="strClassId"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseGetCsMarketInfo(Bot bot, string? strClassId)
+    {
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
+
+        ulong classId;
+
+        if (string.IsNullOrEmpty(strClassId))
+        {
+            classId = 0;
+        }
+        else
+        {
+            if (!ulong.TryParse(strClassId, out classId) || classId == 0)
+            {
+                return bot.FormatBotResponse("参数无效");
+            }
+        }
+
+        var response = await WebRequests.GetMarketHistory(bot, 500, 0).ConfigureAwait(false);
+
+        if (response?.Assets == null)
+        {
+            return bot.FormatBotResponse(Langs.NetworkError);
+        }
+
+        if (!response.Assets.TryGetValue("730", out var layer1) || !layer1.TryGetValue("2", out var layer2))
+        {
+            return bot.FormatBotResponse("无正在出售的CSGO物品");
+        }
+
+        var items = layer2.Where(kv => kv.Value.Status == 2 && kv.Value.Actions != null).Select(kv => kv.Value);
+        if (classId != 0)
+        {
+            items = items.Where(x => x.ClassId == classId);
+        }
+
+        if (!items.Any())
+        {
+            return bot.FormatBotResponse(classId == 0 ? "无正在出售的CSGO物品" : "过滤条件下无正在出售的CSGO物品");
+        }
+
+        StringBuilder sb = new();
+        sb.AppendLine(Langs.MultipleLineResult);
+
+        Dictionary<ulong, int> itemCount = new();
+
+        foreach (var asset in items)
+        {
+            if (itemCount.TryGetValue(asset.ClassId, out int count))
+            {
+                itemCount[asset.ClassId] = count + 1;
+            }
+            else
+            {
+                itemCount[asset.ClassId] = 1;
+            }
+        }
+
+        foreach (var asset in items)
+        {
+            if (itemCount.Remove(asset.ClassId, out int count))
+            {
+                sb.AppendLine(bot.FormatBotResponse(string.Format("{0} {1} 数量 {2}", asset.MarketName, asset.ClassId, count)));
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// 获取市场上架物品列表 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <param name="strClassId"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseGetCsMarketInfo(string botNames, string? strClassId)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+        if (bots == null || bots.Count == 0)
+        {
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseGetCsMarketInfo(bot, strClassId))).ConfigureAwait(false);
+
+        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
+    /// 市场下架物品
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="strClassId"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseCsRemoveListing(Bot bot, string? strClassId)
+    {
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
+
+        ulong classId;
+
+        if (string.IsNullOrEmpty(strClassId))
+        {
+            classId = 0;
+        }
+        else
+        {
+            if (!ulong.TryParse(strClassId, out classId) || classId == 0)
+            {
+                return bot.FormatBotResponse("参数无效");
+            }
+        }
+
+        var response = await WebRequests.GetMarketHistory(bot, 500, 0).ConfigureAwait(false);
+
+        if (response?.Assets == null)
+        {
+            return bot.FormatBotResponse(Langs.NetworkError);
+        }
+
+        if (!response.Assets.TryGetValue("730", out var layer1) || !layer1.TryGetValue("2", out var layer2))
+        {
+            return bot.FormatBotResponse("无正在出售的CSGO物品");
+        }
+
+        var items = layer2.Where(kv => kv.Value.Status == 2 && kv.Value.Actions != null).Select(kv => kv.Value);
+        if (classId != 0)
+        {
+            items = items.Where(x => x.ClassId == classId);
+        }
+
+        if (!items.Any())
+        {
+            return bot.FormatBotResponse(classId == 0 ? "无正在出售的CSGO物品" : "过滤条件下无正在出售的CSGO物品");
+        }
+
+
+        var match = RegexUtils.MatchCsItemId();
+
+        var itemIds = items.Select(x => x.Actions).Where(x => x?.Count > 0).Select(x => match.Match(x.First().Link)).Where(x => x.Success).Select(x => x.Groups[1].Value);
+
+        var tasks = itemIds.Select(x => WebRequests.RemoveMarketListing(bot, x));
+
+        var result = await Utilities.InParallel(tasks).ConfigureAwait(false);
+
+        int count = result.Count(x => x);
+
+        return bot.FormatBotResponse(string.Format("成功下架了 {0} 个物品", count));
+    }
+
+    /// <summary>
+    /// 市场下架物品 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <param name="strClassId"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseCsRemoveListing(string botNames, string? strClassId)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+        if (bots == null || bots.Count == 0)
+        {
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseCsRemoveListing(bot, strClassId))).ConfigureAwait(false);
 
         List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 

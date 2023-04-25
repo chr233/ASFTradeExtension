@@ -2,6 +2,7 @@ using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Web.Responses;
 using CardTradeExtension.Data;
 
@@ -37,7 +38,7 @@ internal static class WebRequests
     }
 
     /// <summary>
-    /// 出售指定物品
+    /// 上架物品
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="asset"></param>
@@ -51,11 +52,44 @@ internal static class WebRequests
             { "contextid", asset.ContextID.ToString() },
             { "assetid", asset.AssetID.ToString() },
             { "amount", asset.Amount.ToString() },
-            { "price", (price*100).ToString() },
+            { "price", (price*100).ToString("N0") },
         };
 
         var response = await bot.ArchiWebHandler.UrlPostToJsonObjectWithSession<SellItemResponse>(request, data: data).ConfigureAwait(false);
 
         return response?.Content;
+    }
+
+    /// <summary>
+    /// 获取市场历史
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="asset"></param>
+    /// <param name="price"></param>
+    /// <returns></returns>
+    internal static async Task<MarketHistoryResponse?> GetMarketHistory(Bot bot, uint count = 50, uint start = 0)
+    {
+        Uri request = new(SteamCommunityURL, $"/market/myhistory/render/?count={count}&start={start}");
+        Uri referer = new(SteamCommunityURL, "/market/");
+
+        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<MarketHistoryResponse>(request, referer: referer).ConfigureAwait(false);
+
+        return response?.Content;
+    }
+
+    /// <summary>
+    /// 下架物品
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="itemId"></param>
+    /// <returns></returns>
+    internal static async Task<bool> RemoveMarketListing(Bot bot, string itemId)
+    {
+        Uri request = new(SteamCommunityURL, $"/market/removelisting/{itemId}");
+        Uri referer = new(SteamCommunityURL, "/market/");
+
+        var response = await bot.ArchiWebHandler.UrlPostWithSession(request, referer: referer, session: ArchiWebHandler.ESession.Lowercase).ConfigureAwait(false);
+
+        return response;
     }
 }

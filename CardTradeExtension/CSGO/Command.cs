@@ -2,6 +2,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Security;
+using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Text;
 
@@ -67,8 +68,34 @@ internal static partial class Command
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }
 
-        var classIds = inventory.Select(x => x.ClassID).Distinct();
-        var orderedClassIds = classIds.Select(x => (classId: x, XmlSchemaTotalDigitsFacet: inventory.Count(y => y.ClassID == x))).OrderByDescending(z => z.XmlSchemaTotalDigitsFacet);
+        Dictionary<ulong, string> itemNames = new();
+        Dictionary<ulong, int> itemCount = new();
+
+
+        foreach (var asset in inventory)
+        {
+            if (itemCount.TryGetValue(asset.ClassID, out int total))
+            {
+                itemCount[asset.ClassID] = total + 1;
+            }
+            else
+            {
+                string name;
+                if (asset.AdditionalPropertiesReadOnly?.TryGetValue("name", out var value) ?? false)
+                {
+                    name = value.ToString();
+                }
+                else
+                {
+                    name = "null";
+                }
+
+                itemNames[asset.ClassID] = name;
+                itemCount[asset.ClassID] = 1;
+            }
+        }
+
+        var orderedClassIds = itemCount.OrderByDescending(x => x.Value).Select(x => x.Key);
 
         var keys = orderedClassIds.Skip(page * count).Take(count);
         if (!keys.Any())
@@ -79,9 +106,12 @@ internal static partial class Command
         StringBuilder sb = new();
         sb.AppendLine(bot.FormatBotResponse(Langs.MultipleLineResult));
 
-        foreach (var (classId, total) in keys)
+        foreach (var classId in keys)
         {
-            sb.AppendLine(string.Format(Langs.TwoItem, classId, total));
+            if (itemNames.TryGetValue(classId, out var name) && itemCount.TryGetValue(classId, out var total))
+            {
+                sb.AppendLine(string.Format("{0} {1} 数量 {2}", name, classId, total));
+            }
         }
 
         return sb.ToString();
@@ -573,7 +603,7 @@ internal static partial class Command
 
         var match = RegexUtils.MatchCsItemId();
 
-        var itemIds = items.Select(x => x.Actions).Where(x => x?.Count > 0).Select(x => match.Match(x.First().Link)).Where(x => x.Success).Select(x => x.Groups[1].Value);
+        var itemIds = items.Select(x => x.Actions).Where(x => x?.Count > 0).Select(x => match.Match(x!.First().Link)).Where(x => x.Success).Select(x => x.Groups[1].Value);
 
         var tasks = itemIds.Select(x => WebRequests.RemoveMarketListing(bot, x));
 

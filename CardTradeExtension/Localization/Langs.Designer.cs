@@ -205,6 +205,24 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 参数无效 CSDELISTING [BotNames] [ClassId], 不指定 ClassId 时下架全部物品 的本地化字符串。
+        /// </summary>
+        internal static string CsDeListingItemArgsTips {
+            get {
+                return ResourceManager.GetString("CsDeListingItemArgsTips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 参数无效 CSMARKETHISTORY [BotNames] [ClassId] , 不指定 ClassId 时下架全部物品 的本地化字符串。
+        /// </summary>
+        internal static string CsMarketHistoryArgsTips {
+            get {
+                return ResourceManager.GetString("CsMarketHistoryArgsTips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 {0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张 的本地化字符串。
         /// </summary>
         internal static string CurrentCardInventoryShow {
@@ -219,6 +237,15 @@ namespace CardTradeExtension.Localization {
         internal static string CurrentLanguage {
             get {
                 return ResourceManager.GetString("CurrentLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 成功下架了 {0} 个物品 的本地化字符串。
+        /// </summary>
+        internal static string DeListingSuccess {
+            get {
+                return ResourceManager.GetString("DeListingSuccess", resourceCulture);
             }
         }
         
@@ -349,6 +376,15 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 自动获取交易链接失败 的本地化字符串。
+        /// </summary>
+        internal static string FetchTradeLinkFailed {
+            get {
+                return ResourceManager.GetString("FetchTradeLinkFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 读取插件发行版信息失败! 的本地化字符串。
         /// </summary>
         internal static string GetReleaseInfoFailed {
@@ -358,11 +394,38 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 无效 ClassId 的本地化字符串。
+        /// </summary>
+        internal static string InvalidClassId {
+            get {
+                return ResourceManager.GetString("InvalidClassId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 交易前库存状态: 的本地化字符串。
         /// </summary>
         internal static string InventoryStatusBeforeTrade {
             get {
                 return ResourceManager.GetString("InventoryStatusBeforeTrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 共计 {0} 个物品上架 {1} 的本地化字符串。
+        /// </summary>
+        internal static string ItemListingSuccess {
+            get {
+                return ResourceManager.GetString("ItemListingSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 共计 {0} 个物品上架, 等待手动确认 的本地化字符串。
+        /// </summary>
+        internal static string ItemListSuccessWaitConfirm {
+            get {
+                return ResourceManager.GetString("ItemListSuccessWaitConfirm", resourceCulture);
             }
         }
         
@@ -412,11 +475,38 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 无可用机器人 的本地化字符串。
+        /// </summary>
+        internal static string NoBotsAvilable {
+            get {
+                return ResourceManager.GetString("NoBotsAvilable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 无信息 的本地化字符串。
         /// </summary>
         internal static string NoInformation {
             get {
                 return ResourceManager.GetString("NoInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 过滤条件下无正在出售的CSGO物品 的本地化字符串。
+        /// </summary>
+        internal static string NoSelingCsItemInFilter {
+            get {
+                return ResourceManager.GetString("NoSelingCsItemInFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 无正在出售的CSGO物品 的本地化字符串。
+        /// </summary>
+        internal static string NoSellingCsItem {
+            get {
+                return ResourceManager.GetString("NoSellingCsItem", resourceCulture);
             }
         }
         
@@ -448,6 +538,24 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部 的本地化字符串。
+        /// </summary>
+        internal static string SellCsItemArgsTips {
+            get {
+                return ResourceManager.GetString("SellCsItemArgsTips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 参数无效 SENDCSITEM [Bots] [ClassId] 发给每个Bot的数量, ClassId未指定时发送全部可交易物品, 否则只发送指定的物品 的本地化字符串。
+        /// </summary>
+        internal static string SendCsItemArgsTips {
+            get {
+                return ResourceManager.GetString("SendCsItemArgsTips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 发送交易失败, AppId 可能无效 的本地化字符串。
         /// </summary>
         internal static string SendTradeFailedAppIdInvalid {
@@ -466,11 +574,29 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 发送交易报价 {0} -&gt; {1} 失败, 无可用物品 的本地化字符串。
+        /// </summary>
+        internal static string SendTradeFailedNoItemAvilable {
+            get {
+                return ResourceManager.GetString("SendTradeFailedNoItemAvilable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 交易报价发送{0} 的本地化字符串。
         /// </summary>
         internal static string SendTradeResult {
             get {
                 return ResourceManager.GetString("SendTradeResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 发送交易报价 {0} -&gt; {1}, 物品数量 {2}, {3} 的本地化字符串。
+        /// </summary>
+        internal static string SengTradeSuccess {
+            get {
+                return ResourceManager.GetString("SengTradeSuccess", resourceCulture);
             }
         }
         
@@ -525,6 +651,15 @@ namespace CardTradeExtension.Localization {
         internal static string TFAConfirmResult {
             get {
                 return ResourceManager.GetString("TFAConfirmResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} {1} 数量 {2} 的本地化字符串。
+        /// </summary>
+        internal static string ThreeItemWithNum {
+            get {
+                return ResourceManager.GetString("ThreeItemWithNum", resourceCulture);
             }
         }
         

@@ -311,6 +311,14 @@ internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, I
                         return await CSGO.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
 
 
+                    case "CSMARKETHISTORY" when access >= EAccess.Operator:
+                    case "CMH" when access >= EAccess.Operator:
+                        {
+                            string botNames = string.Join(',', args[1..(argLength - 1)]);
+                            return await CSGO.Command.ResponseGetCsMarketInfo(botNames, args.Last()).ConfigureAwait(false);
+                        }
+
+
                     case "CSDELISTING" when access >= EAccess.Master && argLength >= 3:
                     case "CDL" when access >= EAccess.Master && argLength >= 3:
                         {

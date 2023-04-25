@@ -285,4 +285,49 @@
   <data name="TFAConfirmResult" xml:space="preserve">
     <value>2FA自动确认{0}</value>
   </data>
+  <data name="ThreeItemWithNum" xml:space="preserve">
+    <value>{0} {1} 数量 {2}</value>
+  </data>
+  <data name="InvalidClassId" xml:space="preserve">
+    <value>无效 ClassId</value>
+  </data>
+  <data name="SengTradeSuccess" xml:space="preserve">
+    <value>发送交易报价 {0} -&gt; {1}, 物品数量 {2}, {3}</value>
+  </data>
+  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
+    <value>发送交易报价 {0} -&gt; {1} 失败, 无可用物品</value>
+  </data>
+  <data name="SendCsItemArgsTips" xml:space="preserve">
+    <value>参数无效 SENDCSITEM [Bots] [ClassId] 发给每个Bot的数量, ClassId未指定时发送全部可交易物品, 否则只发送指定的物品</value>
+  </data>
+  <data name="FetchTradeLinkFailed" xml:space="preserve">
+    <value>自动获取交易链接失败</value>
+  </data>
+  <data name="NoBotsAvilable" xml:space="preserve">
+    <value>无可用机器人</value>
+  </data>
+  <data name="ItemListingSuccess" xml:space="preserve">
+    <value>共计 {0} 个物品上架 {1}</value>
+  </data>
+  <data name="ItemListSuccessWaitConfirm" xml:space="preserve">
+    <value>共计 {0} 个物品上架, 等待手动确认</value>
+  </data>
+  <data name="SellCsItemArgsTips" xml:space="preserve">
+    <value>参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部</value>
+  </data>
+  <data name="NoSellingCsItem" xml:space="preserve">
+    <value>无正在出售的CSGO物品</value>
+  </data>
+  <data name="NoSelingCsItemInFilter" xml:space="preserve">
+    <value>过滤条件下无正在出售的CSGO物品</value>
+  </data>
+  <data name="CsMarketHistoryArgsTips" xml:space="preserve">
+    <value>参数无效 CSMARKETHISTORY [BotNames] [ClassId] , 不指定 ClassId 时下架全部物品</value>
+  </data>
+  <data name="DeListingSuccess" xml:space="preserve">
+    <value>成功下架了 {0} 个物品</value>
+  </data>
+  <data name="CsDeListingItemArgsTips" xml:space="preserve">
+    <value>参数无效 CSDELISTING [BotNames] [ClassId], 不指定 ClassId 时下架全部物品</value>
+  </data>
 </root>

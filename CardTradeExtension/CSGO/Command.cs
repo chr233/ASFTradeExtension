@@ -109,7 +109,7 @@ internal static partial class Command
         {
             if (itemNames.TryGetValue(classId, out var name) && itemCount.TryGetValue(classId, out var total))
             {
-                sb.AppendLine(string.Format("{0} {1} 数量 {2}", name, classId, total));
+                sb.AppendLine(string.Format(Langs.ThreeItemWithNum, name, classId, total));
             }
         }
 
@@ -209,7 +209,7 @@ internal static partial class Command
             {
                 if (itemNames.TryGetValue(classId, out var name) && itemCount.TryGetValue(classId, out var total))
                 {
-                    sb.AppendLine(string.Format("{0} {1} 数量 {2}", name, classId, total));
+                    sb.AppendLine(string.Format(Langs.ThreeItemWithNum, name, classId, total));
                 }
             }
         }
@@ -217,7 +217,7 @@ internal static partial class Command
         {
             foreach (var q in queries)
             {
-                sb.AppendLine(string.Format(Langs.TwoItem, q, "无效 ClassId"));
+                sb.AppendLine(string.Format(Langs.TwoItem, q, Langs.InvalidClassId));
             }
         }
 
@@ -269,21 +269,21 @@ internal static partial class Command
         var bots = Bot.GetBots("ASF")?.Where(x => x.IsConnectedAndLoggedOn && x != bot);
         if (bots == null || !bots.Any())
         {
-            return bot.FormatBotResponse("无可用机器人");
+            return bot.FormatBotResponse(Langs.NoBotsAvilable);
         }
 
         var tradeToken = await WebRequests.GetTradeToken(bot).ConfigureAwait(false);
 
         if (string.IsNullOrEmpty(tradeToken))
         {
-            return bot.FormatBotResponse("自动获取交易链接失败");
+            return bot.FormatBotResponse(Langs.FetchTradeLinkFailed);
         }
 
         if (!int.TryParse(strCountPerBot, out int countPerBot))
         {
             if (!string.IsNullOrEmpty(strCountPerBot))
             {
-                return bot.FormatBotResponse("参数无效 SENDCSITEM [Bots] [ClassId] 发给每个Bot的数量, ClassId未指定时发送全部可交易物品, 否则只发送指定的物品");
+                return bot.FormatBotResponse(Langs.SendCsItemArgsTips);
             }
             else
             {
@@ -295,7 +295,7 @@ internal static partial class Command
         {
             if (!string.IsNullOrEmpty(strClassId))
             {
-                return bot.FormatBotResponse("参数无效");
+                return bot.FormatBotResponse(Langs.SendCsItemArgsTips);
             }
             else
             {
@@ -342,11 +342,11 @@ internal static partial class Command
                         Handler.AddTrade(tradeId, b.SteamID);
                     }
                 }
-                sb.AppendLine(string.Format("发送交易报价 {0} -> {1}, 物品数量 {2}, {3}", b.BotName, bot.BotName, offer.Count, success ? Langs.Success : Langs.Failure));
+                sb.AppendLine(string.Format(Langs.SengTradeSuccess, b.BotName, bot.BotName, offer.Count, success ? Langs.Success : Langs.Failure));
             }
             else
             {
-                sb.AppendLine(string.Format("发送交易报价 {0} -> {1} 失败, 无可用物品", b.BotName, bot.BotName));
+                sb.AppendLine(string.Format(Langs.SendTradeFailedNoItemAvilable, b.BotName, bot.BotName));
             }
             if (skip >= invCount)
             {
@@ -408,7 +408,7 @@ internal static partial class Command
             !int.TryParse(strCount, out int count) ||
             (count == 0 || count < -1 || price < 0 || classId == 0))
         {
-            return bot.FormatBotResponse("参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部");
+            return bot.FormatBotResponse(Langs.SellCsItemArgsTips);
         }
 
         var inventory = await Handler.FetchBotCSInventory(bot, x => x.Marketable).ConfigureAwait(false);
@@ -432,11 +432,11 @@ internal static partial class Command
         if (autoConfirm)
         {
             var (success, confirmations, message) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Market, null, true).ConfigureAwait(false);
-            return bot.FormatBotResponse(string.Format("共计 {0} 个物品上架 {1}", inventory.Count(), success ? Langs.Success : Langs.Failure));
+            return bot.FormatBotResponse(string.Format(Langs.ItemListingSuccess, inventory.Count(), success ? Langs.Success : Langs.Failure));
         }
         else
         {
-            return bot.FormatBotResponse(string.Format("共计 {0} 个物品上架, 等待手动确认", inventory.Count()));
+            return bot.FormatBotResponse(string.Format(Langs.ItemListSuccessWaitConfirm, inventory.Count()));
         }
     }
 
@@ -494,7 +494,7 @@ internal static partial class Command
         {
             if (!ulong.TryParse(strClassId, out classId) || classId == 0)
             {
-                return bot.FormatBotResponse("参数无效");
+                return bot.FormatBotResponse(Langs.CsMarketHistoryArgsTips);
             }
         }
 
@@ -507,7 +507,7 @@ internal static partial class Command
 
         if (!response.Assets.TryGetValue("730", out var layer1) || !layer1.TryGetValue("2", out var layer2))
         {
-            return bot.FormatBotResponse("无正在出售的CSGO物品");
+            return bot.FormatBotResponse(Langs.NoSellingCsItem);
         }
 
         var items = layer2.Where(kv => kv.Value.Status == 2 && kv.Value.Actions != null).Select(kv => kv.Value);
@@ -518,7 +518,7 @@ internal static partial class Command
 
         if (!items.Any())
         {
-            return bot.FormatBotResponse(classId == 0 ? "无正在出售的CSGO物品" : "过滤条件下无正在出售的CSGO物品");
+            return bot.FormatBotResponse(classId == 0 ? Langs.NoSellingCsItem : Langs.NoSelingCsItemInFilter);
         }
 
         StringBuilder sb = new();
@@ -542,7 +542,7 @@ internal static partial class Command
         {
             if (itemCount.Remove(asset.ClassId, out int count))
             {
-                sb.AppendLine(bot.FormatBotResponse(string.Format("{0} {1} 数量 {2}", asset.MarketName, asset.ClassId, count)));
+                sb.AppendLine(bot.FormatBotResponse(string.Format(Langs.ThreeItemWithNum, asset.MarketName, asset.ClassId, count)));
             }
         }
 
@@ -600,7 +600,7 @@ internal static partial class Command
         {
             if (!ulong.TryParse(strClassId, out classId) || classId == 0)
             {
-                return bot.FormatBotResponse("参数无效");
+                return bot.FormatBotResponse(Langs.CsDeListingItemArgsTips);
             }
         }
 
@@ -613,7 +613,7 @@ internal static partial class Command
 
         if (!response.Assets.TryGetValue("730", out var layer1) || !layer1.TryGetValue("2", out var layer2))
         {
-            return bot.FormatBotResponse("无正在出售的CSGO物品");
+            return bot.FormatBotResponse(Langs.NoSellingCsItem);
         }
 
         var items = layer2.Where(kv => kv.Value.Status == 2 && kv.Value.Actions != null).Select(kv => kv.Value);
@@ -624,7 +624,7 @@ internal static partial class Command
 
         if (!items.Any())
         {
-            return bot.FormatBotResponse(classId == 0 ? "无正在出售的CSGO物品" : "过滤条件下无正在出售的CSGO物品");
+            return bot.FormatBotResponse(classId == 0 ? Langs.NoSellingCsItem : Langs.NoSelingCsItemInFilter);
         }
 
         var match = RegexUtils.MatchCsItemId();
@@ -637,7 +637,7 @@ internal static partial class Command
 
         int count = result.Count(x => x);
 
-        return bot.FormatBotResponse(string.Format("成功下架了 {0} 个物品", count));
+        return bot.FormatBotResponse(string.Format(Langs.DeListingSuccess, count));
     }
 
     /// <summary>

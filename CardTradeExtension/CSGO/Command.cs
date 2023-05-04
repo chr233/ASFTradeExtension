@@ -57,7 +57,7 @@ internal static partial class Command
             }
         }
 
-        var inventory = await Handler.FetchBotCSInventory(bot, x => x.Tradable).ConfigureAwait(false);
+        var inventory = await Handler.FetchBotCSInventory(bot, null).ConfigureAwait(false);
         if (inventory == null)
         {
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
@@ -168,7 +168,7 @@ internal static partial class Command
 
         if (classIds.Any())
         {
-            var inventory = await Handler.FetchBotCSInventory(bot, x => x.Tradable).ConfigureAwait(false);
+            var inventory = await Handler.FetchBotCSInventory(bot, null).ConfigureAwait(false);
             if (inventory == null)
             {
                 return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);

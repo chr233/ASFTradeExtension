@@ -7,17 +7,24 @@ namespace CardTradeExtension.CSGO;
 internal static class Handler
 {
     /// <summary>
-    /// 读取机器人卡牌库存
+    /// 读取机器人CS库存
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<IEnumerable<Asset>?> FetchBotCSInventory(Bot bot, Func<Asset, bool> func)
+    internal static async Task<IEnumerable<Asset>?> FetchBotCSInventory(Bot bot, Func<Asset, bool>? func)
     {
         try
         {
             var inventory = await bot.ArchiWebHandler.GetInventoryAsync(0, 730, 2).ToListAsync().ConfigureAwait(false);
-            var filtedInventory = inventory.Where(func).ToList();
-            return filtedInventory;
+            if (func != null)
+            {
+                var filtedInventory = inventory.Where(func).ToList();
+                return filtedInventory;
+            }
+            else
+            {
+                return inventory;
+            }
         }
         catch (Exception e)
         {
@@ -25,31 +32,6 @@ internal static class Handler
             return null;
         }
     }
-
-    /// <summary>
-    /// 获取CS物品组
-    /// </summary>
-    /// <param name="bot"></param>
-    /// <param name="inventory"></param>
-    /// <returns></returns>
-    internal static IDictionary<ulong, IEnumerable<Asset>> GetCSItemGroup(Bot bot, IEnumerable<Asset> inventory)
-    {
-        Dictionary<ulong, IEnumerable<Asset>> result = new();
-
-        if (inventory.Any())
-        {
-            var classIds = inventory.Select(x => x.ClassID).Distinct();
-
-            foreach (var classId in classIds)
-            {
-                var assets = inventory.Where(x => x.ClassID == classId);
-                result.Add(classId, assets);
-            }
-        }
-
-        return result;
-    }
-
 
     /// <summary>
     /// tradeId, steamId

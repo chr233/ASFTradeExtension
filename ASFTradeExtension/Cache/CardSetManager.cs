@@ -1,19 +1,17 @@
-﻿using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam;
 using System.Collections.Concurrent;
 
+namespace ASFTradeExtension.Cache;
 
-namespace ASFTradeExtension.Card;
-
-internal static class CacheHelper
+internal static class CardSetManager
 {
     private static ConcurrentDictionary<uint, int> FullSetCount { get; } = new();
 
-    public static async Task<int> GetCacheCardSetCount(Bot bot, uint appId)
+    private static ConcurrentDictionary<uint, string?> AppName { get; set; } = new();
+    public static async Task<int> GetCardSetCount(Bot bot, uint appId)
     {
-        if (FullSetCount.TryGetValue(appId, out int value))
-        {
+        if (FullSetCount.TryGetValue(appId, out var value))
             return value;
-        }
         return await FetchCardSetCount(bot, appId).ConfigureAwait(false);
     }
 
@@ -24,9 +22,7 @@ internal static class CacheHelper
         var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
         if (response?.Content == null)
-        {
             return -1;
-        }
 
         if (response.FinalUri.PathAndQuery.EndsWith("badges"))
         {
@@ -35,11 +31,9 @@ internal static class CacheHelper
         }
 
         if (response.Content.QuerySelector("div.badge_detail_tasks") == null)
-        {
             return -1;
-        }
 
-        int count = response.Content.QuerySelectorAll("div.badge_card_set_card").Length;
+        var count = response.Content.QuerySelectorAll("div.badge_card_set_card").Length;
         FullSetCount.TryAdd(appId, count);
         return count;
     }

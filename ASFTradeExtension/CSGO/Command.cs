@@ -2,7 +2,6 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Security;
-using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Text;
 

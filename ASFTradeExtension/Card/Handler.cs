@@ -1,12 +1,16 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
+using ASFTradeExtension.Cache;
 using ASFTradeExtension.Data;
+using System.Collections.Concurrent;
 
 namespace ASFTradeExtension.Card;
 
 internal static class Handler
 {
+    internal static ConcurrentDictionary<string, HashSet<long>> InTradeItem { get; set; } = new();
+
     /// <summary>
     /// 读取机器人卡牌库存
     /// </summary>
@@ -36,7 +40,7 @@ internal static class Handler
     /// <returns></returns>
     internal static async Task<IDictionary<uint, AssetBundle>> GetAppCardGroup(Bot bot, IEnumerable<uint> appIds, IEnumerable<Asset> inventory)
     {
-        var countPerSets = await Utilities.InParallel(appIds.Select(appId => CacheHelper.GetCacheCardSetCount(bot, appId))).ConfigureAwait(false);
+        var countPerSets = await Utilities.InParallel(appIds.Select(appId => CardSetManager.GetCardSetCount(bot, appId))).ConfigureAwait(false);
 
         Dictionary<uint, AssetBundle> result = new();
 
@@ -107,7 +111,7 @@ internal static class Handler
     /// <returns></returns>
     internal static async Task<AssetBundle> GetAppCardBundle(Bot bot, uint appId, IEnumerable<Asset> inventory)
     {
-        int countPerSet = await CacheHelper.GetCacheCardSetCount(bot, appId).ConfigureAwait(false);
+        int countPerSet = await CardSetManager.GetCardSetCount(bot, appId).ConfigureAwait(false);
         int tradableSetCount, totalSetCount, extraTradableCount, extraTotalCount;
 
         IEnumerable<Asset>? assets = null;

@@ -3,14 +3,12 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
-using ArchiSteamFarm.Steam.Integration.Callbacks;
 using ASFTradeExtension.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Composition;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ASFTradeExtension;
 
@@ -113,6 +111,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         StringBuilder message = new("\n");
         message.AppendLine(Static.Line);
         message.AppendLine(Static.Logo);
+        message.AppendLine(Static.Line);
         message.AppendLine(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), MyVersion.ToString()));
         message.AppendLine(Langs.PluginContact);
         message.AppendLine(Langs.PluginInfo);
@@ -191,22 +190,22 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                     //CSGO
                     case "CSITEMLIST" when access >= EAccess.Operator:
                     case "CIL" when access >= EAccess.Operator:
-                        return await CSGO.Command.ResponseCsItemList(bot, null).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseCsItemList(bot, null).ConfigureAwait(false);
 
                     case "CSSENDITEM" when access >= EAccess.Master:
                     case "CSI" when access >= EAccess.Master:
-                        return await CSGO.Command.ResponseSendCsItem(bot, null, null, false).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSendCsItem(bot, null, null, false).ConfigureAwait(false);
                     case "2CSSENDITEM" when access >= EAccess.Master:
                     case "2CSI" when access >= EAccess.Master:
-                        return await CSGO.Command.ResponseSendCsItem(bot, null, null, true).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSendCsItem(bot, null, null, true).ConfigureAwait(false);
 
                     case "CSMARKETHISTORY" when access >= EAccess.Operator:
                     case "CMH" when access >= EAccess.Operator:
-                        return await CSGO.Command.ResponseGetCsMarketInfo(bot, null).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseGetCsMarketInfo(bot, null).ConfigureAwait(false);
 
                     case "CSDELISTING" when access >= EAccess.Master:
                     case "CDL" when access >= EAccess.Master:
-                        return await CSGO.Command.ResponseCsRemoveListing(bot, null).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseCsRemoveListing(bot, null).ConfigureAwait(false);
 
 
                     //Update
@@ -264,58 +263,58 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                     //CSGO
                     case "CSITEMLIST" when access >= EAccess.Operator && argLength == 2:
                     case "CIL" when access >= EAccess.Operator && argLength == 2:
-                        return await CSGO.Command.ResponseCsItemList(args[1], null).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseCsItemList(args[1], null).ConfigureAwait(false);
                     case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 0:
                     case "CIL" when access >= EAccess.Operator && argLength % 2 == 0:
-                        return await CSGO.Command.ResponseCsItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseCsItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
                     case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 1:
                     case "CIL" when access >= EAccess.Operator && argLength % 2 == 1:
-                        return await CSGO.Command.ResponseCsItemList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseCsItemList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 
 
                     case "CSSENDITEM" when access >= EAccess.Master && argLength == 4:
                     case "CSI" when access >= EAccess.Master && argLength == 4:
-                        return await CSGO.Command.ResponseSendCsItem(args[1], args[2], args[3], false).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], false).ConfigureAwait(false);
                     case "CSSENDITEM" when access >= EAccess.Master && argLength == 3:
                     case "CSI" when access >= EAccess.Master && argLength == 3:
-                        return await CSGO.Command.ResponseSendCsItem(bot, args[1], args[2], false).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], false).ConfigureAwait(false);
                     case "CSSENDITEM" when access >= EAccess.Master && argLength == 2:
                     case "CSI" when access >= EAccess.Master && argLength == 2:
-                        return await CSGO.Command.ResponseSendCsItem(args[1], null, null, false).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSendCsItem(args[1], null, null, false).ConfigureAwait(false);
 
 
                     case "2CSSENDITEM" when access >= EAccess.Master && argLength == 4:
                     case "2CSI" when access >= EAccess.Master && argLength == 4:
-                        return await CSGO.Command.ResponseSendCsItem(args[1], args[2], args[3], true).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], true).ConfigureAwait(false);
                     case "2CSSENDITEM" when access >= EAccess.Master && argLength == 3:
                     case "2CSI" when access >= EAccess.Master && argLength == 3:
-                        return await CSGO.Command.ResponseSendCsItem(bot, args[1], args[2], true).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], true).ConfigureAwait(false);
                     case "2CSSENDITEM" when access >= EAccess.Master && argLength == 2:
                     case "2CSI" when access >= EAccess.Master && argLength == 2:
-                        return await CSGO.Command.ResponseSendCsItem(args[1], null, null, true).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSendCsItem(args[1], null, null, true).ConfigureAwait(false);
 
 
                     case "CSSELLITEM" when access >= EAccess.Master && argLength == 5:
                     case "CEI" when access >= EAccess.Master && argLength == 5:
-                        return await CSGO.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], false).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], false).ConfigureAwait(false);
                     case "CSSELLITEM" when access >= EAccess.Master && argLength == 4:
                     case "CEI" when access >= EAccess.Master && argLength == 4:
-                        return await CSGO.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], false).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], false).ConfigureAwait(false);
 
 
                     case "2CSSELLITEM" when access >= EAccess.Master && argLength == 5:
                     case "2CEI" when access >= EAccess.Master && argLength == 5:
-                        return await CSGO.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], true).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], true).ConfigureAwait(false);
                     case "2CSSELLITEM" when access >= EAccess.Master && argLength == 4:
                     case "2CEI" when access >= EAccess.Master && argLength == 4:
-                        return await CSGO.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
 
 
                     case "CSMARKETHISTORY" when access >= EAccess.Operator:
                     case "CMH" when access >= EAccess.Operator:
                         {
                             string botNames = string.Join(',', args[1..(argLength - 1)]);
-                            return await CSGO.Command.ResponseGetCsMarketInfo(botNames, args.Last()).ConfigureAwait(false);
+                            return await Csgo.Command.ResponseGetCsMarketInfo(botNames, args.Last()).ConfigureAwait(false);
                         }
 
 
@@ -323,11 +322,11 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                     case "CDL" when access >= EAccess.Master && argLength >= 3:
                         {
                             string botNames = string.Join(',', args[1..(argLength - 1)]);
-                            return await CSGO.Command.ResponseCsRemoveListing(botNames, args.Last()).ConfigureAwait(false);
+                            return await Csgo.Command.ResponseCsRemoveListing(botNames, args.Last()).ConfigureAwait(false);
                         }
                     case "CSDELISTING" when access >= EAccess.Master:
                     case "CDL" when access >= EAccess.Master:
-                        return await CSGO.Command.ResponseCsRemoveListing(bot, args[1]).ConfigureAwait(false);
+                        return await Csgo.Command.ResponseCsRemoveListing(bot, args[1]).ConfigureAwait(false);
 
                     default:
                         return null;
@@ -394,7 +393,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
     public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
     {
-        bool accept = CSGO.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
+        bool accept = Csgo.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
         ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
         return Task.FromResult(accept);
     }
@@ -403,7 +402,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     {
         foreach (var tradeResult in tradeResults)
         {
-            CSGO.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
+            Csgo.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
             ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
         }
         return Task.CompletedTask;

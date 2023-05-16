@@ -17,7 +17,7 @@
 		<NeutralLanguage>zh-cn</NeutralLanguage>
 		<Nullable>enable</Nullable>
 		<PackageLicenseExpression>AGPL-3.0</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/chr233/CardTradeExtension</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/chr233/ASFTradeExtension</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
 		<RepositoryBranch>main</RepositoryBranch>

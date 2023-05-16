@@ -1,8 +1,8 @@
-using CardTradeExtension.Data;
+using ASFTradeExtension.Data;
 using System.IO.Compression;
 using System.Text;
 
-namespace CardTradeExtension.Update;
+namespace ASFTradeExtension.Update;
 
 internal static class Command
 {
@@ -10,9 +10,9 @@ internal static class Command
     /// 查看插件版本
     /// </summary>
     /// <returns></returns>
-    internal static string ResponseCardTradeExtensionVersion()
+    internal static string ResponseASFTradeExtensionVersion()
     {
-        return FormatStaticResponse(string.Format(Langs.PluginVer, nameof(CardTradeExtension), MyVersion.ToString()));
+        return FormatStaticResponse(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), MyVersion.ToString()));
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ internal static class Command
 
                 string currentPath = MyLocation ?? ".";
                 string pluginFolder = Path.GetDirectoryName(currentPath) ?? ".";
-                string backupPath = Path.Combine(pluginFolder, $"{nameof(CardTradeExtension)}.bak");
+                string backupPath = Path.Combine(pluginFolder, $"{nameof(ASFTradeExtension)}.bak");
 
                 File.Move(currentPath, backupPath, true);
 

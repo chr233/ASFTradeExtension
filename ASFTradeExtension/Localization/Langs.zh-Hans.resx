@@ -118,114 +118,168 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CartEmptyResponse" xml:space="preserve">
-    <value>Response is empty</value>
+    <value>响应为空</value>
   </data>
   <data name="NetworkError" xml:space="preserve">
-    <value>Network Error</value>
+    <value>网络错误</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Error</value>
+    <value>出错</value>
   </data>
   <data name="PluginContact" xml:space="preserve">
-    <value>Developed by Chr_, email chr@chrxw.com</value>
+    <value>作者 Chr_, 联系方式 chr@chrxw.com</value>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success</value>
+    <value>成功</value>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done</value>
+    <value>完成</value>
   </data>
   <data name="MultipleLineResult" xml:space="preserve">
-    <value>Multiple line result:</value>
+    <value>多行结果:</value>
   </data>
   <data name="PluginInfo" xml:space="preserve">
-    <value>https://afdian.net/@chr233</value>
+    <value>爱发电 https://afdian.net/@chr233</value>
   </data>
   <data name="CurrentLanguage" xml:space="preserve">
-    <value>en-US</value>
+    <value>zh-Hans</value>
   </data>
   <data name="GetReleaseInfoFailed" xml:space="preserve">
-    <value>Failed to fetch the release information!</value>
+    <value>读取插件发行版信息失败!</value>
   </data>
   <data name="ErrorLogPluginVersion" xml:space="preserve">
-    <value> - Plugin Version: {0}</value>
+    <value> - 插件版本: {0}</value>
   </data>
   <data name="ASFECurrentVersion" xml:space="preserve">
-    <value>Current version: {0}</value>
+    <value>当前版本: {0}</value>
   </data>
   <data name="ASFEOnlineVersion" xml:space="preserve">
-    <value>Latest Version: {0}</value>
+    <value>在线版本: {0}</value>
   </data>
   <data name="ASFEPluginVersion" xml:space="preserve">
-    <value> - Plugin version: {0}</value>
+    <value> - 插件版本: {0}</value>
   </data>
   <data name="Assert" xml:space="preserve">
-    <value> - Assets: </value>
+    <value> - 附件: </value>
   </data>
   <data name="DownloadFailed" xml:space="preserve">
-    <value>Download plugin failed!</value>
+    <value>下载插件失败!</value>
   </data>
   <data name="AlreadyLatest" xml:space="preserve">
-    <value>The plugin is up to date, no need to update</value>
+    <value>当前已经是最新版本, 无需更新插件</value>
   </data>
   <data name="CleanUpOldBackup" xml:space="preserve">
-    <value>Clear the old plugin's backup file success</value>
+    <value>旧的插件备份已经自动清理</value>
   </data>
   <data name="CleanUpOldBackupFailed" xml:space="preserve">
-    <value>Clear the old plugin's backup file failed</value>
+    <value>旧的插件备份清理失败</value>
   </data>
   <data name="ASFEUpdateTips" xml:space="preserve">
-    <value>Use Command "ASFEUPDATE" / "AU" to update the plugin</value>
+    <value>使用命令 ASFEUPDATE / AU 自动更新插件</value>
   </data>
   <data name="ASFEVersionTips" xml:space="preserve">
-    <value>Use Command "ASFEVERSION" / "AV" to check the plugin's latest version</value>
+    <value>使用命令 ASFEVERSION / AV 检查插件更新</value>
   </data>
   <data name="ErrorLogAccess" xml:space="preserve">
     <value> - Access: {0}</value>
   </data>
   <data name="ErrorLogTitle" xml:space="preserve">
-    <value>CardTradeExtension encountered error, error logs below</value>
+    <value>ASFTradeExtension 遇到错误, 日志如下</value>
   </data>
   <data name="ErrorLogASFVersion" xml:space="preserve">
-    <value> - ASF Version: {0}</value>
+    <value> - ASF 版本: {0}</value>
   </data>
   <data name="ErrorLogErrorName" xml:space="preserve">
-    <value> - Exception Type: {0}</value>
+    <value> - 错误类型: {0}</value>
   </data>
   <data name="ErrorLogOriginMessage" xml:space="preserve">
-    <value> - Origin Message: {0}</value>
+    <value> - 原始消息: {0}</value>
   </data>
   <data name="ErrorLogErrorMessage" xml:space="preserve">
-    <value> - Exception Message: {0}</value>
+    <value> - 错误消息: {0}</value>
   </data>
   <data name="PluginVer" xml:space="preserve">
-    <value>{0} Version {1}</value>
+    <value>{0} 版本 {1}</value>
   </data>
   <data name="EulaWarning" xml:space="preserve">
-    <value>ASFEnhance.EULA not agreed, some features is disabled</value>
+    <value>尚未同意 EULA , 部分命令已禁用</value>
   </data>
   <data name="Detail" xml:space="preserve">
-    <value> - Detail: {0}</value>
+    <value> - 描述: {0}</value>
   </data>
   <data name="UpdateTips" xml:space="preserve">
-    <value>Use Command "ASFEUPDATE" / "AU" to update this plugin</value>
+    <value>可以使用命令 ASFEUPDATE / AU 自动更新插件</value>
   </data>
   <data name="SubLink" xml:space="preserve">
-    <value>   - Link: {0}</value>
+    <value>   - 链接: {0}</value>
   </data>
   <data name="SubName" xml:space="preserve">
-    <value>   - Name: {0}</value>
+    <value>   - 名称: {0}</value>
   </data>
   <data name="SubSize" xml:space="preserve">
-    <value>   - Size: {0:0.000} KB</value>
+    <value>   - 尺寸: {0:0.000} KB</value>
   </data>
   <data name="UpdateFiledWithZip" xml:space="preserve">
-    <value>Plugin update failed, unzip failed</value>
+    <value>插件更新失败, 压缩包内容解析失败</value>
   </data>
   <data name="UpdateSuccess" xml:space="preserve">
-    <value>Plugin update finished, restart ASF to apply update, if not compatible, please also update the ASF</value>
+    <value>插件更新完成, 重启ASF即可应用, 如果不兼容请更新ASF版本</value>
+  </data>
+  <data name="AppIdInvalid" xml:space="preserve">
+    <value>无效 AppId</value>
+  </data>
+  <data name="ArgumentInvalidAppIds" xml:space="preserve">
+    <value>输入参数 AppIds 无效</value>
+  </data>
+  <data name="ArgumentInvalidFSL" xml:space="preserve">
+    <value>参数有误, 示例: -p 2 -l 20 (第二页, 每页20条)</value>
+  </data>
+  <data name="ArgumentInvalidSCS" xml:space="preserve">
+    <value>参数无效, 示例 730 2 交易链接</value>
+  </data>
+  <data name="ArgumentInvalidSCS2" xml:space="preserve">
+    <value>AppId 和 SetCount 必须大于0</value>
+  </data>
+  <data name="CardInventoryIsEmpty" xml:space="preserve">
+    <value>卡牌库存为空</value>
+  </data>
+  <data name="CurrentCardInventoryShow" xml:space="preserve">
+    <value>{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张</value>
+  </data>
+  <data name="Failure" xml:space="preserve">
+    <value>失败</value>
+  </data>
+  <data name="InventoryStatusBeforeTrade" xml:space="preserve">
+    <value>交易前库存状态:</value>
+  </data>
+  <data name="LoadInventoryFailedNetworkError" xml:space="preserve">
+    <value>网络异常, 读取库存信息失败</value>
+  </data>
+  <data name="SendTradeResult" xml:space="preserve">
+    <value>交易报价发送{0}</value>
+  </data>
+  <data name="SteamIdInvalid" xml:space="preserve">
+    <value>SteamId 无效</value>
+  </data>
+  <data name="SendTradeFailedAppIdInvalid" xml:space="preserve">
+    <value>发送交易失败, AppId 可能无效</value>
+  </data>
+  <data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
+    <value>交易报价发送成功失败, 可交易卡牌数量不足</value>
   </data>
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
+  </data>
+  <data name="NoAvilableItemToShow" xml:space="preserve">
+    <value>当前设置下无可显示的内容</value>
+  </data>
+  <data name="NoAvilableCards" xml:space="preserve">
+    <value>无卡牌</value>
+  </data>
+  <data name="NoInformation" xml:space="preserve">
+    <value>无信息</value>
+  </data>
+  <data name="ExpectToSendCardInfo" xml:space="preserve">
+    <value>预计发送 {0} 套, 共 {1} 张 卡牌</value>
   </data>
 </root>

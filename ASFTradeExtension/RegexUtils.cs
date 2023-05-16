@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace CardTradeExtension;
+namespace ASFTradeExtension;
 
 internal static partial class RegexUtils
 {

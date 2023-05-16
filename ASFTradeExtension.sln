@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardTradeExtension", "CardTradeExtension\CardTradeExtension.csproj", "{A64A35BD-25B6-4F4F-8C3C-E0CF9CE843B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASFTradeExtension", "ASFTradeExtension\ASFTradeExtension.csproj", "{A64A35BD-25B6-4F4F-8C3C-E0CF9CE843B8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm", "ArchiSteamFarm\ArchiSteamFarm\ArchiSteamFarm.csproj", "{50744701-4C54-49BE-8189-518DA2A65797}"
 EndProject

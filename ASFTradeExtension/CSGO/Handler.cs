@@ -2,7 +2,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using System.Collections.Concurrent;
 
-namespace CardTradeExtension.CSGO;
+namespace ASFTradeExtension.Csgo;
 
 internal static class Handler
 {

@@ -4,7 +4,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
-using CardTradeExtension.Data;
+using ASFTradeExtension.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
@@ -12,12 +12,12 @@ using System.Composition;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace CardTradeExtension;
+namespace ASFTradeExtension;
 
 [Export(typeof(IPlugin))]
-internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
+internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
 {
-    public string Name => nameof(CardTradeExtension);
+    public string Name => nameof(ASFTradeExtension);
     public Version Version => MyVersion;
 
     [JsonProperty]
@@ -37,7 +37,7 @@ internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, I
         {
             foreach ((string configProperty, JToken configValue) in additionalConfigProperties)
             {
-                if (configProperty == "CardTradeExtension" && configValue.Type == JTokenType.Object)
+                if ((configProperty == "ASFTradeExtension" || configProperty == "CardTradeExtension") && configValue.Type == JTokenType.Object)
                 {
                     try
                     {
@@ -73,7 +73,7 @@ internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, I
         //统计
         if (Config.Statistic)
         {
-            Uri request = new("https://asfe.chrxw.com/");
+            Uri request = new("https://asfe.chrxw.com/asftradeextension");
             _ = new Timer(
                 async (_) =>
                 {
@@ -113,13 +113,13 @@ internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, I
         StringBuilder message = new("\n");
         message.AppendLine(Static.Line);
         message.AppendLine(Static.Logo);
-        message.AppendLine(string.Format(Langs.PluginVer, nameof(CardTradeExtension), MyVersion.ToString()));
+        message.AppendLine(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), MyVersion.ToString()));
         message.AppendLine(Langs.PluginContact);
         message.AppendLine(Langs.PluginInfo);
         message.AppendLine(Static.Line);
 
         string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
-        string backupPath = Path.Combine(pluginFolder, $"{nameof(CardTradeExtension)}.bak");
+        string backupPath = Path.Combine(pluginFolder, $"{nameof(ASFTradeExtension)}.bak");
         bool existsBackup = File.Exists(backupPath);
         if (existsBackup)
         {
@@ -212,7 +212,7 @@ internal sealed class CardTradeExtension : IASF, IBotCommand2, IBotTradeOffer, I
                     //Update
                     case "CARDTRADEXTENSION" when access >= EAccess.FamilySharing:
                     case "CTE" when access >= EAccess.FamilySharing:
-                        return Update.Command.ResponseCardTradeExtensionVersion();
+                        return Update.Command.ResponseASFTradeExtensionVersion();
 
                     case "CTEVERSION" when access >= EAccess.Operator:
                     case "CTEV" when access >= EAccess.Operator:

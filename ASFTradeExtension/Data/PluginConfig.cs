@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace CardTradeExtension.Data;
+namespace ASFTradeExtension.Data;
 
 public sealed record PluginConfig
 {

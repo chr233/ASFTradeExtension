@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 
 
-namespace CardTradeExtension.Card;
+namespace ASFTradeExtension.Card;
 
 internal static class CacheHelper
 {

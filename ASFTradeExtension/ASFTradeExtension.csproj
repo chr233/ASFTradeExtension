@@ -33,8 +33,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Include="CardTradeExtension.Localization" />
-		<Using Include="CardTradeExtension.Utils">
+		<Using Include="ASFTradeExtension.Localization" />
+		<Using Include="ASFTradeExtension.Utils">
 	    <Static>True</Static>
 	  </Using>
 	</ItemGroup>

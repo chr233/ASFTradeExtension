@@ -1,15 +1,15 @@
-# CardTradeExtension
+# ASFTradeExtension (原 CardTradeExtension)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/45b50288f8b14ebda915ed89e0382648)](https://www.codacy.com/gh/chr233/CardTradeExtension/dashboard)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/chr233/CardTradeExtension/autobuild.yml?logo=github)
-[![License](https://img.shields.io/github/license/chr233/CardTradeExtension?logo=apache)](https://github.com/chr233/CardTradeExtension/blob/master/license)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/45b50288f8b14ebda915ed89e0382648)](https://www.codacy.com/gh/chr233/ASFTradeExtension/dashboard)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/chr233/ASFTradeExtension/autobuild.yml?logo=github)
+[![License](https://img.shields.io/github/license/chr233/ASFTradeExtension?logo=apache)](https://github.com/chr233/ASFTradeExtension/blob/master/license)
 
-[![GitHub Release](https://img.shields.io/github/v/release/chr233/CardTradeExtension?logo=github)](https://github.com/chr233/CardTradeExtension/releases)
-[![GitHub Release](https://img.shields.io/github/v/release/chr233/CardTradeExtension?include_prereleases&label=pre-release&logo=github)](https://github.com/chr233/CardTradeExtension/releases)
-![GitHub last commit](https://img.shields.io/github/last-commit/chr233/CardTradeExtension?logo=github)
+[![GitHub Release](https://img.shields.io/github/v/release/chr233/ASFTradeExtension?logo=github)](https://github.com/chr233/ASFTradeExtension/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/chr233/ASFTradeExtension?include_prereleases&label=pre-release&logo=github)](https://github.com/chr233/ASFTradeExtension/releases)
+![GitHub last commit](https://img.shields.io/github/last-commit/chr233/ASFTradeExtension?logo=github)
 
-![GitHub Repo stars](https://img.shields.io/github/stars/chr233/CardTradeExtension?logo=github)
-[![GitHub Download](https://img.shields.io/github/downloads/chr233/CardTradeExtension/total?logo=github)](https://img.shields.io/github/v/release/chr233/CardTradeExtension)
+![GitHub Repo stars](https://img.shields.io/github/stars/chr233/ASFTradeExtension?logo=github)
+[![GitHub Download](https://img.shields.io/github/downloads/chr233/ASFTradeExtension/total?logo=github)](https://img.shields.io/github/v/release/chr233/ASFTradeExtension)
 
 [![Bilibili](https://img.shields.io/badge/bilibili-Chr__-00A2D8.svg?logo=bilibili)](https://space.bilibili.com/5805394)
 [![Steam](https://img.shields.io/badge/steam-Chr__-1B2838.svg?logo=steam)](https://steamcommunity.com/id/Chr_)
@@ -17,7 +17,7 @@
 [![Steam](https://img.shields.io/badge/steam-donate-1B2838.svg?logo=steam)](https://steamcommunity.com/tradeoffer/new/?partner=221260487&token=xgqMgL-i)
 [![爱发电](https://img.shields.io/badge/爱发电-chr__-ea4aaa.svg?logo=github-sponsors)](https://afdian.net/@chr233)
 
-CardTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https://keylol.com/t876377-1-1)
+ASFTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https://keylol.com/t876377-1-1)
 
 ## EULA
 
@@ -29,8 +29,8 @@ CardTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https
 
 ### 初次安装 / 手动更新
 
-1. 从 [GitHub Releases](https://github.com/chr233/CardTradeExtension/releases) 下载插件的最新版本
-2. 解压后将 `CardTradeExtension.dll` 丢进 `ArchiSteamFarm` 目录下的 `plugins` 文件夹
+1. 从 [GitHub Releases](https://github.com/chr233/ASFTradeExtension/releases) 下载插件的最新版本
+2. 解压后将 `ASFTradeExtension.dll` 丢进 `ArchiSteamFarm` 目录下的 `plugins` 文件夹
 3. 重新启动 `ArchiSteamFarm` , 使用命令 `CTE` 来检查插件是否正常工作
 
 ### 使用命令升级插件
@@ -43,17 +43,17 @@ CardTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https
 
 ### 更新日志
 
-| CardTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明   |
-| ---------------------------------------------------------------------------- | :-----------: | ---------- |
-| [1.0.2.0](https://github.com/chr233/CardTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复   |
-| [1.0.0.0](https://github.com/chr233/CardTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本 |
+| ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明   |
+| --------------------------------------------------------------------------- | :-----------: | ---------- |
+| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复   |
+| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本 |
 
 <details>
   <summary>历史版本</summary>
 
-| CardTradeExtension 版本 | 依赖 ASF 版本 | 5.3.1.2 | 5.3.2.4 | 5.4.0.3 | 5.4.1.11 |
-| ----------------------- | :-----------: | :-----: | :-----: | :-----: | :------: |
-| -                       |       -       |   ❌    |   ❌    |   ✔️    |    ✔️    |
+| ASFTradeExtension 版本 | 依赖 ASF 版本 | 5.3.1.2 | 5.3.2.4 | 5.4.0.3 | 5.4.1.11 |
+| ---------------------- | :-----------: | :-----: | :-----: | :-----: | :------: |
+| -                      |       -       |   ❌    |   ❌    |   ✔️    |    ✔️    |
 
 </details>
 
@@ -69,8 +69,8 @@ ASF.json
   "CurrentCulture": "...",
   "IPCPassword": "...",
   "...": "...",
-  //CardTradeExtension 配置
-  "CardTradeExtension": {
+  //ASFTradeExtension 配置
+  "ASFTradeExtension": {
     "EULA": true,
     "Statistic": true,
     "DisabledCmds": ["foo", "bar"],
@@ -79,18 +79,18 @@ ASF.json
 }
 ```
 
-| 配置项            | 类型   | 默认值 | 说明                                                                                      |
-| ----------------- | ------ | ------ | ----------------------------------------------------------------------------------------- |
-| `EULA`            | bool   | `true` | 是否同意 [EULA](#EULA)\*                                                                  |
-| `Statistic`       | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                        |
-| `DisabledCmds`    | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `CardTradeExtension` 中的命令生效 |
-| `MaxItemPerTrade` | ushort | `255`  | 单个交易最多物品数量, ASF 的默认值是 255, 如果报价中的物品超过此数量会自动拆分成多个报价  |
+| 配置项            | 类型   | 默认值 | 说明                                                                                     |
+| ----------------- | ------ | ------ | ---------------------------------------------------------------------------------------- |
+| `EULA`            | bool   | `true` | 是否同意 [EULA](#EULA)\*                                                                 |
+| `Statistic`       | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                       |
+| `DisabledCmds`    | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFTradeExtension` 中的命令生效 |
+| `MaxItemPerTrade` | ushort | `255`  | 单个交易最多物品数量, ASF 的默认值是 255, 如果报价中的物品超过此数量会自动拆分成多个报价 |
 
-> \* 同意 [EULA](#EULA) 后, CardTradeExtension 将会开放全部命令
+> \* 同意 [EULA](#EULA) 后, ASFTradeExtension 将会开放全部命令
 >
-> \* 禁用 [EULA](#EULA) 后, CardTradeExtension 将无法使用大部分命令
+> \* 禁用 [EULA](#EULA) 后, ASFTradeExtension 将无法使用大部分命令
 >
-> \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `CardTradeExtension` 中的命令有效
+> \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `ASFTradeExtension` 中的命令有效
 > 例如配置为 `["foo","BAR"]` , 则代表 `FOO` 和 `BAR` 命令将会被禁用
 > 如果无需禁用任何命令, 请将此项配置为 `null` 或者 `[]`
 > 当某条命令被禁用时, 仍然可以使用 `CTE.xxx` 的形式调用被禁用的命令, 例如 `CTE.FULLSETLIST`
@@ -99,11 +99,11 @@ ASF.json
 
 ### 插件更新
 
-| 命令                 | 缩写   | 权限            | 说明                                                      |
-| -------------------- | ------ | --------------- | --------------------------------------------------------- |
-| `CardTradeExtension` | `CTE`  | `FamilySharing` | 查看 CardTradeExtension 的版本                            |
-| `CTEVERSION`         | `CTEV` | `Operator`      | 检查 CardTradeExtension 是否为最新版本                    |
-| `CTEUPDATE`          | `CTEU` | `Owner`         | 自动更新 CardTradeExtension 到最新版本 (需要手动重启 ASF) |
+| 命令                | 缩写   | 权限            | 说明                                                     |
+| ------------------- | ------ | --------------- | -------------------------------------------------------- |
+| `ASFTradeExtension` | `CTE`  | `FamilySharing` | 查看 ASFTradeExtension 的版本                            |
+| `CTEVERSION`        | `CTEV` | `Operator`      | 检查 ASFTradeExtension 是否为最新版本                    |
+| `CTEUPDATE`         | `CTEU` | `Owner`         | 自动更新 ASFTradeExtension 到最新版本 (需要手动重启 ASF) |
 
 ### 卡牌交易
 
@@ -126,10 +126,10 @@ ASF.json
 
 ---
 
-[![Repobeats analytics image](https://repobeats.axiom.co/api/embed/c7bad85b243c7305a5de1fa591469f64125c4048.svg "Repobeats analytics image")](https://github.com/chr233/CardTradeExtension/pulse)
+[![Repobeats analytics image](https://repobeats.axiom.co/api/embed/c7bad85b243c7305a5de1fa591469f64125c4048.svg "Repobeats analytics image")](https://github.com/chr233/ASFTradeExtension/pulse)
 
 ---
 
-[![Stargazers over time](https://starchart.cc/chr233/CardTradeExtension.svg)](https://github.com/chr233/CardTradeExtension/stargazers)
+[![Stargazers over time](https://starchart.cc/chr233/ASFTradeExtension.svg)](https://github.com/chr233/ASFTradeExtension/stargazers)
 
 ---

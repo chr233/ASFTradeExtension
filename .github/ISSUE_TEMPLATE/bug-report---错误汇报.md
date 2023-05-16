@@ -11,11 +11,11 @@ Describe what the bug is
 简单描述一下是什么 bug
 
 **Error Log / 错误日志**
-Please paste the error log of CardTradeExtension, for example
-请在此粘贴 CardTradeExtension 的错误日志, 示例如下
+Please paste the error log of ASFTradeExtension, for example
+请在此粘贴 ASFTradeExtension 的错误日志, 示例如下
 
 ```txt
-CardTradeExtension 遇到错误, 日志如下
+ASFTradeExtension 遇到错误, 日志如下
 ==========================================
  - 原始消息: TEST
  - Access: Owner
@@ -30,6 +30,6 @@ CardTradeExtension 遇到错误, 日志如下
 ==========================================
  - 错误类型: System.Exception
  - 错误消息: Exception of type 'System.Exception' was thrown.
-   at CardTradeExtension.CardTradeExtension.ResponseCommand(Bot bot, EAccess access, String message, String[] args, UInt64 steamId)
-   at CardTradeExtension.CardTradeExtension.OnBotCommand(Bot bot, EAccess access, String message, String[] args, UInt64 steamId)
+   at ASFTradeExtension.ASFTradeExtension.ResponseCommand(Bot bot, EAccess access, String message, String[] args, UInt64 steamId)
+   at ASFTradeExtension.ASFTradeExtension.OnBotCommand(Bot bot, EAccess access, String message, String[] args, UInt64 steamId)
 ```

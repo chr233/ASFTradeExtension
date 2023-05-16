@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CardTradeExtension.Localization {
+namespace ASFTradeExtension.Localization {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CardTradeExtension.Localization {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CardTradeExtension.Localization.Static", typeof(Static).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASFTradeExtension.Localization.Static", typeof(Static).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

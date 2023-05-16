@@ -1,8 +1,8 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Web.Responses;
-using CardTradeExtension.Data;
+using ASFTradeExtension.Data;
 
-namespace CardTradeExtension.Update;
+namespace ASFTradeExtension.Update;
 
 internal static class WebRequest
 {
@@ -13,7 +13,7 @@ internal static class WebRequest
     internal static async Task<GitHubReleaseResponse?> GetLatestRelease(bool useMirror = true)
     {
         Uri request = new(
-            useMirror ? "https://hub.chrxw.com/CardTradeExtension/releases/latest" : "https://api.github.com/repos/chr233/CardTradeExtension/releases/latest"
+            useMirror ? "https://hub.chrxw.com/ASFTradeExtension/releases/latest" : "https://api.github.com/repos/chr233/ASFTradeExtension/releases/latest"
         );
         var response = await ASF.WebBrowser!.UrlGetToJsonObject<GitHubReleaseResponse>(request).ConfigureAwait(false);
 

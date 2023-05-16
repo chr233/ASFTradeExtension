@@ -6,7 +6,7 @@ using ArchiSteamFarm.Steam.Security;
 using SteamKit2;
 using System.Text;
 
-namespace CardTradeExtension.Card;
+namespace ASFTradeExtension.Card;
 
 internal static partial class Command
 {

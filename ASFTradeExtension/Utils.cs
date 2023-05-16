@@ -2,10 +2,10 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
-using CardTradeExtension.Data;
+using ASFTradeExtension.Data;
 using System.Reflection;
 
-namespace CardTradeExtension;
+namespace ASFTradeExtension;
 
 internal static class Utils
 {

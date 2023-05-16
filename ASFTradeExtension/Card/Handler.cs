@@ -1,9 +1,9 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using CardTradeExtension.Data;
+using ASFTradeExtension.Data;
 
-namespace CardTradeExtension.Card;
+namespace ASFTradeExtension.Card;
 
 internal static class Handler
 {

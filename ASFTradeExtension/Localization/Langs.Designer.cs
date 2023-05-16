@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CardTradeExtension.Localization {
+namespace ASFTradeExtension.Localization {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CardTradeExtension.Localization {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CardTradeExtension.Localization.Langs", typeof(Langs).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASFTradeExtension.Localization.Langs", typeof(Langs).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -340,7 +340,7 @@ namespace CardTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 CardTradeExtension 遇到错误, 日志如下 的本地化字符串。
+        ///   查找类似 ASFTradeExtension 遇到错误, 日志如下 的本地化字符串。
         /// </summary>
         internal static string ErrorLogTitle {
             get {

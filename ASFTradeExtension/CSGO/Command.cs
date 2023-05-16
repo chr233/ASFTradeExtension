@@ -6,7 +6,7 @@ using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Text;
 
-namespace CardTradeExtension.CSGO;
+namespace ASFTradeExtension.Csgo;
 
 internal static partial class Command
 {

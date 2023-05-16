@@ -4,9 +4,9 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Web.Responses;
-using CardTradeExtension.Data;
+using ASFTradeExtension.Data;
 
-namespace CardTradeExtension.CSGO;
+namespace ASFTradeExtension.Csgo;
 
 internal static class WebRequests
 {

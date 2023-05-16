@@ -118,76 +118,76 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CartEmptyResponse" xml:space="preserve">
-    <value>Пустой ответ</value>
+    <value>Response is empty</value>
   </data>
   <data name="NetworkError" xml:space="preserve">
-    <value>Сетевая ошибка</value>
+    <value>Network Error</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Ошибка</value>
+    <value>Error</value>
   </data>
   <data name="PluginContact" xml:space="preserve">
-    <value>Разработано Chr_, email chr@chrxw.com</value>
+    <value>Developed by Chr_, email chr@chrxw.com</value>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Успех</value>
+    <value>Success</value>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Готово</value>
+    <value>Done</value>
   </data>
   <data name="MultipleLineResult" xml:space="preserve">
-    <value>Результат с несколькими строками:</value>
+    <value>Multiple line result:</value>
   </data>
   <data name="PluginInfo" xml:space="preserve">
     <value>https://afdian.net/@chr233</value>
   </data>
   <data name="CurrentLanguage" xml:space="preserve">
-    <value>ru-RU</value>
+    <value>en-US</value>
   </data>
   <data name="GetReleaseInfoFailed" xml:space="preserve">
-    <value>Не удалось получить информацию о выпуске!</value>
+    <value>Failed to fetch the release information!</value>
   </data>
   <data name="ErrorLogPluginVersion" xml:space="preserve">
-    <value> - Версия плагина: {0}</value>
+    <value> - Plugin Version: {0}</value>
   </data>
   <data name="ASFECurrentVersion" xml:space="preserve">
-    <value>Текущая версия: {0}</value>
+    <value>Current version: {0}</value>
   </data>
   <data name="ASFEOnlineVersion" xml:space="preserve">
-    <value>Последняя версия: {0}</value>
+    <value>Latest Version: {0}</value>
   </data>
   <data name="ASFEPluginVersion" xml:space="preserve">
-    <value> - Подключенная версия: {0}</value>
+    <value> - Plugin version: {0}</value>
   </data>
   <data name="Assert" xml:space="preserve">
     <value> - Assets: </value>
   </data>
   <data name="DownloadFailed" xml:space="preserve">
-    <value>Не удалось загрузить плагин!</value>
+    <value>Download plugin failed!</value>
   </data>
   <data name="AlreadyLatest" xml:space="preserve">
-    <value>Плагин уже обновлен, нет необходимости в обновлении</value>
+    <value>The plugin is up to date, no need to update</value>
   </data>
   <data name="CleanUpOldBackup" xml:space="preserve">
-    <value>Успешная очиститка старых бекапов плагина</value>
+    <value>Clear the old plugin's backup file success</value>
   </data>
   <data name="CleanUpOldBackupFailed" xml:space="preserve">
-    <value>Не удалось очистить старые бекапы плагина</value>
+    <value>Clear the old plugin's backup file failed</value>
   </data>
   <data name="ASFEUpdateTips" xml:space="preserve">
-    <value>Используй команду "ASFEUPDATE" / "AU" для обновления плагина</value>
+    <value>Use Command "ASFEUPDATE" / "AU" to update the plugin</value>
   </data>
   <data name="ASFEVersionTips" xml:space="preserve">
-    <value>Используй команду "ASFEVERSION" / "AV" чтобы проверить последнюю версию плагина</value>
+    <value>Use Command "ASFEVERSION" / "AV" to check the plugin's latest version</value>
   </data>
   <data name="ErrorLogAccess" xml:space="preserve">
     <value> - Access: {0}</value>
   </data>
   <data name="ErrorLogTitle" xml:space="preserve">
-    <value>CardTradeExtension обнаружил ошибку, журнал ошибок ниже</value>
+    <value>ASFTradeExtension encountered error, error logs below</value>
   </data>
   <data name="ErrorLogASFVersion" xml:space="preserve">
-    <value> - Версия ASF: {0}</value>
+    <value> - ASF Version: {0}</value>
   </data>
   <data name="ErrorLogErrorName" xml:space="preserve">
     <value> - Exception Type: {0}</value>
@@ -199,31 +199,31 @@
     <value> - Exception Message: {0}</value>
   </data>
   <data name="PluginVer" xml:space="preserve">
-    <value>{0} Версия {1}</value>
+    <value>{0} Version {1}</value>
   </data>
   <data name="EulaWarning" xml:space="preserve">
-    <value>"ASFEnhance.EULA" не принят, некоторые функции отключены</value>
+    <value>ASFEnhance.EULA not agreed, some features is disabled</value>
   </data>
   <data name="Detail" xml:space="preserve">
-    <value> - Описание: {0}</value>
+    <value> - Detail: {0}</value>
   </data>
   <data name="UpdateTips" xml:space="preserve">
-    <value>Используй команду "ASFEUPDATE" / "AU" для обновления плагина</value>
+    <value>Use Command "ASFEUPDATE" / "AU" to update this plugin</value>
   </data>
   <data name="SubLink" xml:space="preserve">
-    <value>   - Ссылка: {0}</value>
+    <value>   - Link: {0}</value>
   </data>
   <data name="SubName" xml:space="preserve">
-    <value>   - Название: {0}</value>
+    <value>   - Name: {0}</value>
   </data>
   <data name="SubSize" xml:space="preserve">
-    <value>   - Размер: {0:0.000} KB</value>
+    <value>   - Size: {0:0.000} KB</value>
   </data>
   <data name="UpdateFiledWithZip" xml:space="preserve">
-    <value>Ошибка обновления плагина - не удалось распаковать архив</value>
+    <value>Plugin update failed, unzip failed</value>
   </data>
   <data name="UpdateSuccess" xml:space="preserve">
-    <value>Обновление плагина завершено, перезапустите ASF, чтобы применить обновление, если оно несовместимо, пожалуйста, также обновите ASF</value>
+    <value>Plugin update finished, restart ASF to apply update, if not compatible, please also update the ASF</value>
   </data>
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>

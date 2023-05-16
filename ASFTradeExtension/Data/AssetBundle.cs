@@ -1,6 +1,6 @@
 using ArchiSteamFarm.Steam.Data;
 
-namespace CardTradeExtension.Data;
+namespace ASFTradeExtension.Data;
 
 internal sealed record AssetBundle
 {

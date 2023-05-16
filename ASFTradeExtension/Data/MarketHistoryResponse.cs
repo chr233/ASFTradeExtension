@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace CardTradeExtension.Data;
+namespace ASFTradeExtension.Data;
 
 internal sealed record MarketHistoryResponse
 {

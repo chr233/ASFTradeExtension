@@ -26,7 +26,7 @@ internal static class Handler
         }
         catch (Exception e)
         {
-            ASFLogger.LogGenericException(e);
+            Utils.Logger.LogGenericException(e);
             return null;
         }
     }
@@ -42,7 +42,7 @@ internal static class Handler
     {
         var countPerSets = await Utilities.InParallel(appIds.Select(appId => CardSetManager.GetCardSetCount(bot, appId))).ConfigureAwait(false);
 
-        Dictionary<uint, AssetBundle> result = new();
+        var result = new Dictionary<uint, AssetBundle>();
 
         if (countPerSets.Count >= appIds.Count())
         {
@@ -85,7 +85,7 @@ internal static class Handler
                     extraTotalCount = 0;
                 }
 
-                AssetBundle bundle = new()
+                var bundle = new AssetBundle
                 {
                     Assets = assets,
                     CardCountPerSet = countPerSet,
@@ -146,7 +146,7 @@ internal static class Handler
             extraTotalCount = 0;
         }
 
-        AssetBundle bundle = new()
+        var bundle = new AssetBundle
         {
             Assets = assets,
             CardCountPerSet = countPerSet,

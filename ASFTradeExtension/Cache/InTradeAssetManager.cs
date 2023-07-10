@@ -15,8 +15,11 @@ internal static class InTradeAssetManager
     internal static void AddInTradeItems(IEnumerable<Asset> assets)
     {
         foreach (var asset in assets)
+        {
             InTradeItems.TryAdd(asset.InstanceID, asset);
+        }
     }
+
     internal static void RemoveInTradeItem(Asset asset)
     {
         InTradeItems.TryRemove(asset.InstanceID, out _);
@@ -25,7 +28,9 @@ internal static class InTradeAssetManager
     internal static void RemoveInTradeItems(IEnumerable<Asset> assets)
     {
         foreach (var asset in assets)
+        {
             InTradeItems.TryRemove(asset.InstanceID, out _);
+        }
     }
 
     internal static IEnumerable<Asset> ExcludeInTradeItems(IEnumerable<Asset> assets)
@@ -33,8 +38,12 @@ internal static class InTradeAssetManager
         var filteredAsset = new List<Asset>();
 
         foreach (var asset in assets)
+        {
             if (!InTradeItems.ContainsKey(asset.InstanceID))
+            {
                 filteredAsset.Add(asset);
+            }
+        }
 
         return filteredAsset;
     }

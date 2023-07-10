@@ -12,9 +12,7 @@ internal static class WebRequest
     /// <returns></returns>
     internal static async Task<GitHubReleaseResponse?> GetLatestRelease(bool useMirror = true)
     {
-        Uri request = new(
-            useMirror ? "https://hub.chrxw.com/ASFTradeExtension/releases/latest" : "https://api.github.com/repos/chr233/ASFTradeExtension/releases/latest"
-        );
+        var request = new Uri(useMirror ? "https://hub.chrxw.com/ASFTradeExtension/releases/latest" : "https://api.github.com/repos/chr233/ASFTradeExtension/releases/latest");
         var response = await ASF.WebBrowser!.UrlGetToJsonObject<GitHubReleaseResponse>(request).ConfigureAwait(false);
 
         if (response == null && useMirror)
@@ -37,8 +35,8 @@ internal static class WebRequest
             return null;
         }
 
-        Uri request = new(downloadUrl);
-        BinaryResponse? response = await ASF.WebBrowser!.UrlGetToBinary(request).ConfigureAwait(false);
+        var request = new Uri(downloadUrl);
+        var response = await ASF.WebBrowser!.UrlGetToBinary(request).ConfigureAwait(false);
         return response;
     }
 }

@@ -13,7 +13,7 @@ internal static class Command
     /// <returns></returns>
     internal static string ResponseASFTradeExtensionVersion()
     {
-        return FormatStaticResponse(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), MyVersion.ToString()));
+        return Utils.FormatStaticResponse(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), Utils.MyVersion.ToString()));
     }
 
     /// <summary>
@@ -22,17 +22,17 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseCheckLatestVersion()
     {
-        GitHubReleaseResponse? response = await WebRequest.GetLatestRelease(true).ConfigureAwait(false);
+        var response = await WebRequest.GetLatestRelease(true).ConfigureAwait(false);
 
         if (response == null)
         {
-            return FormatStaticResponse(Langs.GetReleaseInfoFailed);
+            return Utils.FormatStaticResponse(Langs.GetReleaseInfoFailed);
         }
 
-        StringBuilder sb = new();
-        sb.AppendLine(FormatStaticResponse(Langs.MultipleLineResult));
+        var sb = new StringBuilder();
+        sb.AppendLine(Utils.FormatStaticResponse(Langs.MultipleLineResult));
 
-        sb.AppendLine(string.Format(Langs.ASFECurrentVersion, MyVersion.ToString()));
+        sb.AppendLine(string.Format(Langs.ASFECurrentVersion, Utils.MyVersion.ToString()));
         sb.AppendLine(string.Format(Langs.ASFEOnlineVersion, response.TagName));
         sb.AppendLine(string.Format(Langs.Detail, response.Body));
         sb.AppendLine(Langs.Assert);
@@ -57,12 +57,12 @@ internal static class Command
 
         if (releaseResponse == null)
         {
-            return FormatStaticResponse(Langs.GetReleaseInfoFailed);
+            return Utils.FormatStaticResponse(Langs.GetReleaseInfoFailed);
         }
 
-        if (MyVersion.ToString() == releaseResponse.TagName)
+        if (Utils.MyVersion.ToString() == releaseResponse.TagName)
         {
-            return FormatStaticResponse(Langs.AlreadyLatest);
+            return Utils.FormatStaticResponse(Langs.AlreadyLatest);
         }
 
         string langVersion = Langs.CurrentLanguage;
@@ -86,17 +86,17 @@ internal static class Command
 
         if (binResponse == null)
         {
-            return FormatStaticResponse(Langs.DownloadFailed);
+            return Utils.FormatStaticResponse(Langs.DownloadFailed);
         }
 
         var zipBytes = binResponse?.Content as byte[] ?? binResponse?.Content?.ToArray();
 
         if (zipBytes == null)
         {
-            return FormatStaticResponse(Langs.DownloadFailed);
+            return Utils.FormatStaticResponse(Langs.DownloadFailed);
         }
 
-        MemoryStream ms = new(zipBytes);
+        var ms = new MemoryStream(zipBytes);
 
         try
         {
@@ -104,7 +104,7 @@ internal static class Command
             {
                 using ZipArchive zipArchive = new(ms);
 
-                string currentPath = MyLocation ?? ".";
+                string currentPath = Utils.MyLocation ?? ".";
                 string pluginFolder = Path.GetDirectoryName(currentPath) ?? ".";
                 string backupPath = Path.Combine(pluginFolder, $"{nameof(ASFTradeExtension)}.bak");
 
@@ -115,13 +115,13 @@ internal static class Command
                     if (entry.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                     {
                         entry.ExtractToFile(currentPath, true);
-                        UpdatePadding = true;
+                        Utils.UpdatePadding = true;
 
-                        StringBuilder sb = new();
+                        var sb = new StringBuilder();
                         sb.AppendLine(Langs.UpdateSuccess);
 
                         sb.AppendLine();
-                        sb.AppendLine(string.Format(Langs.ASFECurrentVersion, MyVersion.ToString()));
+                        sb.AppendLine(string.Format(Langs.ASFECurrentVersion, Utils.MyVersion.ToString()));
                         sb.AppendLine(string.Format(Langs.ASFEOnlineVersion, releaseResponse.TagName));
                         sb.AppendLine(string.Format(Langs.Detail, releaseResponse.Body));
 
@@ -134,8 +134,8 @@ internal static class Command
         }
         catch (Exception e)
         {
-            ASFLogger.LogGenericException(e);
-            return FormatStaticResponse(Langs.UpdateFiledWithZip);
+            Utils.Logger.LogGenericException(e);
+            return Utils.FormatStaticResponse(Langs.UpdateFiledWithZip);
         }
     }
 }

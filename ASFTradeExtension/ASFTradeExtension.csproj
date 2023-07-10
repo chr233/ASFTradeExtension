@@ -34,9 +34,6 @@
 
 	<ItemGroup>
 		<Using Include="ASFTradeExtension.Localization" />
-		<Using Include="ASFTradeExtension.Utils">
-	    <Static>True</Static>
-	  </Using>
 	</ItemGroup>
 
 	<ItemGroup>

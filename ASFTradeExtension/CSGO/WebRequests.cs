@@ -3,7 +3,6 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
-using ArchiSteamFarm.Web.Responses;
 using ASFTradeExtension.Data;
 
 namespace ASFTradeExtension.Csgo;
@@ -17,8 +16,8 @@ internal static class WebRequests
     /// <returns></returns>
     internal static async Task<string?> GetTradeToken(Bot bot)
     {
-        Uri request = new(SteamCommunityURL, $"/profiles/{bot.SteamID}/tradeoffers/privacy");
-        HtmlDocumentResponse? response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, referer: SteamStoreURL).ConfigureAwait(false);
+        var request = new Uri(Utils.SteamCommunityURL, $"/profiles/{bot.SteamID}/tradeoffers/privacy");
+        var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, referer: Utils.SteamStoreURL).ConfigureAwait(false);
 
         if (response?.Content == null)
         {
@@ -46,8 +45,8 @@ internal static class WebRequests
     /// <returns></returns>
     internal static async Task<SellItemResponse?> SellItem(Bot bot, Asset asset, decimal price)
     {
-        Uri request = new(SteamCommunityURL, "/market/sellitem/");
-        Dictionary<string, string> data = new(6) {
+        var request = new Uri(Utils.SteamCommunityURL, "/market/sellitem/");
+        var data = new Dictionary<string, string>(6) {
             { "appid", asset.AppID.ToString() },
             { "contextid", asset.ContextID.ToString() },
             { "assetid", asset.AssetID.ToString() },
@@ -69,8 +68,8 @@ internal static class WebRequests
     /// <returns></returns>
     internal static async Task<MarketHistoryResponse?> GetMarketHistory(Bot bot, uint count = 50, uint start = 0)
     {
-        Uri request = new(SteamCommunityURL, $"/market/myhistory/render/?count={count}&start={start}");
-        Uri referer = new(SteamCommunityURL, "/market/");
+        var request = new Uri(Utils.SteamCommunityURL, $"/market/myhistory/render/?count={count}&start={start}");
+        var referer = new Uri(Utils.SteamCommunityURL, "/market/");
 
         var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<MarketHistoryResponse>(request, referer: referer).ConfigureAwait(false);
 
@@ -85,8 +84,8 @@ internal static class WebRequests
     /// <returns></returns>
     internal static async Task<bool> RemoveMarketListing(Bot bot, string itemId)
     {
-        Uri request = new(SteamCommunityURL, $"/market/removelisting/{itemId}");
-        Uri referer = new(SteamCommunityURL, "/market/");
+        var request = new Uri(Utils.SteamCommunityURL, $"/market/removelisting/{itemId}");
+        var referer = new Uri(Utils.SteamCommunityURL, "/market/");
 
         var response = await bot.ArchiWebHandler.UrlPostWithSession(request, referer: referer, session: ArchiWebHandler.ESession.Lowercase).ConfigureAwait(false);
 

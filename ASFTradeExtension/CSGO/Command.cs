@@ -67,8 +67,8 @@ internal static partial class Command
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }
 
-        Dictionary<ulong, string> itemNames = new();
-        Dictionary<ulong, int> itemCount = new();
+        var itemNames = new Dictionary<ulong, string>();
+        var itemCount = new Dictionary<ulong, int>();
 
         foreach (var asset in inventory)
         {
@@ -101,7 +101,7 @@ internal static partial class Command
             return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
         }
 
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         sb.AppendLine(bot.FormatBotResponse(Langs.MultipleLineResult));
 
         foreach (var classId in keys)
@@ -128,16 +128,15 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseCsItemList(bot, query))).ConfigureAwait(false);
-
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseCsItemList(bot, query))).ConfigureAwait(false);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
@@ -162,7 +161,7 @@ internal static partial class Command
 
         var classIds = queries.Select(q => uint.TryParse(q, out uint appId) ? appId : 0);
 
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         sb.AppendLine(bot.FormatBotResponse(Langs.MultipleLineResult));
 
         if (classIds.Any())
@@ -178,8 +177,8 @@ internal static partial class Command
                 return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
             }
 
-            Dictionary<ulong, string> itemNames = new();
-            Dictionary<ulong, int> itemCount = new();
+            var itemNames = new Dictionary<ulong, string>();
+            var itemCount = new Dictionary<ulong, int>();
 
             foreach (var asset in inventory)
             {
@@ -236,16 +235,15 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseCSItemCount(bot, query))).ConfigureAwait(false);
-
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseCSItemCount(bot, query))).ConfigureAwait(false);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
@@ -322,7 +320,7 @@ internal static partial class Command
             countPerBot = invCount / bots.Count();
         }
 
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         sb.AppendLine(bot.FormatBotResponse(Langs.MultipleLineResult));
 
         int skip = 0;
@@ -332,7 +330,7 @@ internal static partial class Command
             skip += countPerBot;
             if (offer.Any())
             {
-                var (success, tradeOfferIDs, _) = await b.ArchiWebHandler.SendTradeOffer(bot.SteamID, null, offer, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
+                var (success, tradeOfferIDs, _) = await b.ArchiWebHandler.SendTradeOffer(bot.SteamID, null, offer, tradeToken, false, Utils.Config.MaxItemPerTrade).ConfigureAwait(false);
 
                 if (success && tradeOfferIDs != null && autoConfirm)
                 {
@@ -372,16 +370,16 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSendCsItem(bot, strClassId, strCountPerBot, autoConfirm))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseSendCsItem(bot, strClassId, strCountPerBot, autoConfirm))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
@@ -456,16 +454,16 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSellCsItem(bot, strClassId, strCount, strPrice, autoConfirm))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
@@ -520,10 +518,10 @@ internal static partial class Command
             return bot.FormatBotResponse(classId == 0 ? Langs.NoSellingCsItem : Langs.NoSelingCsItemInFilter);
         }
 
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
-        Dictionary<ulong, int> itemCount = new();
+        var itemCount = new Dictionary<ulong, int>();
 
         foreach (var asset in items)
         {
@@ -562,16 +560,16 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseGetCsMarketInfo(bot, strClassId))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseGetCsMarketInfo(bot, strClassId))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
@@ -653,16 +651,16 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseCsRemoveListing(bot, strClassId))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseCsRemoveListing(bot, strClassId))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }

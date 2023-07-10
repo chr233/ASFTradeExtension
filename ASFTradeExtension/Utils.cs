@@ -118,6 +118,6 @@ internal static class Utils
     /// <summary>
     /// 日志
     /// </summary>
-    internal static ArchiLogger ASFLogger => ASF.ArchiLogger;
+    internal static ArchiLogger Logger => ASF.ArchiLogger;
 
 }

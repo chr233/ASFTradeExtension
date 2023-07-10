@@ -28,7 +28,7 @@ internal static class Handler
         }
         catch (Exception e)
         {
-            ASFLogger.LogGenericException(e);
+            Utils.Logger.LogGenericException(e);
             return null;
         }
     }

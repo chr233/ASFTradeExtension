@@ -7,22 +7,25 @@ internal static class CardSetManager
 {
     private static ConcurrentDictionary<uint, int> FullSetCount { get; } = new();
 
-    private static ConcurrentDictionary<uint, string?> AppName { get; set; } = new();
     public static async Task<int> GetCardSetCount(Bot bot, uint appId)
     {
         if (FullSetCount.TryGetValue(appId, out var value))
+        {
             return value;
+        }
         return await FetchCardSetCount(bot, appId).ConfigureAwait(false);
     }
 
     private static async Task<int> FetchCardSetCount(Bot bot, uint appId)
     {
-        Uri request = new(SteamCommunityURL, $"/profiles/{bot.SteamID}/gamecards/{appId}/");
+        var request = new Uri(Utils.SteamCommunityURL, $"/profiles/{bot.SteamID}/gamecards/{appId}/");
 
         var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
         if (response?.Content == null)
+        {
             return -1;
+        }
 
         if (response.FinalUri.PathAndQuery.EndsWith("badges"))
         {
@@ -31,7 +34,9 @@ internal static class CardSetManager
         }
 
         if (response.Content.QuerySelector("div.badge_detail_tasks") == null)
+        {
             return -1;
+        }
 
         var count = response.Content.QuerySelectorAll("div.badge_card_set_card").Length;
         FullSetCount.TryAdd(appId, count);

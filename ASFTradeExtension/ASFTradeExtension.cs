@@ -16,7 +16,7 @@ namespace ASFTradeExtension;
 internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
 {
     public string Name => nameof(ASFTradeExtension);
-    public Version Version => MyVersion;
+    public Version Version => Utils.MyVersion;
 
     [JsonProperty]
     public static PluginConfig Config => Utils.Config;
@@ -27,7 +27,6 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// <returns></returns>
     public Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null)
     {
-        StringBuilder sb = new();
 
         PluginConfig? config = null;
 
@@ -47,13 +46,15 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                     }
                     catch (Exception ex)
                     {
-                        ASFLogger.LogGenericException(ex);
+                        Utils.Logger.LogGenericException(ex);
                     }
                 }
             }
         }
 
         Utils.Config = config ?? new();
+
+        var sb = new StringBuilder();
 
         //使用协议
         if (!Config.EULA)
@@ -66,12 +67,12 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
         if (sb.Length > 0)
         {
-            ASFLogger.LogGenericWarning(sb.ToString());
+            Utils.Logger.LogGenericWarning(sb.ToString());
         }
         //统计
         if (Config.Statistic)
         {
-            Uri request = new("https://asfe.chrxw.com/asftradeextension");
+            var request = new Uri("https://asfe.chrxw.com/asftradeextension");
             _ = new Timer(
                 async (_) =>
                 {
@@ -108,16 +109,16 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// <returns></returns>
     public Task OnLoaded()
     {
-        StringBuilder message = new("\n");
+        var message = new StringBuilder("\n");
         message.AppendLine(Static.Line);
         message.AppendLine(Static.Logo);
         message.AppendLine(Static.Line);
-        message.AppendLine(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), MyVersion.ToString()));
+        message.AppendLine(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), Utils.MyVersion.ToString()));
         message.AppendLine(Langs.PluginContact);
         message.AppendLine(Langs.PluginInfo);
         message.AppendLine(Static.Line);
 
-        string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
+        string pluginFolder = Path.GetDirectoryName(Utils.MyLocation) ?? ".";
         string backupPath = Path.Combine(pluginFolder, $"{nameof(ASFTradeExtension)}.bak");
         bool existsBackup = File.Exists(backupPath);
         if (existsBackup)
@@ -129,7 +130,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             }
             catch (Exception e)
             {
-                ASFLogger.LogGenericException(e);
+                Utils.Logger.LogGenericException(e);
                 message.AppendLine(Langs.CleanUpOldBackupFailed);
             }
         }
@@ -141,7 +142,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
         message.AppendLine(Static.Line);
 
-        ASFLogger.LogGenericInfo(message.ToString());
+        Utils.Logger.LogGenericInfo(message.ToString());
 
         return Task.CompletedTask;
     }
@@ -160,7 +161,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     {
         string cmd = args[0].ToUpperInvariant();
 
-        if (cmd.StartsWith("CTE."))
+        if (cmd.StartsWith("ATE."))
         {
             cmd = cmd.Substring(4);
         }
@@ -169,7 +170,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             //跳过禁用命令
             if (Config.DisabledCmds?.Contains(cmd) == true)
             {
-                ASFLogger.LogGenericInfo("Command {0} is disabled!");
+                Utils.Logger.LogGenericInfo("Command {0} is disabled!");
                 return null;
             }
         }
@@ -209,16 +210,16 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
 
                     //Update
-                    case "CARDTRADEXTENSION" when access >= EAccess.FamilySharing:
-                    case "CTE" when access >= EAccess.FamilySharing:
+                    case "ASFTRADEXTENSION" when access >= EAccess.FamilySharing:
+                    case "ATE" when access >= EAccess.FamilySharing:
                         return Update.Command.ResponseASFTradeExtensionVersion();
 
-                    case "CTEVERSION" when access >= EAccess.Operator:
-                    case "CTEV" when access >= EAccess.Operator:
+                    case "ATEVERSION" when access >= EAccess.Operator:
+                    case "ATEV" when access >= EAccess.Operator:
                         return await Update.Command.ResponseCheckLatestVersion().ConfigureAwait(false);
 
-                    case "CTEUPDATE" when access >= EAccess.Owner:
-                    case "CTEU" when access >= EAccess.Owner:
+                    case "ATEUPDATE" when access >= EAccess.Owner:
+                    case "ATEU" when access >= EAccess.Owner:
                         return await Update.Command.ResponseUpdatePlugin().ConfigureAwait(false);
 
 
@@ -366,13 +367,13 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             }
             string cfg = JsonConvert.SerializeObject(Config, Formatting.Indented);
 
-            StringBuilder sb = new();
+            var sb = new StringBuilder();
             sb.AppendLine(Langs.ErrorLogTitle);
             sb.AppendLine(Static.Line);
             sb.AppendLine(string.Format(Langs.ErrorLogOriginMessage, message));
             sb.AppendLine(string.Format(Langs.ErrorLogAccess, access.ToString()));
             sb.AppendLine(string.Format(Langs.ErrorLogASFVersion, version));
-            sb.AppendLine(string.Format(Langs.ErrorLogPluginVersion, MyVersion));
+            sb.AppendLine(string.Format(Langs.ErrorLogPluginVersion, Utils.MyVersion));
             sb.AppendLine(Static.Line);
             sb.AppendLine(cfg);
             sb.AppendLine(Static.Line);
@@ -384,7 +385,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             {
                 await Task.Delay(500).ConfigureAwait(false);
                 sb.Insert(0, '\n');
-                ASFLogger.LogGenericError(sb.ToString());
+                Utils.Logger.LogGenericError(sb.ToString());
             }).ConfigureAwait(false);
 
             return sb.ToString();
@@ -394,7 +395,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
     {
         bool accept = Csgo.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
-        ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
+        Utils.Logger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
         return Task.FromResult(accept);
     }
 
@@ -403,7 +404,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         foreach (var tradeResult in tradeResults)
         {
             Csgo.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
-            ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
+            Utils.Logger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
         }
         return Task.CompletedTask;
     }

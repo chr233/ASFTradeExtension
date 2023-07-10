@@ -77,7 +77,7 @@ internal static partial class Command
 
         var cardGroup = await Handler.GetAppCardGroup(bot, appIds, inventory).ConfigureAwait(false);
 
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
         foreach (uint appId in keys)
@@ -127,16 +127,16 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetList(bot, query))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetList(bot, query))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
@@ -161,7 +161,7 @@ internal static partial class Command
 
         var appIds = queries.Select(q => uint.TryParse(q, out uint appId) ? appId : 0);
 
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
         if (appIds.Any())
@@ -243,16 +243,16 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
@@ -281,7 +281,7 @@ internal static partial class Command
             return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
         }
 
-        ulong targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
+        ulong targetSteamId = Utils.Steam322SteamId(ulong.Parse(match.Groups[1].Value));
         string tradeToken = match.Groups[2].Value;
 
         if (!new SteamID(targetSteamId).IsIndividualAccount)
@@ -297,7 +297,7 @@ internal static partial class Command
 
         var bundle = await Handler.GetAppCardBundle(bot, appId, inventory).ConfigureAwait(false);
 
-        StringBuilder sb = new();
+        var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
         if (bundle.Assets != null)
@@ -316,7 +316,7 @@ internal static partial class Command
             }
             else
             {
-                List<Asset> offer = new();
+                var offer = new List<Asset>();
                 var flag = bundle.Assets.Select(x => x.ClassID).Distinct().ToDictionary(x => x, _ => setCount);
 
                 foreach (var asset in bundle.Assets)
@@ -332,7 +332,7 @@ internal static partial class Command
                 if (offer.Any())
                 {
                     sb.AppendLine(string.Format(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet));
-                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
+                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Utils.Config.MaxItemPerTrade).ConfigureAwait(false);
 
                     if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
                     {
@@ -379,16 +379,16 @@ internal static partial class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
         {
-            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSendCardSet(bot, strAppId, strSetCount, tradeLink, autoConfirm))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseSendCardSet(bot, strAppId, strSetCount, tradeLink, autoConfirm))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }

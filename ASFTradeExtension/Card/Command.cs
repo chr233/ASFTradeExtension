@@ -68,7 +68,9 @@ internal static partial class Command
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }
 
-        var appIds = inventory.Select(x => x.RealAppID).Distinct().OrderBy(x => inventory.Count(y => y.RealAppID == x)).Reverse();
+        var appIds = Utils.OrderLisr(Utils.DistinctList(inventory, x => x.RealAppID)
+            .OrderByDescending(x => inventory.Count(y => y.RealAppID == x)));
+
         var keys = appIds.Skip(page * count).Take(count);
         if (!keys.Any())
         {
@@ -317,7 +319,7 @@ internal static partial class Command
             else
             {
                 var offer = new List<Asset>();
-                var flag = bundle.Assets.Select(x => x.ClassID).Distinct().ToDictionary(x => x, _ => setCount);
+                var flag = Utils.DistinctList(bundle.Assets, x => x.ClassID).ToDictionary(x => x, _ => setCount);
 
                 foreach (var asset in bundle.Assets)
                 {

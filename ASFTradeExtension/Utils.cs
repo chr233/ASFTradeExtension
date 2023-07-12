@@ -3,6 +3,7 @@ using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
 using ASFTradeExtension.Data;
+using Newtonsoft.Json.Linq;
 using System.Reflection;
 
 namespace ASFTradeExtension;
@@ -120,4 +121,56 @@ internal static class Utils
     /// </summary>
     internal static ArchiLogger Logger => ASF.ArchiLogger;
 
+    internal static HashSet<T> DistinctList<T>(IEnumerable<T> values)
+    {
+        var result = new HashSet<T>();
+        foreach (var value in values)
+        {
+            result.Add(value);
+        }
+        return result;
+    }
+
+    internal static HashSet<V> DistinctList<T, V>(IEnumerable<T> values, Func<T, V> selector)
+    {
+        var result = new HashSet<V>();
+
+        foreach (var value in values)
+        {
+            result.Add(selector(value));
+        }
+        return result;
+    }
+
+    internal static List<T> OrderLisr<T>(IEnumerable<T> values, bool reverse = false)
+    {
+        var list = values.ToList();
+
+        if (!reverse)
+        {
+            list.Sort(Comparer<T>.Default.Compare);
+        }
+        else
+        {
+            list.Sort((x, y) => Comparer<T>.Default.Compare(y, x));
+        }
+
+        return list;
+    }
+
+    internal static List<T> OrderLisr<T, V>(IEnumerable<T> values, Func<T, V> selector, bool reverse = false)
+    {
+        var list = values.ToList();
+
+        if (!reverse)
+        {
+            list.Sort((x, y) => Comparer<V>.Default.Compare(selector(x), selector(y)));
+        }
+        else
+        {
+            list.Sort((x, y) => Comparer<V>.Default.Compare(selector(y), selector(x)));
+        }
+
+        return list;
+    }
 }

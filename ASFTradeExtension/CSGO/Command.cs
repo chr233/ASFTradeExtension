@@ -1,7 +1,10 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Security;
+using ASFTradeExtension.Data;
+using SteamKit2;
 using System.Globalization;
 using System.Text;
 
@@ -663,5 +666,112 @@ internal static partial class Command
         var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
+    /// 转移CS物品
+    /// </summary>
+    /// <param name="botName"></param>
+    /// <param name="tradeLink"></param>
+    /// <param name="option"></param>
+    /// <returns></returns>
+    internal static async Task<string> ResponseBotStatus(string botName, string tradeLink, string? option = null)
+    {
+        var bot = Bot.GetBot(botName);
+        if (bot == null)
+        {
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
+        }
+
+        var match = RegexUtils.MatchTradeLink().Match(tradeLink);
+
+        ulong targetSteamId = Utils.Steam322SteamId(ulong.Parse(match.Groups[1].Value));
+        string tradeToken = match.Groups[2].Value;
+
+        if (!new SteamID(targetSteamId).IsIndividualAccount)
+        {
+            return bot.FormatBotResponse(Langs.SteamIdInvalid);
+        }
+
+        var itemType = option?.ToUpperInvariant() switch
+        {
+            "CASE" => CsgoItemType.WeaponCase,
+            "WEAPON" => CsgoItemType.Weapon,
+            "MUSIC" => CsgoItemType.MusicKit,
+            "TOOL" => CsgoItemType.Tool,
+            "COLLECT" => CsgoItemType.Collectible,
+            "PLAYER" => CsgoItemType.Player,
+            "OTHER" => CsgoItemType.Other,
+            "ALL" => CsgoItemType.All,
+            _ => CsgoItemType.WeaponCase,
+        };
+
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            var (succ, msg) = bot.Actions.Start();
+            if (!succ)
+            {
+                return bot.FormatBotResponse(string.Format("机器人启动失败 {0}", msg));
+            }
+
+            int i = 5;
+            while (i-- > 0)
+            {
+                await Task.Delay(2000).ConfigureAwait(false);
+                if (bot.IsConnectedAndLoggedOn)
+                {
+                    break;
+                }
+            }
+
+            if (!bot.IsConnectedAndLoggedOn)
+            {
+                return bot.FormatBotResponse("机器人启动超时");
+            }
+        }
+
+        var invDict = await Handler.GetCsgoInventory(bot).ConfigureAwait(false);
+        if (invDict == null)
+        {
+            return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
+        }
+
+        var offer = new List<Asset>();
+        foreach (var (type, items) in invDict)
+        {
+            if (itemType.HasFlag(type))
+            {
+                foreach (var item in items)
+                {
+                    if (item.Tradable)
+                    {
+                        offer.Add(item);
+                    }
+                }
+            }
+        }
+
+        if (offer.Any())
+        {
+            var sb = new StringBuilder();
+
+            var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, 255).ConfigureAwait(false);
+
+            if (mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+            {
+                (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+                sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
+
+            }
+
+            sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
+
+            return sb.ToString();
+        }
+        else
+        {
+            return bot.FormatBotResponse(string.Format("可交易物品列表为空, 筛选模式 {0}", itemType));
+        }
     }
 }

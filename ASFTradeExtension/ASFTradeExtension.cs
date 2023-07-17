@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Composition;
 using System.Text;
+using static SteamKit2.GC.Underlords.Internal.CMsgClientToGCGetFriendCodesResponse;
 
 namespace ASFTradeExtension;
 
@@ -328,6 +329,13 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                     case "CSDELISTING" when access >= EAccess.Master:
                     case "CDL" when access >= EAccess.Master:
                         return await Csgo.Command.ResponseCsRemoveListing(bot, args[1]).ConfigureAwait(false);
+
+                    case "TRANSFERCSGO" when argLength == 3 && access >= EAccess.Master:
+                    case "TRC" when argLength == 3 && access >= EAccess.Master:
+                        return await Csgo.Command.ResponseBotStatus(args[1], args[2], null).ConfigureAwait(false);
+                    case "TRANSFERCSGO" when argLength == 4 && access >= EAccess.Master:
+                    case "TRC" when argLength == 4 && access >= EAccess.Master:
+                        return await Csgo.Command.ResponseBotStatus(args[1], args[2], args[3]).ConfigureAwait(false);
 
                     default:
                         return null;

@@ -49,10 +49,11 @@ Not compatible with the common version of ASF currently, use generic version of 
 
 ### 更新日志
 
-| ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明   |
-| --------------------------------------------------------------------------- | :-----------: | ---------- |
-| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复   |
-| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本 |
+| ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                             |
+| --------------------------------------------------------------------------- | :-----------: | ------------------------------------ |
+| [1.0.6.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.0) |    5.4.8.3    | 修改了一些代码, 卡牌交易功能有待测试 |
+| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复                             |
+| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本                           |
 
 <details>
   <summary>历史版本</summary>

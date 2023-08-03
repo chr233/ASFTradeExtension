@@ -431,7 +431,7 @@ internal static partial class Command
 
         if (autoConfirm)
         {
-            var (success, confirmations, message) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Market, null, true).ConfigureAwait(false);
+            var (success, confirmations, message) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Market, null, true).ConfigureAwait(false);
             return bot.FormatBotResponse(string.Format(Langs.ItemListingSuccess, inventory.Count(), success ? Langs.Success : Langs.Failure));
         }
         else
@@ -759,7 +759,7 @@ internal static partial class Command
 
             if (mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
             {
-                (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+                (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
                 sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
 

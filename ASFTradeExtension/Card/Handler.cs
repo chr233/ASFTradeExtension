@@ -119,7 +119,7 @@ internal static class Handler
         if (countPerSet > 0)
         {
             assets = inventory.Where(x => x.RealAppID == appId);
-            var classIds = Utils.DistinctList(assets,x => x.ClassID);
+            var classIds = Utils.DistinctList(assets, static x => x.ClassID);
 
             if (classIds.Count() == countPerSet)
             {

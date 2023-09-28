@@ -19,6 +19,8 @@
 
 ASFTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https://keylol.com/t876377-1-1)
 
+[Русская Версия](README.ru.md)  
+
 ## EULA
 
 > 请不要使用本插件来进行不受欢迎的行为, 包括但不限于: 刷好评, 发布广告 等.

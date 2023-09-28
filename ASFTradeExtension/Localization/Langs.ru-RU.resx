@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -162,11 +162,11 @@
   <data name="Assert" xml:space="preserve">
     <value> - Assets: </value>
   </data>
-  <data name="DownloadFailed" xml:space="preserve">
-    <value>Не удалось загрузить плагин!</value>
-  </data>
   <data name="AlreadyLatest" xml:space="preserve">
     <value>Плагин уже обновлен, нет необходимости в обновлении</value>
+  </data>
+  <data name="DownloadFailed" xml:space="preserve">
+    <value>Не удалось загрузить плагин!</value>
   </data>
   <data name="CleanUpOldBackup" xml:space="preserve">
     <value>Успешная очиститка старых бекапов плагина</value>
@@ -174,26 +174,26 @@
   <data name="CleanUpOldBackupFailed" xml:space="preserve">
     <value>Не удалось очистить старые бекапы плагина</value>
   </data>
-  <data name="ASFEUpdateTips" xml:space="preserve">
-    <value>Используй команду "ASFEUPDATE" / "AU" для обновления плагина</value>
-  </data>
   <data name="ASFEVersionTips" xml:space="preserve">
     <value>Используй команду "ASFEVERSION" / "AV" чтобы проверить последнюю версию плагина</value>
   </data>
-  <data name="ErrorLogAccess" xml:space="preserve">
-    <value> - Access: {0}</value>
+  <data name="ASFEUpdateTips" xml:space="preserve">
+    <value>Используй команду "ASFEUPDATE" / "AU" для обновления плагина</value>
   </data>
   <data name="ErrorLogTitle" xml:space="preserve">
     <value>ASFTradeExtension обнаружил ошибку, журнал ошибок ниже</value>
+  </data>
+  <data name="ErrorLogOriginMessage" xml:space="preserve">
+    <value> - Origin Message: {0}</value>
+  </data>
+  <data name="ErrorLogAccess" xml:space="preserve">
+    <value> - Access: {0}</value>
   </data>
   <data name="ErrorLogASFVersion" xml:space="preserve">
     <value> - Версия ASF: {0}</value>
   </data>
   <data name="ErrorLogErrorName" xml:space="preserve">
     <value> - Exception Type: {0}</value>
-  </data>
-  <data name="ErrorLogOriginMessage" xml:space="preserve">
-    <value> - Origin Message: {0}</value>
   </data>
   <data name="ErrorLogErrorMessage" xml:space="preserve">
     <value> - Exception Message: {0}</value>
@@ -225,7 +225,109 @@
   <data name="UpdateSuccess" xml:space="preserve">
     <value>Обновление плагина завершено, перезапустите ASF, чтобы применить обновление, если оно несовместимо, пожалуйста, также обновите ASF</value>
   </data>
+  <data name="LoadInventoryFailedNetworkError" xml:space="preserve">
+    <value>Не удалось считать информацию инвентаря из-за сетевой ошибки</value>
+  </data>
+  <data name="CardInventoryIsEmpty" xml:space="preserve">
+    <value>В инвентаре отсутствуют карточки</value>
+  </data>
+  <data name="CurrentCardInventoryShow" xml:space="preserve">
+    <value>{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张</value>
+  </data>
+  <data name="NoAvilableCards" xml:space="preserve">
+    <value>Карточки отсутствуют</value>
+  </data>
+  <data name="NoInformation" xml:space="preserve">
+    <value>Информация отсутствует</value>
+  </data>
+  <data name="ArgumentInvalidAppIds" xml:space="preserve">
+    <value>输入参数 AppIds 无效</value>
+  </data>
+  <data name="AppIdInvalid" xml:space="preserve">
+    <value>Неверный AppId</value>
+  </data>
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
+  </data>
+  <data name="ArgumentInvalidFSL" xml:space="preserve">
+    <value>Неправильный параметр, пример: -p 2 -l 20 (вторая страница, 20 предмет на странице)</value>
+  </data>
+  <data name="ArgumentInvalidSCS" xml:space="preserve">
+    <value>Недопустимый параметр, 示例 730 2 交易链接</value>
+  </data>
+  <data name="ArgumentInvalidSCS2" xml:space="preserve">
+    <value>AppId 和 SetCount 必须大于0</value>
+  </data>
+  <data name="SteamIdInvalid" xml:space="preserve">
+    <value>Неверный SteamId</value>
+  </data>
+  <data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
+    <value>Не удалось отправить трейд, недостаточное количество карт для обмена</value>
+  </data>
+  <data name="SendTradeResult" xml:space="preserve">
+    <value>交易报价发送{0}</value>
+  </data>
+  <data name="Failure" xml:space="preserve">
+    <value>Неудачно</value>
+  </data>
+  <data name="SendTradeFailedAppIdInvalid" xml:space="preserve">
+    <value>Не удалось отправить трейд, AppId может быть не верным</value>
+  </data>
+  <data name="InventoryStatusBeforeTrade" xml:space="preserve">
+    <value>交易前库存状态:</value>
+  </data>
+  <data name="NoAvilableItemToShow" xml:space="preserve">
+    <value>При текущих настройках ничего не отображается</value>
+  </data>
+  <data name="ExpectToSendCardInfo" xml:space="preserve">
+    <value>Предполагаемое количество ожидаемых отправления наборов {0}, всего карточек {1}</value>
+  </data>
+  <data name="TFAConfirmResult" xml:space="preserve">
+    <value>2FA自动确认{0}</value>
+  </data>
+  <data name="ThreeItemWithNum" xml:space="preserve">
+    <value>{0} {1} 数量 {2}</value>
+  </data>
+  <data name="InvalidClassId" xml:space="preserve">
+    <value>Неверный ClassIdvalue>
+  </data>
+  <data name="SengTradeSuccess" xml:space="preserve">
+    <value>Отправить трейд {0} -&gt; {1}, количество предметов {2}, {3}</value>
+  </data>
+  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
+    <value>Отправить трейд {0} -&gt; {1} Отклонено, нет предметов в наличии</value>
+  </data>
+  <data name="SendCsItemArgsTips" xml:space="preserve">
+    <value>Неверный SENDCSITEM [Bots] [ClassId] Количество предметов для отправки каждому боту, если ClassId не указан, то будут отправлены все доступные для торговли/обмена предметы, в противном случае будут отправлены только указанные предметы.</value>
+  </data>
+  <data name="FetchTradeLinkFailed" xml:space="preserve">
+    <value>Ошибка автоматического получения ссылки на транзакцию</value>
+  </data>
+  <data name="NoBotsAvilable" xml:space="preserve">
+    <value>Нет доступных ботов</value>
+  </data>
+  <data name="ItemListingSuccess" xml:space="preserve">
+    <value>共计 {0} 个物品上架 {1}</value>
+  </data>
+  <data name="ItemListSuccessWaitConfirm" xml:space="preserve">
+    <value>共计 {0} 个物品上架, 等待手动确认</value>
+  </data>
+  <data name="SellCsItemArgsTips" xml:space="preserve">
+    <value>参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部</value>
+  </data>
+  <data name="NoSellingCsItem" xml:space="preserve">
+    <value>无正在出售的CSGO物品</value>
+  </data>
+  <data name="NoSelingCsItemInFilter" xml:space="preserve">
+    <value>过滤条件下无正在出售的CSGO物品</value>
+  </data>
+  <data name="CsMarketHistoryArgsTips" xml:space="preserve">
+    <value>参数无效 CSMARKETHISTORY [BotNames] [ClassId] , 不指定 ClassId 时下架全部物品</value>
+  </data>
+  <data name="DeListingSuccess" xml:space="preserve">
+    <value>成功下架了 {0} 个物品</value>
+  </data>
+  <data name="CsDeListingItemArgsTips" xml:space="preserve">
+    <value>参数无效 CSDELISTING [BotNames] [ClassId], 不指定 ClassId 时下架全部物品</value>
   </data>
 </root>

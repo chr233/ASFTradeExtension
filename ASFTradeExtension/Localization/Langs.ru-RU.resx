@@ -175,10 +175,10 @@
     <value>Не удалось очистить старые бекапы плагина</value>
   </data>
   <data name="ASFEVersionTips" xml:space="preserve">
-    <value>Используй команду "ASFEVERSION" / "AV" чтобы проверить последнюю версию плагина</value>
+    <value>Используй команду "CTEVERSION" / "CTEV" чтобы проверить последнюю версию плагина</value>
   </data>
   <data name="ASFEUpdateTips" xml:space="preserve">
-    <value>Используй команду "ASFEUPDATE" / "AU" для обновления плагина</value>
+    <value>Используй команду "CTEUPDATE	" / "CTEU" для обновления плагина</value>
   </data>
   <data name="ErrorLogTitle" xml:space="preserve">
     <value>ASFTradeExtension обнаружил ошибку, журнал ошибок ниже</value>
@@ -187,7 +187,7 @@
     <value> - Origin Message: {0}</value>
   </data>
   <data name="ErrorLogAccess" xml:space="preserve">
-    <value> - Access: {0}</value>
+    <value> - Доступ: {0}</value>
   </data>
   <data name="ErrorLogASFVersion" xml:space="preserve">
     <value> - Версия ASF: {0}</value>
@@ -196,19 +196,19 @@
     <value> - Exception Type: {0}</value>
   </data>
   <data name="ErrorLogErrorMessage" xml:space="preserve">
-    <value> - Exception Message: {0}</value>
+    <value> - Сообщение об ошибке: {0}</value>
   </data>
   <data name="PluginVer" xml:space="preserve">
     <value>{0} Версия {1}</value>
   </data>
   <data name="EulaWarning" xml:space="preserve">
-    <value>"ASFEnhance.EULA" не принят, некоторые функции отключены</value>
+    <value>"ASFTradeExtension.EULA" не принят, некоторые функции отключены</value>
   </data>
   <data name="Detail" xml:space="preserve">
     <value> - Описание: {0}</value>
   </data>
   <data name="UpdateTips" xml:space="preserve">
-    <value>Используй команду "ASFEUPDATE" / "AU" для обновления плагина</value>
+    <value>Используй команду "CTEUPDATE" / "CTEU" для обновления плагина</value>
   </data>
   <data name="SubLink" xml:space="preserve">
     <value>   - Ссылка: {0}</value>
@@ -232,7 +232,7 @@
     <value>В инвентаре отсутствуют карточки</value>
   </data>
   <data name="CurrentCardInventoryShow" xml:space="preserve">
-    <value>{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张</value>
+    <value>{0}: Всего {1} карточек, {2} карточек в наборе, Всего {3} наборов + {4} карточек, Торгуемых наборов {5} + {6} карточек</value>
   </data>
   <data name="NoAvilableCards" xml:space="preserve">
     <value>Карточки отсутствуют</value>
@@ -241,7 +241,7 @@
     <value>Информация отсутствует</value>
   </data>
   <data name="ArgumentInvalidAppIds" xml:space="preserve">
-    <value>输入参数 AppIds 无效</value>
+    <value>Параметр неверный</value>
   </data>
   <data name="AppIdInvalid" xml:space="preserve">
     <value>Неверный AppId</value>
@@ -253,10 +253,10 @@
     <value>Неправильный параметр, пример: -p 2 -l 20 (вторая страница, 20 предмет на странице)</value>
   </data>
   <data name="ArgumentInvalidSCS" xml:space="preserve">
-    <value>Недопустимый параметр, 示例 730 2 交易链接</value>
+    <value>Недопустимый параметр, пример: 730 2 Ссылка на трейд</value>
   </data>
   <data name="ArgumentInvalidSCS2" xml:space="preserve">
-    <value>AppId 和 SetCount 必须大于0</value>
+    <value>AppId и SetCount должны быть больше чем 0</value>
   </data>
   <data name="SteamIdInvalid" xml:space="preserve">
     <value>Неверный SteamId</value>
@@ -265,7 +265,7 @@
     <value>Не удалось отправить трейд, недостаточное количество карт для обмена</value>
   </data>
   <data name="SendTradeResult" xml:space="preserve">
-    <value>交易报价发送{0}</value>
+    <value>Трейд отправлен {0}</value>
   </data>
   <data name="Failure" xml:space="preserve">
     <value>Неудачно</value>
@@ -274,7 +274,7 @@
     <value>Не удалось отправить трейд, AppId может быть не верным</value>
   </data>
   <data name="InventoryStatusBeforeTrade" xml:space="preserve">
-    <value>交易前库存状态:</value>
+    <value>Состояние инвентаря до совершения операции:</value>
   </data>
   <data name="NoAvilableItemToShow" xml:space="preserve">
     <value>При текущих настройках ничего не отображается</value>
@@ -283,13 +283,13 @@
     <value>Предполагаемое количество ожидаемых отправления наборов {0}, всего карточек {1}</value>
   </data>
   <data name="TFAConfirmResult" xml:space="preserve">
-    <value>2FA自动确认{0}</value>
+    <value>Подтверждение 2FA {0}</value>
   </data>
   <data name="ThreeItemWithNum" xml:space="preserve">
-    <value>{0} {1} 数量 {2}</value>
+    <value>{0} {1} Количество {2}</value>
   </data>
   <data name="InvalidClassId" xml:space="preserve">
-    <value>Неверный ClassIdvalue>
+    <value>Неверный ClassId</value>
   </data>
   <data name="SengTradeSuccess" xml:space="preserve">
     <value>Отправить трейд {0} -&gt; {1}, количество предметов {2}, {3}</value>
@@ -307,22 +307,22 @@
     <value>Нет доступных ботов</value>
   </data>
   <data name="ItemListingSuccess" xml:space="preserve">
-    <value>共计 {0} 个物品上架 {1}</value>
+    <value>Всего {0} предметов, поставленных на продажу {1}</value>
   </data>
   <data name="ItemListSuccessWaitConfirm" xml:space="preserve">
-    <value>共计 {0} 个物品上架, 等待手动确认</value>
+    <value>>Всего {0} предметов, поставленных на продажу, Ожидание 2FA подтверждения</value>
   </data>
   <data name="SellCsItemArgsTips" xml:space="preserve">
-    <value>参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部</value>
+    <value>Параметр SELLCSITEM недействителен [BotNames] [ClassId] , если ClassId не указан, то все элементы будут помещены на продажу, Продать все, когда ClassId равен -1</value>
   </data>
   <data name="NoSellingCsItem" xml:space="preserve">
-    <value>无正在出售的CSGO物品</value>
+    <value>Отсутствие предметов CSGO для продажи</value>
   </data>
   <data name="NoSelingCsItemInFilter" xml:space="preserve">
-    <value>过滤条件下无正在出售的CSGO物品</value>
+    <value>Отсутствие предметов CSGO для продажи с текущими фильтрами</value>
   </data>
   <data name="CsMarketHistoryArgsTips" xml:space="preserve">
-    <value>参数无效 CSMARKETHISTORY [BotNames] [ClassId] , 不指定 ClassId 时下架全部物品</value>
+    <value>Параметр CSMARKETHISTORY недействителен  [BotNames] [ClassId] , если ClassId не указан, то все элементы будут помещены на продажу</value>
   </data>
   <data name="DeListingSuccess" xml:space="preserve">
     <value>成功下架了 {0} 个物品</value>

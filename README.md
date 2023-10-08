@@ -19,7 +19,7 @@
 
 ASFTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https://keylol.com/t876377-1-1)
 
-[Русская Версия](README.ru.md)  
+[Русская Версия](README.ru.md)
 
 ## EULA
 
@@ -53,7 +53,9 @@ Not compatible with the common version of ASF currently, use generic version of 
 
 | ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                             |
 | --------------------------------------------------------------------------- | :-----------: | ------------------------------------ |
-| [1.0.6.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.0) |    5.4.8.3    | 修改了一些代码, 卡牌交易功能有待测试 |
+| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                      |
+| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |    5.4.9.3    | ASF -> 5.4.9.3                       |
+| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |    5.4.8.3    | 修改了一些代码, 卡牌交易功能有待测试 |
 | [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复                             |
 | [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本                           |
 

@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [zh-Hans,en-Us]
+        language: [zh-Hans, en-US, ru-RU]
 
     runs-on: windows-latest
 
@@ -97,4 +97,3 @@ jobs:
             Use command `ATEU` to update this plugin
 
             release created bt github actions
-  

@@ -1,4 +1,3 @@
-using ASFTradeExtension.Data;
 using System.IO.Compression;
 using System.Text;
 
@@ -11,9 +10,9 @@ internal static class Command
     /// 查看插件版本
     /// </summary>
     /// <returns></returns>
-    internal static string ResponseASFTradeExtensionVersion()
+    internal static string? ResponseASFTradeExtensionVersion()
     {
-        return Utils.FormatStaticResponse(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), Utils.MyVersion.ToString()));
+        return FormatStaticResponse(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), Utils.MyVersion.ToString()));
     }
 
     /// <summary>
@@ -26,11 +25,11 @@ internal static class Command
 
         if (response == null)
         {
-            return Utils.FormatStaticResponse(Langs.GetReleaseInfoFailed);
+            return FormatStaticResponse(Langs.GetReleaseInfoFailed);
         }
 
         var sb = new StringBuilder();
-        sb.AppendLine(Utils.FormatStaticResponse(Langs.MultipleLineResult));
+        sb.AppendLine(FormatStaticResponse(Langs.MultipleLineResult));
 
         sb.AppendLine(string.Format(Langs.ASFECurrentVersion, Utils.MyVersion.ToString()));
         sb.AppendLine(string.Format(Langs.ASFEOnlineVersion, response.TagName));
@@ -57,12 +56,12 @@ internal static class Command
 
         if (releaseResponse == null)
         {
-            return Utils.FormatStaticResponse(Langs.GetReleaseInfoFailed);
+            return FormatStaticResponse(Langs.GetReleaseInfoFailed);
         }
 
-        if (Utils.MyVersion.ToString() == releaseResponse.TagName)
+        if (MyVersion.ToString() == releaseResponse.TagName)
         {
-            return Utils.FormatStaticResponse(Langs.AlreadyLatest);
+            return FormatStaticResponse(Langs.AlreadyLatest);
         }
 
         string langVersion = Langs.CurrentLanguage;
@@ -86,14 +85,14 @@ internal static class Command
 
         if (binResponse == null)
         {
-            return Utils.FormatStaticResponse(Langs.DownloadFailed);
+            return FormatStaticResponse(Langs.DownloadFailed);
         }
 
         var zipBytes = binResponse?.Content as byte[] ?? binResponse?.Content?.ToArray();
 
         if (zipBytes == null)
         {
-            return Utils.FormatStaticResponse(Langs.DownloadFailed);
+            return FormatStaticResponse(Langs.DownloadFailed);
         }
 
         var ms = new MemoryStream(zipBytes);
@@ -134,8 +133,8 @@ internal static class Command
         }
         catch (Exception e)
         {
-            Utils.Logger.LogGenericException(e);
-            return Utils.FormatStaticResponse(Langs.UpdateFiledWithZip);
+            Utils.ASFLogger.LogGenericException(e);
+            return FormatStaticResponse(Langs.UpdateFiledWithZip);
         }
     }
 }

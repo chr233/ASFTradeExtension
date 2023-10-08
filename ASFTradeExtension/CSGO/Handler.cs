@@ -29,7 +29,7 @@ internal static class Handler
         }
         catch (Exception e)
         {
-            Utils.Logger.LogGenericException(e);
+            Utils.ASFLogger.LogGenericException(e);
             return null;
         }
     }
@@ -96,7 +96,7 @@ internal static class Handler
         }
         catch (Exception ex)
         {
-            Utils.Logger.LogGenericException(ex);
+            Utils.ASFLogger.LogGenericException(ex);
             return null;
         }
     }

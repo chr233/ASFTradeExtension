@@ -2,7 +2,6 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Security;
 using ASFTradeExtension.Data;
 using SteamKit2;
 using System.Globalization;
@@ -675,7 +674,7 @@ internal static partial class Command
     /// <param name="tradeLink"></param>
     /// <param name="option"></param>
     /// <returns></returns>
-    internal static async Task<string> ResponseBotStatus(string botName, string tradeLink, string? option = null)
+    internal static async Task<string?> ResponseBotStatus(string botName, string tradeLink, string? option = null)
     {
         var bot = Bot.GetBot(botName);
         if (bot == null)

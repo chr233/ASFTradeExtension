@@ -9,7 +9,6 @@ using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Composition;
 using System.Text;
-using static SteamKit2.GC.Underlords.Internal.CMsgClientToGCGetFriendCodesResponse;
 
 namespace ASFTradeExtension;
 
@@ -47,7 +46,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                     }
                     catch (Exception ex)
                     {
-                        Utils.Logger.LogGenericException(ex);
+                        Utils.ASFLogger.LogGenericException(ex);
                     }
                 }
             }
@@ -68,7 +67,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
         if (sb.Length > 0)
         {
-            Utils.Logger.LogGenericWarning(sb.ToString());
+            Utils.ASFLogger.LogGenericWarning(sb.ToString());
         }
         //统计
         if (Config.Statistic)
@@ -131,7 +130,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             }
             catch (Exception e)
             {
-                Utils.Logger.LogGenericException(e);
+                Utils.ASFLogger.LogGenericException(e);
                 message.AppendLine(Langs.CleanUpOldBackupFailed);
             }
         }
@@ -143,7 +142,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
         message.AppendLine(Static.Line);
 
-        Utils.Logger.LogGenericInfo(message.ToString());
+        Utils.ASFLogger.LogGenericInfo(message.ToString());
 
         return Task.CompletedTask;
     }
@@ -158,7 +157,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// <param name="steamId"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId)
+    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId)
     {
         string cmd = args[0].ToUpperInvariant();
 
@@ -171,176 +170,162 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             //跳过禁用命令
             if (Config.DisabledCmds?.Contains(cmd) == true)
             {
-                Utils.Logger.LogGenericInfo("Command {0} is disabled!");
+                ASFLogger.LogGenericInfo("Command {0} is disabled!");
                 return null;
             }
         }
 
         int argLength = args.Length;
-        switch (argLength)
+        return argLength switch
         {
-            case 0:
-                throw new InvalidOperationException(nameof(args));
-            case 1: //不带参数
-                switch (cmd)
-                {
-                    //Card
-                    case "FULLSETLIST" when access >= EAccess.Operator:
-                    case "FSL" when access >= EAccess.Operator:
-                        return await Card.Command.ResponseFullSetList(bot, null).ConfigureAwait(false);
+            0 => throw new InvalidOperationException(nameof(args)),
+            1 => cmd switch //不带参数
+            {
+                //Card
+                "FULLSETLIST" or
+                "FSL" when access >= EAccess.Operator =>
+                    Card.Command.ResponseFullSetList(bot, null),
 
-                    //CSGO
-                    case "CSITEMLIST" when access >= EAccess.Operator:
-                    case "CIL" when access >= EAccess.Operator:
-                        return await Csgo.Command.ResponseCsItemList(bot, null).ConfigureAwait(false);
+                //CSGO
+                "CSITEMLIST" or
+                "CIL" when access >= EAccess.Operator =>
+                    Csgo.Command.ResponseCsItemList(bot, null),
 
-                    case "CSSENDITEM" when access >= EAccess.Master:
-                    case "CSI" when access >= EAccess.Master:
-                        return await Csgo.Command.ResponseSendCsItem(bot, null, null, false).ConfigureAwait(false);
-                    case "2CSSENDITEM" when access >= EAccess.Master:
-                    case "2CSI" when access >= EAccess.Master:
-                        return await Csgo.Command.ResponseSendCsItem(bot, null, null, true).ConfigureAwait(false);
+                "CSSENDITEM" or
+                "CSI" when access >= EAccess.Master =>
+                    Csgo.Command.ResponseSendCsItem(bot, null, null, false),
+                "2CSSENDITEM" or
+                "2CSI" when access >= EAccess.Master =>
+                    Csgo.Command.ResponseSendCsItem(bot, null, null, true),
 
-                    case "CSMARKETHISTORY" when access >= EAccess.Operator:
-                    case "CMH" when access >= EAccess.Operator:
-                        return await Csgo.Command.ResponseGetCsMarketInfo(bot, null).ConfigureAwait(false);
+                "CSMARKETHISTORY" or
+                "CMH" when access >= EAccess.Operator =>
+                    Csgo.Command.ResponseGetCsMarketInfo(bot, null),
 
-                    case "CSDELISTING" when access >= EAccess.Master:
-                    case "CDL" when access >= EAccess.Master:
-                        return await Csgo.Command.ResponseCsRemoveListing(bot, null).ConfigureAwait(false);
+                "CSDELISTING" or
+                "CDL" when access >= EAccess.Master =>
+                    Csgo.Command.ResponseCsRemoveListing(bot, null),
 
 
-                    //Update
-                    case "ASFTRADEXTENSION" when access >= EAccess.FamilySharing:
-                    case "ATE" when access >= EAccess.FamilySharing:
-                        return Update.Command.ResponseASFTradeExtensionVersion();
+                //Update
+                "ASFTRADEXTENSION" or
+                "ATE" when access >= EAccess.FamilySharing =>
+                    Task.FromResult(Update.Command.ResponseASFTradeExtensionVersion()),
 
-                    case "ATEVERSION" when access >= EAccess.Operator:
-                    case "ATEV" when access >= EAccess.Operator:
-                        return await Update.Command.ResponseCheckLatestVersion().ConfigureAwait(false);
+                "ATEVERSION" or
+                "ATEV" when access >= EAccess.Operator =>
+                    Update.Command.ResponseCheckLatestVersion(),
 
-                    case "ATEUPDATE" when access >= EAccess.Owner:
-                    case "ATEU" when access >= EAccess.Owner:
-                        return await Update.Command.ResponseUpdatePlugin().ConfigureAwait(false);
+                "ATEUPDATE" or
+                "ATEU" when access >= EAccess.Owner =>
+                    Update.Command.ResponseUpdatePlugin(),
 
+                _ => null,
+            },
+            _ => cmd switch //带参数
+            {
+                //Card
+                "FULLSETLIST" or
+                "FSL" when access >= EAccess.Operator && argLength == 2 =>
+                    Card.Command.ResponseFullSetList(args[1], null),
+                "FULLSETLIST" or
+                "FSL" when access >= EAccess.Operator && argLength % 2 == 0 =>
+                    Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ",")),
+                "FULLSETLIST" or
+                "FSL" when access >= EAccess.Operator && argLength % 2 == 1 =>
+                    Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ",")),
 
-                    default:
-                        return null;
-                }
-            default: //带参数
-                switch (cmd)
-                {
-                    //Card
-                    case "FULLSETLIST" when access >= EAccess.Operator && argLength == 2:
-                    case "FSL" when access >= EAccess.Operator && argLength == 2:
-                        return await Card.Command.ResponseFullSetList(args[1], null).ConfigureAwait(false);
-                    case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 0:
-                    case "FSL" when access >= EAccess.Operator && argLength % 2 == 0:
-                        return await Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
-                    case "FULLSETLIST" when access >= EAccess.Operator && argLength % 2 == 1:
-                    case "FSL" when access >= EAccess.Operator && argLength % 2 == 1:
-                        return await Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                "FULLSET" or
+                "FS" when argLength >= 3 && access >= EAccess.Operator =>
+                    Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 1, ",")),
+                "FULLSET" or
+                "FS" when access >= EAccess.Operator =>
+                    Card.Command.ResponseFullSetCountOfGame(bot, args[1]),
 
-                    case "FULLSET" when argLength >= 3 && access >= EAccess.Operator:
-                    case "FS" when argLength >= 3 && access >= EAccess.Operator:
-                        return await Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-                    case "FULLSET" when access >= EAccess.Operator:
-                    case "FS" when access >= EAccess.Operator:
-                        return await Card.Command.ResponseFullSetCountOfGame(bot, args[1]).ConfigureAwait(false);
+                "SENDCARDSET" or
+                "SCS" when access >= EAccess.Master && argLength == 5 =>
+                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false),
+                "SENDCARDSET" or
+                "SCS" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false),
 
-                    case "SENDCARDSET" when access >= EAccess.Master && argLength == 5:
-                    case "SCS" when access >= EAccess.Master && argLength == 5:
-                        return await Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false).ConfigureAwait(false);
-                    case "SENDCARDSET" when access >= EAccess.Master && argLength == 4:
-                    case "SCS" when access >= EAccess.Master && argLength == 4:
-                        return await Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false).ConfigureAwait(false);
+                "2SENDCARDSET" or
+                "2SCS" when access >= EAccess.Master && argLength == 5 =>
+                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true),
+                "2SENDCARDSET" or
+                "2SCS" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true),
 
-                    case "2SENDCARDSET" when access >= EAccess.Master && argLength == 5:
-                    case "2SCS" when access >= EAccess.Master && argLength == 5:
-                        return await Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true).ConfigureAwait(false);
-                    case "2SENDCARDSET" when access >= EAccess.Master && argLength == 4:
-                    case "2SCS" when access >= EAccess.Master && argLength == 4:
-                        return await Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
-
-                    //CSGO
-                    case "CSITEMLIST" when access >= EAccess.Operator && argLength == 2:
-                    case "CIL" when access >= EAccess.Operator && argLength == 2:
-                        return await Csgo.Command.ResponseCsItemList(args[1], null).ConfigureAwait(false);
-                    case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 0:
-                    case "CIL" when access >= EAccess.Operator && argLength % 2 == 0:
-                        return await Csgo.Command.ResponseCsItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
-                    case "CSITEMLIST" when access >= EAccess.Operator && argLength % 2 == 1:
-                    case "CIL" when access >= EAccess.Operator && argLength % 2 == 1:
-                        return await Csgo.Command.ResponseCsItemList(bot, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                //CSGO
+                "CSITEMLIST" or
+                "CIL" when access >= EAccess.Operator && argLength == 2 =>
+                    Csgo.Command.ResponseCsItemList(args[1], null),
+                "CSITEMLIST" or
+                "CIL" when access >= EAccess.Operator && argLength % 2 == 0 =>
+                    Csgo.Command.ResponseCsItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")),
+                "CSITEMLIST" or
+                "CIL" when access >= EAccess.Operator && argLength % 2 == 1 =>
+                    Csgo.Command.ResponseCsItemList(bot, Utilities.GetArgsAsText(args, 1, ",")),
 
 
-                    case "CSSENDITEM" when access >= EAccess.Master && argLength == 4:
-                    case "CSI" when access >= EAccess.Master && argLength == 4:
-                        return await Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], false).ConfigureAwait(false);
-                    case "CSSENDITEM" when access >= EAccess.Master && argLength == 3:
-                    case "CSI" when access >= EAccess.Master && argLength == 3:
-                        return await Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], false).ConfigureAwait(false);
-                    case "CSSENDITEM" when access >= EAccess.Master && argLength == 2:
-                    case "CSI" when access >= EAccess.Master && argLength == 2:
-                        return await Csgo.Command.ResponseSendCsItem(args[1], null, null, false).ConfigureAwait(false);
+                "CSSENDITEM" or
+                "CSI" when access >= EAccess.Master && argLength == 4 =>
+                    Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], false),
+                "CSSENDITEM" or
+                "CSI" when access >= EAccess.Master && argLength == 3 =>
+                    Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], false),
+                "CSSENDITEM" or
+                "CSI" when access >= EAccess.Master && argLength == 2 =>
+                    Csgo.Command.ResponseSendCsItem(args[1], null, null, false),
 
 
-                    case "2CSSENDITEM" when access >= EAccess.Master && argLength == 4:
-                    case "2CSI" when access >= EAccess.Master && argLength == 4:
-                        return await Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], true).ConfigureAwait(false);
-                    case "2CSSENDITEM" when access >= EAccess.Master && argLength == 3:
-                    case "2CSI" when access >= EAccess.Master && argLength == 3:
-                        return await Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], true).ConfigureAwait(false);
-                    case "2CSSENDITEM" when access >= EAccess.Master && argLength == 2:
-                    case "2CSI" when access >= EAccess.Master && argLength == 2:
-                        return await Csgo.Command.ResponseSendCsItem(args[1], null, null, true).ConfigureAwait(false);
+                "2CSSENDITEM" or
+                "2CSI" when access >= EAccess.Master && argLength == 4 =>
+                    Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], true),
+                "2CSSENDITEM" or
+                "2CSI" when access >= EAccess.Master && argLength == 3 =>
+                    Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], true),
+                "2CSSENDITEM" or
+                "2CSI" when access >= EAccess.Master && argLength == 2 =>
+                    Csgo.Command.ResponseSendCsItem(args[1], null, null, true),
 
 
-                    case "CSSELLITEM" when access >= EAccess.Master && argLength == 5:
-                    case "CEI" when access >= EAccess.Master && argLength == 5:
-                        return await Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], false).ConfigureAwait(false);
-                    case "CSSELLITEM" when access >= EAccess.Master && argLength == 4:
-                    case "CEI" when access >= EAccess.Master && argLength == 4:
-                        return await Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], false).ConfigureAwait(false);
+                "CSSELLITEM" or
+                "CEI" when access >= EAccess.Master && argLength == 5 =>
+                    Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], false),
+                "CSSELLITEM" or
+                "CEI" when access >= EAccess.Master && argLength == 4 =>
+                    Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], false),
+
+                "2CSSELLITEM" or
+                "2CEI" when access >= EAccess.Master && argLength == 5 =>
+                    Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], true),
+                "2CSSELLITEM" or
+                "2CEI" when access >= EAccess.Master && argLength == 4 =>
+                    Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], true),
+
+                "CSMARKETHISTORY" or
+                "CMH" when access >= EAccess.Operator =>
+                    Csgo.Command.ResponseGetCsMarketInfo(SkipBotNames(args, 1, 1), args.Last()),
 
 
-                    case "2CSSELLITEM" when access >= EAccess.Master && argLength == 5:
-                    case "2CEI" when access >= EAccess.Master && argLength == 5:
-                        return await Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], true).ConfigureAwait(false);
-                    case "2CSSELLITEM" when access >= EAccess.Master && argLength == 4:
-                    case "2CEI" when access >= EAccess.Master && argLength == 4:
-                        return await Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], true).ConfigureAwait(false);
+                "CSDELISTING" or
+                "CDL" when access >= EAccess.Master && argLength >= 3 =>
+                    Csgo.Command.ResponseCsRemoveListing(SkipBotNames(args, 1, 1), args.Last()),
+                "CSDELISTING" or
+                  "CDL" when access >= EAccess.Master =>
+                    Csgo.Command.ResponseCsRemoveListing(bot, args[1]),
 
+                "TRANSFERCSGO" or
+                "TRC" when argLength == 3 && access >= EAccess.Master =>
+                    Csgo.Command.ResponseBotStatus(args[1], args[2], null),
+                "TRANSFERCSGO" or
+                "TRC" when argLength == 4 && access >= EAccess.Master =>
+                    Csgo.Command.ResponseBotStatus(args[1], args[2], args[3]),
 
-                    case "CSMARKETHISTORY" when access >= EAccess.Operator:
-                    case "CMH" when access >= EAccess.Operator:
-                        {
-                            string botNames = string.Join(',', args[1..(argLength - 1)]);
-                            return await Csgo.Command.ResponseGetCsMarketInfo(botNames, args.Last()).ConfigureAwait(false);
-                        }
-
-
-                    case "CSDELISTING" when access >= EAccess.Master && argLength >= 3:
-                    case "CDL" when access >= EAccess.Master && argLength >= 3:
-                        {
-                            string botNames = string.Join(',', args[1..(argLength - 1)]);
-                            return await Csgo.Command.ResponseCsRemoveListing(botNames, args.Last()).ConfigureAwait(false);
-                        }
-                    case "CSDELISTING" when access >= EAccess.Master:
-                    case "CDL" when access >= EAccess.Master:
-                        return await Csgo.Command.ResponseCsRemoveListing(bot, args[1]).ConfigureAwait(false);
-
-                    case "TRANSFERCSGO" when argLength == 3 && access >= EAccess.Master:
-                    case "TRC" when argLength == 3 && access >= EAccess.Master:
-                        return await Csgo.Command.ResponseBotStatus(args[1], args[2], null).ConfigureAwait(false);
-                    case "TRANSFERCSGO" when argLength == 4 && access >= EAccess.Master:
-                    case "TRC" when argLength == 4 && access >= EAccess.Master:
-                        return await Csgo.Command.ResponseBotStatus(args[1], args[2], args[3]).ConfigureAwait(false);
-
-                    default:
-                        return null;
-                }
-        }
+                _ => null,
+            }
+        };
     }
 
     /// <summary>
@@ -363,7 +348,15 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
         try
         {
-            return await ResponseCommand(bot, access, message, args, steamId).ConfigureAwait(false);
+            var task = ResponseCommand(bot, access, message, args, steamId);
+            if (task != null)
+            {
+                return await task.ConfigureAwait(false);
+            }
+            else
+            {
+                return null;
+            }
         }
         catch (Exception ex)
         {
@@ -378,22 +371,22 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             var sb = new StringBuilder();
             sb.AppendLine(Langs.ErrorLogTitle);
             sb.AppendLine(Static.Line);
-            sb.AppendLine(string.Format(Langs.ErrorLogOriginMessage, message));
-            sb.AppendLine(string.Format(Langs.ErrorLogAccess, access.ToString()));
-            sb.AppendLine(string.Format(Langs.ErrorLogASFVersion, version));
-            sb.AppendLine(string.Format(Langs.ErrorLogPluginVersion, Utils.MyVersion));
+            sb.AppendLineFormat(Langs.ErrorLogOriginMessage, message);
+            sb.AppendLineFormat(Langs.ErrorLogAccess, access.ToString());
+            sb.AppendLineFormat(Langs.ErrorLogASFVersion, version);
+            sb.AppendLineFormat(Langs.ErrorLogPluginVersion, MyVersion);
             sb.AppendLine(Static.Line);
             sb.AppendLine(cfg);
             sb.AppendLine(Static.Line);
-            sb.AppendLine(string.Format(Langs.ErrorLogErrorName, ex.GetType()));
-            sb.AppendLine(string.Format(Langs.ErrorLogErrorMessage, ex.Message));
+            sb.AppendLineFormat(Langs.ErrorLogErrorName, ex.GetType());
+            sb.AppendLineFormat(Langs.ErrorLogErrorMessage, ex.Message);
             sb.AppendLine(ex.StackTrace);
 
             _ = Task.Run(async () =>
             {
                 await Task.Delay(500).ConfigureAwait(false);
                 sb.Insert(0, '\n');
-                Utils.Logger.LogGenericError(sb.ToString());
+                ASFLogger.LogGenericError(sb.ToString());
             }).ConfigureAwait(false);
 
             return sb.ToString();
@@ -403,7 +396,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
     {
         bool accept = Csgo.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
-        Utils.Logger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
+        Utils.ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
         return Task.FromResult(accept);
     }
 
@@ -412,7 +405,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         foreach (var tradeResult in tradeResults)
         {
             Csgo.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
-            Utils.Logger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
+            Utils.ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
         }
         return Task.CompletedTask;
     }

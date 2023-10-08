@@ -3,8 +3,8 @@ using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
 using ASFTradeExtension.Data;
-using Newtonsoft.Json.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace ASFTradeExtension;
 
@@ -24,17 +24,7 @@ internal static class Utils
     /// 更新标记
     /// </summary>
     /// <returns></returns>
-    private static string UpdateFlag()
-    {
-        if (UpdatePadding)
-        {
-            return "*";
-        }
-        else
-        {
-            return "";
-        }
-    }
+    private static string UpdateFlag => UpdatePadding ? "*" : "";
 
     /// <summary>
     /// 格式化返回文本
@@ -43,9 +33,18 @@ internal static class Utils
     /// <returns></returns>
     internal static string FormatStaticResponse(string message)
     {
-        string flag = UpdateFlag();
+        return $"<ASFE{UpdateFlag}> {message}";
+    }
 
-        return $"<ASF{flag}> {message}";
+    /// <summary>
+    /// 格式化返回文本
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    internal static string FormatStaticResponse(string message, params object?[] args)
+    {
+        return FormatStaticResponse(string.Format(message, args));
     }
 
     /// <summary>
@@ -56,9 +55,24 @@ internal static class Utils
     /// <returns></returns>
     internal static string FormatBotResponse(this Bot bot, string message)
     {
-        string flag = UpdateFlag();
+        return $"<{bot.BotName}{UpdateFlag}> {message}";
+    }
 
-        return $"<{bot.BotName}{flag}> {message}";
+    /// <summary>
+    /// 格式化返回文本
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="message"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    internal static string FormatBotResponse(this Bot bot, string message, params object?[] args)
+    {
+        return bot.FormatBotResponse(string.Format(message, args));
+    }
+
+    internal static StringBuilder AppendLineFormat(this StringBuilder sb, string format, params object?[] args)
+    {
+        return sb.AppendLine(string.Format(format, args));
     }
 
     /// <summary>
@@ -119,7 +133,7 @@ internal static class Utils
     /// <summary>
     /// 日志
     /// </summary>
-    internal static ArchiLogger Logger => ASF.ArchiLogger;
+    internal static ArchiLogger ASFLogger => ASF.ArchiLogger;
 
     internal static HashSet<T> DistinctList<T>(IEnumerable<T> values)
     {
@@ -172,5 +186,18 @@ internal static class Utils
         }
 
         return list;
+    }
+
+    /// <summary>
+    /// 布尔转换为char
+    /// </summary>
+    /// <param name="b"></param>
+    /// <returns></returns>
+    internal static char Bool2Str(bool b) => b ? '√' : '×';
+    internal static char ToStr(this bool b) => b ? '√' : '×';
+
+    internal static string SkipBotNames(string[] args, int skipStart, int skipEnd)
+    {
+        return string.Join(',', args[skipStart..(args.Length - skipEnd)]);
     }
 }

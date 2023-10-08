@@ -114,7 +114,7 @@ internal static class Command
                     if (entry.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                     {
                         entry.ExtractToFile(currentPath, true);
-                        Utils.UpdatePadding = true;
+                        UpdatePadding = true;
 
                         var sb = new StringBuilder();
                         sb.AppendLine(Langs.UpdateSuccess);
@@ -133,7 +133,7 @@ internal static class Command
         }
         catch (Exception e)
         {
-            Utils.ASFLogger.LogGenericException(e);
+            ASFLogger.LogGenericException(e);
             return FormatStaticResponse(Langs.UpdateFiledWithZip);
         }
     }

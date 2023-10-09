@@ -134,7 +134,7 @@ internal static partial class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseCsItemList(bot, query))).ConfigureAwait(false);
@@ -241,7 +241,7 @@ internal static partial class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseCSItemCount(bot, query))).ConfigureAwait(false);
@@ -332,7 +332,7 @@ internal static partial class Command
             skip += countPerBot;
             if (offer.Any())
             {
-                var (success, tradeOfferIDs, _) = await b.ArchiWebHandler.SendTradeOffer(bot.SteamID, null, offer, tradeToken, false, Utils.Config.MaxItemPerTrade).ConfigureAwait(false);
+                var (success, tradeOfferIDs, _) = await b.ArchiWebHandler.SendTradeOffer(bot.SteamID, null, offer, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
                 if (success && tradeOfferIDs != null && autoConfirm)
                 {
@@ -341,11 +341,11 @@ internal static partial class Command
                         Handler.AddTrade(tradeId, b.SteamID);
                     }
                 }
-                sb.AppendLine(string.Format(Langs.SengTradeSuccess, b.BotName, bot.BotName, offer.Count, success ? Langs.Success : Langs.Failure));
+                sb.AppendLineFormat(Langs.SengTradeSuccess, b.BotName, bot.BotName, offer.Count, success ? Langs.Success : Langs.Failure);
             }
             else
             {
-                sb.AppendLine(string.Format(Langs.SendTradeFailedNoItemAvilable, b.BotName, bot.BotName));
+                sb.AppendLineFormat(Langs.SendTradeFailedNoItemAvilable, b.BotName, bot.BotName);
             }
             if (skip >= invCount)
             {
@@ -376,7 +376,7 @@ internal static partial class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseSendCsItem(bot, strClassId, strCountPerBot, autoConfirm))).ConfigureAwait(false);
@@ -460,7 +460,7 @@ internal static partial class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseSellCsItem(bot, strClassId, strCount, strPrice, autoConfirm))).ConfigureAwait(false);
@@ -566,7 +566,7 @@ internal static partial class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseGetCsMarketInfo(bot, strClassId))).ConfigureAwait(false);
@@ -657,7 +657,7 @@ internal static partial class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(Strings.BotNotFound, botNames);
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseCsRemoveListing(bot, strClassId))).ConfigureAwait(false);
@@ -679,12 +679,12 @@ internal static partial class Command
         var bot = Bot.GetBot(botName);
         if (bot == null)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
+            return FormatStaticResponse(Strings.BotNotFound, botName);
         }
 
         var match = RegexUtils.MatchTradeLink().Match(tradeLink);
 
-        ulong targetSteamId = Utils.Steam322SteamId(ulong.Parse(match.Groups[1].Value));
+        ulong targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
         string tradeToken = match.Groups[2].Value;
 
         if (!new SteamID(targetSteamId).IsIndividualAccount)
@@ -710,7 +710,7 @@ internal static partial class Command
             var (succ, msg) = bot.Actions.Start();
             if (!succ)
             {
-                return bot.FormatBotResponse(string.Format("机器人启动失败 {0}", msg));
+                return bot.FormatBotResponse("机器人启动失败 {0}", msg);
             }
 
             int i = 5;
@@ -760,7 +760,7 @@ internal static partial class Command
             {
                 (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
-                sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
+                sb.AppendLineFormat(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure);
 
             }
 
@@ -770,7 +770,7 @@ internal static partial class Command
         }
         else
         {
-            return bot.FormatBotResponse(string.Format("可交易物品列表为空, 筛选模式 {0}", itemType));
+            return bot.FormatBotResponse("可交易物品列表为空, 筛选模式 {0}", itemType);
         }
     }
 }

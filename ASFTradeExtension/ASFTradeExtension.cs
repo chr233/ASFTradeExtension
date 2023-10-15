@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Composition;
+using System.Reflection;
 using System.Text;
 
 namespace ASFTradeExtension;
@@ -18,8 +19,13 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     public string Name => nameof(ASFTradeExtension);
     public Version Version => Utils.MyVersion;
 
+    private AdapterBtidge? ASFEBridge = null;
+
     [JsonProperty]
     public static PluginConfig Config => Utils.Config;
+
+    private Timer? StatisticTimer;
+
     /// <summary>
     /// ASF启动事件
     /// </summary>
@@ -73,7 +79,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         if (Config.Statistic)
         {
             var request = new Uri("https://asfe.chrxw.com/asftradeextension");
-            _ = new Timer(
+            StatisticTimer = new Timer(
                 async (_) =>
                 {
                     await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
@@ -109,41 +115,23 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// <returns></returns>
     public Task OnLoaded()
     {
-        var message = new StringBuilder("\n");
-        message.AppendLine(Static.Line);
-        message.AppendLine(Static.Logo);
-        message.AppendLine(Static.Line);
-        message.AppendLine(string.Format(Langs.PluginVer, nameof(ASFTradeExtension), Utils.MyVersion.ToString()));
-        message.AppendLine(Langs.PluginContact);
-        message.AppendLine(Langs.PluginInfo);
-        message.AppendLine(Static.Line);
-
-        string pluginFolder = Path.GetDirectoryName(Utils.MyLocation) ?? ".";
-        string backupPath = Path.Combine(pluginFolder, $"{nameof(ASFTradeExtension)}.bak");
-        bool existsBackup = File.Exists(backupPath);
-        if (existsBackup)
+        try
         {
-            try
-            {
-                File.Delete(backupPath);
-                message.AppendLine(Langs.CleanUpOldBackup);
-            }
-            catch (Exception e)
-            {
-                Utils.ASFLogger.LogGenericException(e);
-                message.AppendLine(Langs.CleanUpOldBackupFailed);
-            }
+            var flag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+            var handler = typeof(ASFTradeExtension).GetMethod(nameof(ResponseCommand), flag);
+
+            const string pluginName = nameof(ASFTradeExtension);
+            const string cmdPrefix = "ATE";
+            const string repoName = "ASFTradeExtension";
+
+            ASFEBridge = AdapterBtidge.InitAdapter(pluginName, cmdPrefix, repoName, handler);
+            ASF.ArchiLogger.LogGenericDebug(ASFEBridge != null ? "ASFEBridge 注册成功" : "ASFEBridge 注册失败");
         }
-        else
+        catch (Exception ex)
         {
-            message.AppendLine(Langs.ASFEVersionTips);
-            message.AppendLine(Langs.ASFEUpdateTips);
+            ASF.ArchiLogger.LogGenericDebug("ASFEBridge 注册出错");
+            ASF.ArchiLogger.LogGenericException(ex);
         }
-
-        message.AppendLine(Static.Line);
-
-        Utils.ASFLogger.LogGenericInfo(message.ToString());
-
         return Task.CompletedTask;
     }
 
@@ -157,24 +145,8 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// <param name="steamId"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId)
+    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string message, string[] args, ulong steamId)
     {
-        string cmd = args[0].ToUpperInvariant();
-
-        if (cmd.StartsWith("ATE."))
-        {
-            cmd = cmd.Substring(4);
-        }
-        else
-        {
-            //跳过禁用命令
-            if (Config.DisabledCmds?.Contains(cmd) == true)
-            {
-                ASFLogger.LogGenericInfo("Command {0} is disabled!");
-                return null;
-            }
-        }
-
         int argLength = args.Length;
         return argLength switch
         {
@@ -211,14 +183,6 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                 "ASFTRADEXTENSION" or
                 "ATE" when access >= EAccess.FamilySharing =>
                     Task.FromResult(Update.Command.ResponseASFTradeExtensionVersion()),
-
-                "ATEVERSION" or
-                "ATEV" when access >= EAccess.Operator =>
-                    Update.Command.ResponseCheckLatestVersion(),
-
-                "ATEUPDATE" or
-                "ATEU" when access >= EAccess.Owner =>
-                    Update.Command.ResponseUpdatePlugin(),
 
                 _ => null,
             },
@@ -341,6 +305,11 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// <exception cref="InvalidOperationException"></exception>
     public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId = 0)
     {
+        if (ASFEBridge != null)
+        {
+            return null;
+        }
+
         if (!Enum.IsDefined(access))
         {
             throw new InvalidEnumArgumentException(nameof(access), (int)access, typeof(EAccess));
@@ -348,7 +317,14 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
         try
         {
-            var task = ResponseCommand(bot, access, message, args, steamId);
+            var cmd = args[0].ToUpperInvariant();
+
+            if (cmd.StartsWith("ATE."))
+            {
+                cmd = cmd[4..];
+            }
+
+            var task = ResponseCommand(bot, access, cmd, message, args, steamId);
             if (task != null)
             {
                 return await task.ConfigureAwait(false);
@@ -360,36 +336,13 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         }
         catch (Exception ex)
         {
-            string version = await bot.Commands.Response(EAccess.Owner, "VERSION").ConfigureAwait(false) ?? "Unknown";
-            var i = version.LastIndexOf('V');
-            if (i >= 0)
-            {
-                version = version[++i..];
-            }
-            string cfg = JsonConvert.SerializeObject(Config, Formatting.Indented);
-
-            var sb = new StringBuilder();
-            sb.AppendLine(Langs.ErrorLogTitle);
-            sb.AppendLine(Static.Line);
-            sb.AppendLineFormat(Langs.ErrorLogOriginMessage, message);
-            sb.AppendLineFormat(Langs.ErrorLogAccess, access.ToString());
-            sb.AppendLineFormat(Langs.ErrorLogASFVersion, version);
-            sb.AppendLineFormat(Langs.ErrorLogPluginVersion, MyVersion);
-            sb.AppendLine(Static.Line);
-            sb.AppendLine(cfg);
-            sb.AppendLine(Static.Line);
-            sb.AppendLineFormat(Langs.ErrorLogErrorName, ex.GetType());
-            sb.AppendLineFormat(Langs.ErrorLogErrorMessage, ex.Message);
-            sb.AppendLine(ex.StackTrace);
-
             _ = Task.Run(async () =>
             {
                 await Task.Delay(500).ConfigureAwait(false);
-                sb.Insert(0, '\n');
-                ASFLogger.LogGenericError(sb.ToString());
+                Utils.ASFLogger.LogGenericException(ex);
             }).ConfigureAwait(false);
 
-            return sb.ToString();
+            return ex.StackTrace;
         }
     }
 

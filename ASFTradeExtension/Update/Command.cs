@@ -1,7 +1,3 @@
-using System.IO.Compression;
-using System.Text;
-
-
 namespace ASFTradeExtension.Update;
 
 internal static class Command

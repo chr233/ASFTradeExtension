@@ -121,6 +121,7 @@ internal static partial class Command
     /// 获取CSGO库存 (多个Bot)
     /// </summary>
     /// <param name="botNames"></param>
+    /// <param name="query"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     internal static async Task<string?> ResponseCsItemList(string botNames, string? query)

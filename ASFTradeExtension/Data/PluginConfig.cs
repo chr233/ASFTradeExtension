@@ -11,8 +11,5 @@ public sealed record PluginConfig
     public bool Statistic { get; set; } = true;
 
     [JsonProperty(Required = Required.Default)]
-    public List<string>? DisabledCmds { get; set; }
-
-    [JsonProperty(Required = Required.Default)]
     public ushort MaxItemPerTrade { get; set; } = byte.MaxValue;
 }

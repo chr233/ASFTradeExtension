@@ -35,6 +35,9 @@ public enum CsgoItemType : byte
     /// </summary>
     Player = 64,
 
+    /// <summary>
+    /// 全部
+    /// </summary>
     All = WeaponCase | Weapon | MusicKit | Collectible | Tool,
 }
 

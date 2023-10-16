@@ -89,22 +89,6 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                 TimeSpan.FromHours(24)
             );
         }
-        //禁用命令
-        if (Config.DisabledCmds == null)
-        {
-            Config.DisabledCmds = new();
-        }
-        else
-        {
-            for (int i = 0; i < Config.DisabledCmds.Count; i++)
-            {
-                Config.DisabledCmds[i] = Config.DisabledCmds[i].ToUpperInvariant();
-            }
-        }
-        if (Config.MaxItemPerTrade < byte.MaxValue)
-        {
-            Config.MaxItemPerTrade = byte.MaxValue;
-        }
 
         return Task.CompletedTask;
     }
@@ -150,6 +134,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="access"></param>
+    /// <param name="cmd"></param>
     /// <param name="args"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>

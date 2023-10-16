@@ -60,7 +60,7 @@ internal static class Handler
                     assets = inventory.Where(x => x.RealAppID == appId);
                     var classIds = Utils.DistinctList(assets, x => x.ClassID);
 
-                    if (classIds.Count() == countPerSet)
+                    if (classIds.Count == countPerSet)
                     {
                         var tradableCountPerClassId = classIds.Select(x => assets.Where(y => y.Tradable && y.ClassID == x).Count());
                         var totalCountPerClassId = classIds.Select(x => assets.Where(y => y.ClassID == x).Count());
@@ -106,7 +106,7 @@ internal static class Handler
     /// 获取单个App的库存卡牌套数
     /// </summary>
     /// <param name="bot"></param>
-    /// <param name="appIds"></param>
+    /// <param name="appId"></param>
     /// <param name="inventory"></param>
     /// <returns></returns>
     internal static async Task<AssetBundle> GetAppCardBundle(Bot bot, uint appId, IEnumerable<Asset> inventory)
@@ -121,7 +121,7 @@ internal static class Handler
             assets = inventory.Where(x => x.RealAppID == appId);
             var classIds = Utils.DistinctList(assets, static x => x.ClassID);
 
-            if (classIds.Count() == countPerSet)
+            if (classIds.Count == countPerSet)
             {
                 var tradableCountPerClassId = classIds.Select(x => assets.Where(y => y.Tradable && y.ClassID == x).Count());
                 var totalCountPerClassId = classIds.Select(x => assets.Where(y => y.ClassID == x).Count());

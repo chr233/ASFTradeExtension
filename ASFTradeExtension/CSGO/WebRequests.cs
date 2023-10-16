@@ -63,8 +63,8 @@ internal static class WebRequests
     /// 获取市场历史
     /// </summary>
     /// <param name="bot"></param>
-    /// <param name="asset"></param>
-    /// <param name="price"></param>
+    /// <param name="count"></param>
+    /// <param name="start"></param>
     /// <returns></returns>
     internal static async Task<MarketHistoryResponse?> GetMarketHistory(Bot bot, uint count = 50, uint start = 0)
     {

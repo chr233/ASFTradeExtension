@@ -11,6 +11,7 @@ internal static class Handler
     /// 读取机器人CS库存
     /// </summary>
     /// <param name="bot"></param>
+    /// <param name="func"></param>
     /// <returns></returns>
     internal static async Task<IEnumerable<Asset>?> FetchBotCSInventory(Bot bot, Func<Asset, bool>? func)
     {
@@ -104,22 +105,22 @@ internal static class Handler
     /// <summary>
     /// tradeId, steamId
     /// </summary>
-    private static ConcurrentDictionary<ulong, ulong> _verifiedTrades = new();
+    private static ConcurrentDictionary<ulong, ulong> VerifiedTrades { get; } = new();
 
     internal static void AddTrade(ulong tradeId, ulong steamId)
     {
-        _verifiedTrades.TryAdd(tradeId, steamId);
+        VerifiedTrades.TryAdd(tradeId, steamId);
     }
 
 
     internal static bool IsMyTrade(ulong tradeId, ulong steamId)
     {
-        return _verifiedTrades.TryGetValue(tradeId, out ulong value) && value == steamId;
+        return VerifiedTrades.TryGetValue(tradeId, out ulong value) && value == steamId;
     }
 
 
     internal static void RemoveMyTrade(ulong tradeId)
     {
-        _verifiedTrades.TryRemove(tradeId, out _);
+        VerifiedTrades.TryRemove(tradeId, out _);
     }
 }

@@ -16,10 +16,10 @@ namespace ASFTradeExtension;
 [Export(typeof(IPlugin))]
 internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
 {
-    public string Name => nameof(ASFTradeExtension);
-    public Version Version => Utils.MyVersion;
+    public string Name => "ASF Trade Extension";
+    public Version Version => MyVersion;
 
-    private AdapterBtidge? ASFEBridge = null;
+    private bool ASFEBridge;
 
     [JsonProperty]
     public static PluginConfig Config => Utils.Config;
@@ -66,9 +66,9 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         if (!Config.EULA)
         {
             sb.AppendLine();
-            sb.AppendLine(Static.Line);
+            sb.AppendLine(Langs.Line);
             sb.AppendLine(Langs.EulaWarning);
-            sb.AppendLine(Static.Line);
+            sb.AppendLine(Langs.Line);
         }
 
         if (sb.Length > 0)
@@ -115,37 +115,45 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// <returns></returns>
     public Task OnLoaded()
     {
-        try
-        {
-            var flag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            var handler = typeof(ASFTradeExtension).GetMethod(nameof(ResponseCommand), flag);
+        ASFLogger.LogGenericInfo(Langs.PluginContact);
+        ASFLogger.LogGenericInfo(Langs.PluginInfo);
 
-            const string pluginName = nameof(ASFTradeExtension);
-            const string cmdPrefix = "ATE";
-            const string repoName = "ASFTradeExtension";
+        var flag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+        var handler = typeof(ASFTradeExtension).GetMethod(nameof(ResponseCommand), flag);
 
-            ASFEBridge = AdapterBtidge.InitAdapter(pluginName, cmdPrefix, repoName, handler);
-            ASF.ArchiLogger.LogGenericDebug(ASFEBridge != null ? "ASFEBridge 注册成功" : "ASFEBridge 注册失败");
-        }
-        catch (Exception ex)
+        const string pluginName = nameof(ASFTradeExtension);
+        const string cmdPrefix = "ATE";
+        const string repoName = "ASFTradeExtension";
+
+        ASFEBridge = AdapterBtidge.InitAdapter(pluginName, cmdPrefix, repoName, handler);
+
+        if (ASFEBridge)
         {
-            ASF.ArchiLogger.LogGenericDebug("ASFEBridge 注册出错");
-            ASF.ArchiLogger.LogGenericException(ex);
+            ASFLogger.LogGenericDebug(Langs.ASFEnhanceRegisterSuccess);
         }
+        else
+        {
+            ASFLogger.LogGenericInfo(Langs.ASFEnhanceRegisterFailed);
+            ASFLogger.LogGenericWarning(Langs.PluginStandalongMode);
+        }
+
         return Task.CompletedTask;
     }
+
+    /// <summary>
+    /// 获取插件信息
+    /// </summary>
+    private static string? PluginInfo => string.Format("{0} {1}", nameof(ASFTradeExtension), MyVersion);
 
     /// <summary>
     /// 处理命令
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="access"></param>
-    /// <param name="message"></param>
     /// <param name="args"></param>
-    /// <param name="steamId"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string message, string[] args, ulong steamId)
+    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string[] args)
     {
         int argLength = args.Length;
         return argLength switch
@@ -153,6 +161,11 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             0 => throw new InvalidOperationException(nameof(args)),
             1 => cmd switch //不带参数
             {
+                //Plugin Info
+                "ASFTRADEXTENSION" or
+                "ATE" when access >= EAccess.FamilySharing =>
+                    Task.FromResult(PluginInfo),
+
                 //Card
                 "FULLSETLIST" or
                 "FSL" when access >= EAccess.Operator =>
@@ -177,12 +190,6 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                 "CSDELISTING" or
                 "CDL" when access >= EAccess.Master =>
                     Csgo.Command.ResponseCsRemoveListing(bot, null),
-
-
-                //Update
-                "ASFTRADEXTENSION" or
-                "ATE" when access >= EAccess.FamilySharing =>
-                    Task.FromResult(Update.Command.ResponseASFTradeExtensionVersion()),
 
                 _ => null,
             },
@@ -305,7 +312,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
     /// <exception cref="InvalidOperationException"></exception>
     public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId = 0)
     {
-        if (ASFEBridge != null)
+        if (ASFEBridge)
         {
             return null;
         }
@@ -324,7 +331,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                 cmd = cmd[4..];
             }
 
-            var task = ResponseCommand(bot, access, cmd, message, args, steamId);
+            var task = ResponseCommand(bot, access, cmd, args);
             if (task != null)
             {
                 return await task.ConfigureAwait(false);

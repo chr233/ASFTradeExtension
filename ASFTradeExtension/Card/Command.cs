@@ -7,12 +7,13 @@ using System.Text;
 
 namespace ASFTradeExtension.Card;
 
-internal static partial class Command
+internal static class Command
 {
     /// <summary>
     /// 获取成套卡牌套数列表
     /// </summary>
     /// <param name="bot"></param>
+    /// <param name="query"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetList(Bot bot, string? query)
     {
@@ -119,6 +120,7 @@ internal static partial class Command
     /// 获取成套卡牌套数 (多个Bot)
     /// </summary>
     /// <param name="botNames"></param>
+    /// <param name="query"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     internal static async Task<string?> ResponseFullSetList(string botNames, string? query)
@@ -146,6 +148,7 @@ internal static partial class Command
     /// 获取指定游戏成套卡牌套数
     /// </summary>
     /// <param name="bot"></param>
+    /// <param name="query"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetCountOfGame(Bot bot, string query)
     {
@@ -235,6 +238,7 @@ internal static partial class Command
     /// 获取指定游戏成套卡牌套数 (多个Bot)
     /// </summary>
     /// <param name="botNames"></param>
+    /// <param name="query"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     internal static async Task<string?> ResponseFullSetCountOfGame(string botNames, string query)
@@ -262,6 +266,10 @@ internal static partial class Command
     /// 根据指定交易报价发送指定套数的卡牌
     /// </summary>
     /// <param name="bot"></param>
+    /// <param name="strAppId"></param>
+    /// <param name="strSetCount"></param>
+    /// <param name="tradeLink"></param>
+    /// <param name="autoConfirm"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseSendCardSet(Bot bot, string strAppId, string strSetCount, string tradeLink, bool autoConfirm)
     {
@@ -371,6 +379,10 @@ internal static partial class Command
     /// 根据指定交易报价发送指定套数的卡牌 (多个Bot)
     /// </summary>
     /// <param name="botNames"></param>
+    /// <param name="strAppId"></param>
+    /// <param name="strSetCount"></param>
+    /// <param name="tradeLink"></param>
+    /// <param name="autoConfirm"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     internal static async Task<string?> ResponseSendCardSet(string botNames, string strAppId, string strSetCount, string tradeLink, bool autoConfirm)

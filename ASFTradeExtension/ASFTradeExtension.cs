@@ -40,7 +40,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         {
             foreach ((string configProperty, JToken configValue) in additionalConfigProperties)
             {
-                if ((configProperty == "ASFTradeExtension" || configProperty == "CardTradeExtension") && configValue.Type == JTokenType.Object)
+                if ((configProperty == "ASFEnhance") && configValue.Type == JTokenType.Object)
                 {
                     try
                     {
@@ -52,7 +52,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                     }
                     catch (Exception ex)
                     {
-                        Utils.ASFLogger.LogGenericException(ex);
+                        ASFLogger.LogGenericException(ex);
                     }
                 }
             }
@@ -73,7 +73,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
         if (sb.Length > 0)
         {
-            Utils.ASFLogger.LogGenericWarning(sb.ToString());
+            ASFLogger.LogGenericWarning(sb.ToString());
         }
         //统计
         if (Config.Statistic)
@@ -188,7 +188,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                 "FSL" when access >= EAccess.Operator && argLength % 2 == 0 =>
                     Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ",")),
                 "FULLSETLIST" or
-                "FSL" when access >= EAccess.Operator && argLength % 2 == 1 =>
+                "FSL" when access >= EAccess.Operator && argLength % 2 != 0 =>
                     Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ",")),
 
                 "FULLSET" or
@@ -220,7 +220,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
                 "CIL" when access >= EAccess.Operator && argLength % 2 == 0 =>
                     Csgo.Command.ResponseCsItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")),
                 "CSITEMLIST" or
-                "CIL" when access >= EAccess.Operator && argLength % 2 == 1 =>
+                "CIL" when access >= EAccess.Operator && argLength % 2 != 0 =>
                     Csgo.Command.ResponseCsItemList(bot, Utilities.GetArgsAsText(args, 1, ",")),
 
 

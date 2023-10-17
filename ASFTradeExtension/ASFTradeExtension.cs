@@ -105,11 +105,11 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         var flag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
         var handler = typeof(ASFTradeExtension).GetMethod(nameof(ResponseCommand), flag);
 
-        const string pluginName = nameof(ASFTradeExtension);
+        const string pluginId = nameof(ASFTradeExtension);
         const string cmdPrefix = "ATE";
         const string repoName = "ASFTradeExtension";
 
-        ASFEBridge = AdapterBtidge.InitAdapter(pluginName, cmdPrefix, repoName, handler);
+        ASFEBridge = AdapterBtidge.InitAdapter(Name, pluginId, cmdPrefix, repoName, handler);
 
         if (ASFEBridge)
         {

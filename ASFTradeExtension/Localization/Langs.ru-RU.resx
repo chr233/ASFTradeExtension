@@ -235,7 +235,7 @@
     <value>Параметр CSMARKETHISTORY недействителен [BotNames] [ClassId] , если ClassId не указан, то все элементы будут выставленны на продажу</value>
   </data>
   <data name="CsDeListingItemArgsTips" xml:space="preserve">
-    <value>参数无效 CSDELISTING [BotNames] [ClassId], 不指定 ClassId 时下架全部物品</value>
+    <value>Параметр CSDELISTING недействителен [BotNames] [ClassId], если ClassId не указан, то все элементы будут выставленны на продажу</value>
   </data>
   <data name="FetchTradeLinkFailed" xml:space="preserve">
     <value>Ошибка автоматического получения ссылки на трейд</value>

@@ -156,29 +156,11 @@
   <data name="EulaWarning" xml:space="preserve">
     <value>"ASFTradeExtension.EULA" не принят, некоторые функции отключены</value>
   </data>
-  <data name="LoadInventoryFailedNetworkError" xml:space="preserve">
-    <value>Не удалось считать информацию инвентаря из-за сетевой ошибки</value>
-  </data>
-  <data name="CardInventoryIsEmpty" xml:space="preserve">
-    <value>В инвентаре отсутствуют карточки</value>
-  </data>
-  <data name="CurrentCardInventoryShow" xml:space="preserve">
-    <value>{0}: Всего {1} карточек, {2} карточек в наборе, Всего {3} наборов + {4} карточек, Торгуемых наборов {5} + {6} карточек</value>
-  </data>
-  <data name="NoAvilableCards" xml:space="preserve">
-    <value>Карточки отсутствуют</value>
-  </data>
-  <data name="NoInformation" xml:space="preserve">
-    <value>Информация отсутствует</value>
-  </data>
-  <data name="ArgumentInvalidAppIds" xml:space="preserve">
-    <value>Параметр неверный</value>
-  </data>
   <data name="AppIdInvalid" xml:space="preserve">
     <value>Неверный AppId</value>
   </data>
-  <data name="TwoItem" xml:space="preserve">
-    <value>{0}: {1}</value>
+  <data name="ArgumentInvalidAppIds" xml:space="preserve">
+    <value>Параметр неверный</value>
   </data>
   <data name="ArgumentInvalidFSL" xml:space="preserve">
     <value>Неправильный параметр, пример: -p 2 -l 20 (вторая страница, 20 предмет на странице)</value>
@@ -189,29 +171,86 @@
   <data name="ArgumentInvalidSCS2" xml:space="preserve">
     <value>AppId и SetCount должны быть больше чем 0</value>
   </data>
-  <data name="SteamIdInvalid" xml:space="preserve">
-    <value>Неверный SteamId</value>
+  <data name="CardInventoryIsEmpty" xml:space="preserve">
+    <value>В инвентаре отсутствуют карточки</value>
   </data>
-  <data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
-    <value>Не удалось отправить трейд, недостаточное количество карт для обмена</value>
-  </data>
-  <data name="SendTradeResult" xml:space="preserve">
-    <value>Трейд отправлен {0}</value>
+  <data name="CurrentCardInventoryShow" xml:space="preserve">
+    <value>{0}: Всего {1} карточек, {2} карточек в наборе, Всего {3} наборов + {4} карточек, {5} наборов карточек которые доступны для обмена + {6} карточек</value>
   </data>
   <data name="Failure" xml:space="preserve">
     <value>Неудачно</value>
   </data>
+  <data name="InventoryStatusBeforeTrade" xml:space="preserve">
+    <value>Состояние инвентаря до совершения операции:</value>
+  </data>
+  <data name="LoadInventoryFailedNetworkError" xml:space="preserve">
+    <value>Не удалось считать информацию инвентаря из-за сетевой ошибки</value>
+  </data>
+  <data name="SendTradeResult" xml:space="preserve">
+    <value>Трейд отправлен {0}</value>
+  </data>
+  <data name="SteamIdInvalid" xml:space="preserve">
+    <value>Неверный SteamId</value>
+  </data>
   <data name="SendTradeFailedAppIdInvalid" xml:space="preserve">
     <value>Не удалось отправить трейд, AppId может быть не верным</value>
   </data>
-  <data name="InventoryStatusBeforeTrade" xml:space="preserve">
-    <value>Состояние инвентаря до совершения операции:</value>
+  <data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
+    <value>Не удалось отправить трейд, недостаточное количество карт для обмена</value>
+  </data>
+  <data name="TwoItem" xml:space="preserve">
+    <value>{0}: {1}</value>
   </data>
   <data name="NoAvilableItemToShow" xml:space="preserve">
     <value>При текущих настройках ничего не отображается</value>
   </data>
+  <data name="NoAvilableCards" xml:space="preserve">
+    <value>Карточки отсутствуют</value>
+  </data>
+  <data name="NoInformation" xml:space="preserve">
+    <value>Информация отсутствует</value>
+  </data>
   <data name="ExpectToSendCardInfo" xml:space="preserve">
     <value>Предполагаемое количество ожидаемых отправления наборов {0}, всего карточек {1}</value>
+  </data>
+  <data name="Line" xml:space="preserve">
+    <value>==========================================</value>
+  </data>
+  <data name="SendCsItemArgsTips" xml:space="preserve">
+    <value>Неверный SENDCSITEM [Bots] [ClassId] Количество предметов для отправки каждому боту, если ClassId не указан, то будут отправлены все доступные для торговли/обмена предметы, в противном случае будут отправлены только указанные предметы</value>
+  </data>
+  <data name="SellCsItemArgsTips" xml:space="preserve">
+    <value>Параметр SELLCSITEM недействителен [BotNames] [ClassId] , если ClassId не указан, то все элементы будут выставленны на продажу, Продать все, когда ClassId равен -1</value>
+  </data>
+  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
+    <value>Отправить трейд {0} -&gt; {1} Отклонено, нет предметов в наличии</value>
+  </data>
+  <data name="SengTradeSuccess" xml:space="preserve">
+    <value>Отправить трейд {0} -&gt; {1}, количество предметов {2}, {3}</value>
+  </data>
+  <data name="DeListingSuccess" xml:space="preserve">
+    <value>Успешно убрано {0} предметов выставленнных на торговой площадке</value>
+  </data>
+  <data name="CsMarketHistoryArgsTips" xml:space="preserve">
+    <value>Параметр CSMARKETHISTORY недействителен [BotNames] [ClassId] , если ClassId не указан, то все элементы будут выставленны на продажу</value>
+  </data>
+  <data name="CsDeListingItemArgsTips" xml:space="preserve">
+    <value>参数无效 CSDELISTING [BotNames] [ClassId], 不指定 ClassId 时下架全部物品</value>
+  </data>
+  <data name="FetchTradeLinkFailed" xml:space="preserve">
+    <value>Ошибка автоматического получения ссылки на трейд</value>
+  </data>
+  <data name="InvalidClassId" xml:space="preserve">
+    <value>Неверный ClassId</value>
+  </data>
+  <data name="ItemListingSuccess" xml:space="preserve">
+    <value>Всего {0} предметов, выставленных на продажу {1}</value>
+  </data>
+  <data name="NoBotsAvilable" xml:space="preserve">
+    <value>Нет доступных ботов</value>
+  </data>
+  <data name="ItemListSuccessWaitConfirm" xml:space="preserve">
+    <value>&gt;Всего {0} предметов, выставленных на продажу, Ожидание 2FA подтверждения</value>
   </data>
   <data name="TFAConfirmResult" xml:space="preserve">
     <value>Подтверждение 2FA {0}</value>
@@ -219,58 +258,19 @@
   <data name="ThreeItemWithNum" xml:space="preserve">
     <value>{0} {1} Количество {2}</value>
   </data>
-  <data name="InvalidClassId" xml:space="preserve">
-    <value>Неверный ClassId</value>
-  </data>
-  <data name="SengTradeSuccess" xml:space="preserve">
-    <value>Отправить трейд {0} -&gt; {1}, количество предметов {2}, {3}</value>
-  </data>
-  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
-    <value>Отправить трейд {0} -&gt; {1} Отклонено, нет предметов в наличии</value>
-  </data>
-  <data name="SendCsItemArgsTips" xml:space="preserve">
-    <value>Неверный SENDCSITEM [Bots] [ClassId] Количество предметов для отправки каждому боту, если ClassId не указан, то будут отправлены все доступные для торговли/обмена предметы, в противном случае будут отправлены только указанные предметы</value>
-  </data>
-  <data name="FetchTradeLinkFailed" xml:space="preserve">
-    <value>Ошибка автоматического получения ссылки на транзакцию</value>
-  </data>
-  <data name="NoBotsAvilable" xml:space="preserve">
-    <value>Нет доступных ботов</value>
-  </data>
-  <data name="ItemListingSuccess" xml:space="preserve">
-    <value>Всего {0} предметов, поставленных на продажу {1}</value>
-  </data>
-  <data name="ItemListSuccessWaitConfirm" xml:space="preserve">
-    <value>&gt;Всего {0} предметов, поставленных на продажу, Ожидание 2FA подтверждения</value>
-  </data>
-  <data name="SellCsItemArgsTips" xml:space="preserve">
-    <value>Параметр SELLCSITEM недействителен [BotNames] [ClassId] , если ClassId не указан, то все элементы будут помещены на продажу, Продать все, когда ClassId равен -1</value>
+  <data name="NoSelingCsItemInFilter" xml:space="preserve">
+    <value>Отсутствие предметов CS2 которые доступны для продажи с текущими фильтрами</value>
   </data>
   <data name="NoSellingCsItem" xml:space="preserve">
-    <value>Отсутствие предметов CSGO для продажи</value>
-  </data>
-  <data name="NoSelingCsItemInFilter" xml:space="preserve">
-    <value>Отсутствие предметов CSGO для продажи с текущими фильтрами</value>
-  </data>
-  <data name="CsMarketHistoryArgsTips" xml:space="preserve">
-    <value>Параметр CSMARKETHISTORY недействителен  [BotNames] [ClassId] , если ClassId не указан, то все элементы будут помещены на продажу</value>
-  </data>
-  <data name="DeListingSuccess" xml:space="preserve">
-    <value>成功下架了 {0} 个物品</value>
-  </data>
-  <data name="CsDeListingItemArgsTips" xml:space="preserve">
-    <value>参数无效 CSDELISTING [BotNames] [ClassId], 不指定 ClassId 时下架全部物品</value>
-  </data>
-  <data name="Line" xml:space="preserve">
-    <value>==========================================</value>
-  </data>
-  <data name="ASFEnhanceRegisterSuccess" xml:space="preserve">
-    <value>ASFEBridge 注册成功</value>
+    <value>Отсутствие предметов CS2 которые доступны для продажи</value>
   </data>
   <data name="ASFEnhanceRegisterFailed" xml:space="preserve">
-    <value>ASFEBridge 注册失败</value>
+    <value>Не удалось зарегистрировать ASFEBridge</value>
+  </data>
+  <data name="ASFEnhanceRegisterSuccess" xml:space="preserve">
+    <value>Регистрация ASFEBridge прошла успешно</value>
   </data>
   <data name="PluginStandalongMode" xml:space="preserve">
-    <value>推荐安装 ASFEnhance, 支持自动更新插件</value>
+    <value>Мы рекомендуем установить плагин ASFEnhance, поддерживающий автоматическое обновление.</value>
   </data>
 </root>

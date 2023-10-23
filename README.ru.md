@@ -17,7 +17,7 @@
 [![Steam](https://img.shields.io/badge/steam-donate-1B2838.svg?logo=steam)](https://steamcommunity.com/tradeoffer/new/?partner=221260487&token=xgqMgL-i)
 [![爱发电](https://img.shields.io/badge/爱发电-chr__-ea4aaa.svg?logo=github-sponsors)](https://afdian.net/@chr233)
 
-[中文说明](README.md) 
+[中文说明](README.md) | [English Version](README.en.md)
 
 ## ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ
 
@@ -121,7 +121,7 @@ ASF.json
 | `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`      | `Master`   | Отправляет набор карточек с указанным `SetCount` и `AppId` по трейд ссылке                                             |
 | `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS`     | `Master`   | Аналогично `SENDCARDSET`, автоматически подтверждает трейд после его отправки (требуется настройка 2FA)                 |
 
-### Торговля инвентарем CSGO
+### Торговля инвентарем CS2
 
 | Команда                                  | Сокращение | Доступ     | Описание                                                                                                                |
 | ---------------------------------------- | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------- |

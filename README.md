@@ -19,7 +19,7 @@
 
 ASFTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https://keylol.com/t876377-1-1)
 
-[Русская Версия](README.ru.md)
+[Русская Версия](README.ru.md) | [English Version](README.en.md)
 
 ## EULA
 
@@ -125,7 +125,7 @@ ASF.json
 | `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的卡牌          |
 | `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)      |
 
-### CSGO 库存交易
+### CS2 库存交易
 
 | 命令                                      | 缩写   | 权限        | 说明                                                                  |
 | ---------------------------------------- | ------ | ---------- | --------------------------------------------------------------------- |

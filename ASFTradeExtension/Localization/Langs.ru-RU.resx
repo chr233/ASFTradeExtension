@@ -201,10 +201,10 @@
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
-  <data name="NoAvilableItemToShow" xml:space="preserve">
+  <data name="NoAvailableItemToShow" xml:space="preserve">
     <value>При текущих настройках ничего не отображается</value>
   </data>
-  <data name="NoAvilableCards" xml:space="preserve">
+  <data name="NoAvailableCards" xml:space="preserve">
     <value>Карточки отсутствуют</value>
   </data>
   <data name="NoInformation" xml:space="preserve">
@@ -222,7 +222,7 @@
   <data name="SellCsItemArgsTips" xml:space="preserve">
     <value>Параметр SELLCSITEM недействителен [BotNames] [ClassId] , если ClassId не указан, то все элементы будут выставленны на продажу, Продать все, когда ClassId равен -1</value>
   </data>
-  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
+  <data name="SendTradeFailedNoItemAvailable" xml:space="preserve">
     <value>Отправить трейд {0} -&gt; {1} Отклонено, нет предметов в наличии</value>
   </data>
   <data name="SengTradeSuccess" xml:space="preserve">
@@ -246,7 +246,7 @@
   <data name="ItemListingSuccess" xml:space="preserve">
     <value>Всего {0} предметов, выставленных на продажу {1}</value>
   </data>
-  <data name="NoBotsAvilable" xml:space="preserve">
+  <data name="NoBotsAvailable" xml:space="preserve">
     <value>Нет доступных ботов</value>
   </data>
   <data name="ItemListSuccessWaitConfirm" xml:space="preserve">

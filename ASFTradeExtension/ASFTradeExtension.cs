@@ -147,7 +147,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             1 => cmd switch //不带参数
             {
                 //Plugin Info
-                "ASFTRADEXTENSION" or
+                "ASFTradeExtension" or
                 "ATE" when access >= EAccess.FamilySharing =>
                     Task.FromResult(PluginInfo),
 

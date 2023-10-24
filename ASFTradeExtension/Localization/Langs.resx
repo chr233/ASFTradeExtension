@@ -165,7 +165,7 @@
   <data name="CurrentCardInventoryShow" xml:space="preserve">
     <value>{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张</value>
   </data>
-  <data name="NoAvilableCards" xml:space="preserve">
+  <data name="NoAvailableCards" xml:space="preserve">
     <value>无卡牌</value>
   </data>
   <data name="NoInformation" xml:space="preserve">
@@ -207,7 +207,7 @@
   <data name="InventoryStatusBeforeTrade" xml:space="preserve">
     <value>交易前库存状态:</value>
   </data>
-  <data name="NoAvilableItemToShow" xml:space="preserve">
+  <data name="NoAvailableItemToShow" xml:space="preserve">
     <value>当前设置下无可显示的内容</value>
   </data>
   <data name="ExpectToSendCardInfo" xml:space="preserve">
@@ -222,10 +222,10 @@
   <data name="InvalidClassId" xml:space="preserve">
     <value>无效 ClassId</value>
   </data>
-  <data name="SengTradeSuccess" xml:space="preserve">
+  <data name="SendTradeSuccess" xml:space="preserve">
     <value>发送交易报价 {0} -&gt; {1}, 物品数量 {2}, {3}</value>
   </data>
-  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
+  <data name="SendTradeFailedNoItemAvailable" xml:space="preserve">
     <value>发送交易报价 {0} -&gt; {1} 失败, 无可用物品</value>
   </data>
   <data name="SendCsItemArgsTips" xml:space="preserve">
@@ -234,7 +234,7 @@
   <data name="FetchTradeLinkFailed" xml:space="preserve">
     <value>自动获取交易链接失败</value>
   </data>
-  <data name="NoBotsAvilable" xml:space="preserve">
+  <data name="NoBotsAvailable" xml:space="preserve">
     <value>无可用机器人</value>
   </data>
   <data name="ItemListingSuccess" xml:space="preserve">

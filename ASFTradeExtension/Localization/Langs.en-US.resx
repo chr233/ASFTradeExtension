@@ -234,7 +234,7 @@
   <data name="SendCsItemArgsTips" xml:space="preserve">
     <value>Arguments are invalid SENDCSITEM [Bots] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent.</value>
   </data>
-  <data name="SengTradeSuccess" xml:space="preserve">
+  <data name="SendTradeSuccess" xml:space="preserve">
     <value>Send trade offer {0} -&gt; {1}, item quantity {2}, {3}</value>
   </data>
   <data name="SendTradeResult" xml:space="preserve">

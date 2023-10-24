@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -201,10 +201,10 @@
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
-  <data name="NoAvilableItemToShow" xml:space="preserve">
+  <data name="NoAvailableItemToShow" xml:space="preserve">
     <value>当前设置下无可显示的内容</value>
   </data>
-  <data name="NoAvilableCards" xml:space="preserve">
+  <data name="NoAvailableCards" xml:space="preserve">
     <value>无卡牌</value>
   </data>
   <data name="NoInformation" xml:space="preserve">
@@ -222,10 +222,10 @@
   <data name="SellCsItemArgsTips" xml:space="preserve">
     <value>参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部</value>
   </data>
-  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
+  <data name="SendTradeFailedNoItemAvailable" xml:space="preserve">
     <value>发送交易报价 {0} -&gt; {1} 失败, 无可用物品</value>
   </data>
-  <data name="SengTradeSuccess" xml:space="preserve">
+  <data name="SendTradeSuccess" xml:space="preserve">
     <value>发送交易报价 {0} -&gt; {1}, 物品数量 {2}, {3}</value>
   </data>
   <data name="DeListingSuccess" xml:space="preserve">
@@ -246,7 +246,7 @@
   <data name="ItemListingSuccess" xml:space="preserve">
     <value>共计 {0} 个物品上架 {1}</value>
   </data>
-  <data name="NoBotsAvilable" xml:space="preserve">
+  <data name="NoBotsAvailable" xml:space="preserve">
     <value>无可用机器人</value>
   </data>
   <data name="ItemListSuccessWaitConfirm" xml:space="preserve">

@@ -225,7 +225,7 @@
   <data name="SendTradeFailedNoItemAvailable" xml:space="preserve">
     <value>Отправить трейд {0} -&gt; {1} Отклонено, нет предметов в наличии</value>
   </data>
-  <data name="SengTradeSuccess" xml:space="preserve">
+  <data name="SendTradeSuccess" xml:space="preserve">
     <value>Отправить трейд {0} -&gt; {1}, количество предметов {2}, {3}</value>
   </data>
   <data name="DeListingSuccess" xml:space="preserve">

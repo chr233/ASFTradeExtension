@@ -100,7 +100,7 @@ internal static partial class Command
         var keys = orderedClassIds.Skip(page * count).Take(count);
         if (!keys.Any())
         {
-            return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
+            return bot.FormatBotResponse(Langs.NoAvailableItemToShow);
         }
 
         var sb = new StringBuilder();
@@ -269,7 +269,7 @@ internal static partial class Command
         var bots = Bot.GetBots("ASF")?.Where(x => x.IsConnectedAndLoggedOn && x != bot);
         if (bots == null || !bots.Any())
         {
-            return bot.FormatBotResponse(Langs.NoBotsAvilable);
+            return bot.FormatBotResponse(Langs.NoBotsAvailable);
         }
 
         var tradeToken = await WebRequests.GetTradeToken(bot).ConfigureAwait(false);
@@ -342,11 +342,11 @@ internal static partial class Command
                         Handler.AddTrade(tradeId, b.SteamID);
                     }
                 }
-                sb.AppendLineFormat(Langs.SengTradeSuccess, b.BotName, bot.BotName, offer.Count, success ? Langs.Success : Langs.Failure);
+                sb.AppendLineFormat(Langs.SendTradeSuccess, b.BotName, bot.BotName, offer.Count, success ? Langs.Success : Langs.Failure);
             }
             else
             {
-                sb.AppendLineFormat(Langs.SendTradeFailedNoItemAvilable, b.BotName, bot.BotName);
+                sb.AppendLineFormat(Langs.SendTradeFailedNoItemAvailable, b.BotName, bot.BotName);
             }
             if (skip >= invCount)
             {

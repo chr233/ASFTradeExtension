@@ -61,7 +61,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 无效 AppId 的本地化字符串。
+        ///   查找类似 Неверный AppId 的本地化字符串。
         /// </summary>
         internal static string AppIdInvalid {
             get {
@@ -70,7 +70,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 输入参数 AppIds 无效 的本地化字符串。
+        ///   查找类似 Параметр неверный 的本地化字符串。
         /// </summary>
         internal static string ArgumentInvalidAppIds {
             get {
@@ -79,7 +79,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 参数有误, 示例: -p 2 -l 20 (第二页, 每页20条) 的本地化字符串。
+        ///   查找类似 Неправильный параметр, пример: -p 2 -l 20 (вторая страница, 20 предмет на странице) 的本地化字符串。
         /// </summary>
         internal static string ArgumentInvalidFSL {
             get {
@@ -88,7 +88,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 参数无效, 示例 730 2 交易链接 的本地化字符串。
+        ///   查找类似 Недопустимый параметр, пример: 730 2 Ссылка на трейд 的本地化字符串。
         /// </summary>
         internal static string ArgumentInvalidSCS {
             get {
@@ -97,7 +97,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 AppId 和 SetCount 必须大于0 的本地化字符串。
+        ///   查找类似 AppId и SetCount должны быть больше чем 0 的本地化字符串。
         /// </summary>
         internal static string ArgumentInvalidSCS2 {
             get {
@@ -124,7 +124,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 卡牌库存为空 的本地化字符串。
+        ///   查找类似 В инвентаре отсутствуют карточки 的本地化字符串。
         /// </summary>
         internal static string CardInventoryIsEmpty {
             get {
@@ -133,7 +133,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 响应为空 的本地化字符串。
+        ///   查找类似 Пустой ответ 的本地化字符串。
         /// </summary>
         internal static string CartEmptyResponse {
             get {
@@ -142,7 +142,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 旧的插件备份已经自动清理 的本地化字符串。
+        ///   查找类似 Успешная очиститка старых бекапов плагина 的本地化字符串。
         /// </summary>
         internal static string CleanUpOldBackup {
             get {
@@ -151,7 +151,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 旧的插件备份清理失败 的本地化字符串。
+        ///   查找类似 Не удалось очистить старые бекапы плагина 的本地化字符串。
         /// </summary>
         internal static string CleanUpOldBackupFailed {
             get {
@@ -169,7 +169,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 参数无效 CSMARKETHISTORY [BotNames] [ClassId] , 不指定 ClassId 时下架全部物品 的本地化字符串。
+        ///   查找类似 Параметр CSMARKETHISTORY недействителен  [BotNames] [ClassId] , если ClassId не указан, то все элементы будут помещены на продажу 的本地化字符串。
         /// </summary>
         internal static string CsMarketHistoryArgsTips {
             get {
@@ -178,7 +178,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 {0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张 的本地化字符串。
+        ///   查找类似 {0}: Всего {1} карточек, {2} карточек в наборе, Всего {3} наборов + {4} карточек, Торгуемых наборов {5} + {6} карточек 的本地化字符串。
         /// </summary>
         internal static string CurrentCardInventoryShow {
             get {
@@ -187,7 +187,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 zh-Hans 的本地化字符串。
+        ///   查找类似 ru-RU 的本地化字符串。
         /// </summary>
         internal static string CurrentLanguage {
             get {
@@ -205,7 +205,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 完成 的本地化字符串。
+        ///   查找类似 Готово 的本地化字符串。
         /// </summary>
         internal static string Done {
             get {
@@ -214,7 +214,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 出错 的本地化字符串。
+        ///   查找类似 Ошибка 的本地化字符串。
         /// </summary>
         internal static string Error {
             get {
@@ -223,7 +223,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 尚未同意 EULA , 部分命令已禁用 的本地化字符串。
+        ///   查找类似 {0}: &quot;ASFTradeExtension.EULA&quot; не принят, некоторые функции отключены 的本地化字符串。
         /// </summary>
         internal static string EulaWarning {
             get {
@@ -232,7 +232,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 预计发送 {0} 套, 共 {1} 张 卡牌 的本地化字符串。
+        ///   查找类似 Предполагаемое количество ожидаемых отправления наборов {0}, всего карточек {1} 的本地化字符串。
         /// </summary>
         internal static string ExpectToSendCardInfo {
             get {
@@ -241,7 +241,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 失败 的本地化字符串。
+        ///   查找类似 Неудачно 的本地化字符串。
         /// </summary>
         internal static string Failure {
             get {
@@ -250,7 +250,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 自动获取交易链接失败 的本地化字符串。
+        ///   查找类似 Ошибка автоматического получения ссылки на транзакцию 的本地化字符串。
         /// </summary>
         internal static string FetchTradeLinkFailed {
             get {
@@ -259,7 +259,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 无效 ClassId 的本地化字符串。
+        ///   查找类似 Неверный ClassId 的本地化字符串。
         /// </summary>
         internal static string InvalidClassId {
             get {
@@ -268,7 +268,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 交易前库存状态: 的本地化字符串。
+        ///   查找类似 Состояние инвентаря до совершения операции: 的本地化字符串。
         /// </summary>
         internal static string InventoryStatusBeforeTrade {
             get {
@@ -277,7 +277,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 共计 {0} 个物品上架 {1} 的本地化字符串。
+        ///   查找类似 Всего {0} предметов, поставленных на продажу {1} 的本地化字符串。
         /// </summary>
         internal static string ItemListingSuccess {
             get {
@@ -286,7 +286,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 共计 {0} 个物品上架, 等待手动确认 的本地化字符串。
+        ///   查找类似 &gt;Всего {0} предметов, поставленных на продажу, Ожидание 2FA подтверждения 的本地化字符串。
         /// </summary>
         internal static string ItemListSuccessWaitConfirm {
             get {
@@ -304,7 +304,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 网络异常, 读取库存信息失败 的本地化字符串。
+        ///   查找类似 Не удалось считать информацию инвентаря из-за сетевой ошибки 的本地化字符串。
         /// </summary>
         internal static string LoadInventoryFailedNetworkError {
             get {
@@ -313,7 +313,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 多行结果: 的本地化字符串。
+        ///   查找类似 Результат с несколькими строками: 的本地化字符串。
         /// </summary>
         internal static string MultipleLineResult {
             get {
@@ -322,7 +322,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 网络错误 的本地化字符串。
+        ///   查找类似 Сетевая ошибка 的本地化字符串。
         /// </summary>
         internal static string NetworkError {
             get {
@@ -331,7 +331,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 无卡牌 的本地化字符串。
+        ///   查找类似 Карточки отсутствуют 的本地化字符串。
         /// </summary>
         internal static string NoAvilableCards {
             get {
@@ -340,7 +340,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 当前设置下无可显示的内容 的本地化字符串。
+        ///   查找类似 При текущих настройках ничего не отображается 的本地化字符串。
         /// </summary>
         internal static string NoAvilableItemToShow {
             get {
@@ -349,7 +349,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 无可用机器人 的本地化字符串。
+        ///   查找类似 Нет доступных ботов 的本地化字符串。
         /// </summary>
         internal static string NoBotsAvilable {
             get {
@@ -358,7 +358,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 无信息 的本地化字符串。
+        ///   查找类似 Информация отсутствует 的本地化字符串。
         /// </summary>
         internal static string NoInformation {
             get {
@@ -367,7 +367,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 过滤条件下无正在出售的CSGO物品 的本地化字符串。
+        ///   查找类似 Отсутствие предметов CSGO для продажи с текущими фильтрами 的本地化字符串。
         /// </summary>
         internal static string NoSelingCsItemInFilter {
             get {
@@ -376,7 +376,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 无正在出售的CSGO物品 的本地化字符串。
+        ///   查找类似 Отсутствие предметов CSGO для продажи 的本地化字符串。
         /// </summary>
         internal static string NoSellingCsItem {
             get {
@@ -385,7 +385,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 插件作者: Chr_, 联系方式: chr@chrxw.com 的本地化字符串。
+        ///   查找类似 Разработано Chr_, email chr@chrxw.com 的本地化字符串。
         /// </summary>
         internal static string PluginContact {
             get {
@@ -394,7 +394,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 爱发电: https://afdian.net/@chr233 的本地化字符串。
+        ///   查找类似 Donate: https://afdian.net/@chr233 的本地化字符串。
         /// </summary>
         internal static string PluginInfo {
             get {
@@ -412,7 +412,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 {0} 版本 {1} 的本地化字符串。
+        ///   查找类似 {0} Версия {1} 的本地化字符串。
         /// </summary>
         internal static string PluginVer {
             get {
@@ -421,7 +421,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部 的本地化字符串。
+        ///   查找类似 Параметр SELLCSITEM недействителен [BotNames] [ClassId] , если ClassId не указан, то все элементы будут помещены на продажу, Продать все, когда ClassId равен -1 的本地化字符串。
         /// </summary>
         internal static string SellCsItemArgsTips {
             get {
@@ -430,7 +430,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 参数无效 SENDCSITEM [Bots] [ClassId] 发给每个Bot的数量, ClassId未指定时发送全部可交易物品, 否则只发送指定的物品 的本地化字符串。
+        ///   查找类似 Неверный SENDCSITEM [Bots] [ClassId] Количество предметов для отправки каждому боту, если ClassId не указан, то будут отправлены все доступные для торговли/обмена предметы, в противном случае будут отправлены только указанные предметы 的本地化字符串。
         /// </summary>
         internal static string SendCsItemArgsTips {
             get {
@@ -439,7 +439,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 发送交易失败, AppId 可能无效 的本地化字符串。
+        ///   查找类似 Не удалось отправить трейд, AppId может быть не верным 的本地化字符串。
         /// </summary>
         internal static string SendTradeFailedAppIdInvalid {
             get {
@@ -448,7 +448,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 交易报价发送成功失败, 可交易卡牌数量不足 的本地化字符串。
+        ///   查找类似 Не удалось отправить трейд, недостаточное количество карт для обмена 的本地化字符串。
         /// </summary>
         internal static string SendTradeFailedNoEnoughCards {
             get {
@@ -457,7 +457,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 发送交易报价 {0} -&gt; {1} 失败, 无可用物品 的本地化字符串。
+        ///   查找类似 Отправить трейд {0} -&gt; {1} Отклонено, нет предметов в наличии 的本地化字符串。
         /// </summary>
         internal static string SendTradeFailedNoItemAvilable {
             get {
@@ -466,7 +466,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 交易报价发送{0} 的本地化字符串。
+        ///   查找类似 Трейд отправлен {0} 的本地化字符串。
         /// </summary>
         internal static string SendTradeResult {
             get {
@@ -475,7 +475,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 发送交易报价 {0} -&gt; {1}, 物品数量 {2}, {3} 的本地化字符串。
+        ///   查找类似 Отправить трейд {0} -&gt; {1}, количество предметов {2}, {3} 的本地化字符串。
         /// </summary>
         internal static string SengTradeSuccess {
             get {
@@ -484,7 +484,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 SteamId 无效 的本地化字符串。
+        ///   查找类似 Неверный SteamId 的本地化字符串。
         /// </summary>
         internal static string SteamIdInvalid {
             get {
@@ -493,7 +493,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 成功 的本地化字符串。
+        ///   查找类似 Успех 的本地化字符串。
         /// </summary>
         internal static string Success {
             get {
@@ -502,7 +502,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 2FA自动确认{0} 的本地化字符串。
+        ///   查找类似 Подтверждение 2FA {0} 的本地化字符串。
         /// </summary>
         internal static string TFAConfirmResult {
             get {
@@ -511,7 +511,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 {0} {1} 数量 {2} 的本地化字符串。
+        ///   查找类似 {0} {1} Количество {2} 的本地化字符串。
         /// </summary>
         internal static string ThreeItemWithNum {
             get {

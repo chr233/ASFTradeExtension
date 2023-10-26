@@ -154,7 +154,7 @@
     <value>{0} Version {1}</value>
   </data>
   <data name="EulaWarning" xml:space="preserve">
-    <value>ASFEnhance.EULA not agreed, some features is disabled</value>
+    <value>{0}: ASFEnhance.EULA not agreed, some features is disabled</value>
   </data>
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>

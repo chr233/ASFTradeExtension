@@ -154,7 +154,7 @@
     <value>{0} 版本 {1}</value>
   </data>
   <data name="EulaWarning" xml:space="preserve">
-    <value>尚未同意 EULA , 部分命令已禁用</value>
+    <value>{0}: 尚未同意 ASFEnhance.EULA, 部分命令已禁用</value>
   </data>
   <data name="AppIdInvalid" xml:space="preserve">
     <value>无效 AppId</value>
@@ -201,10 +201,10 @@
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
-  <data name="NoAvailableItemToShow" xml:space="preserve">
+  <data name="NoAvilableItemToShow" xml:space="preserve">
     <value>当前设置下无可显示的内容</value>
   </data>
-  <data name="NoAvailableCards" xml:space="preserve">
+  <data name="NoAvilableCards" xml:space="preserve">
     <value>无卡牌</value>
   </data>
   <data name="NoInformation" xml:space="preserve">
@@ -222,10 +222,10 @@
   <data name="SellCsItemArgsTips" xml:space="preserve">
     <value>参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部</value>
   </data>
-  <data name="SendTradeFailedNoItemAvailable" xml:space="preserve">
+  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
     <value>发送交易报价 {0} -&gt; {1} 失败, 无可用物品</value>
   </data>
-  <data name="SendTradeSuccess" xml:space="preserve">
+  <data name="SengTradeSuccess" xml:space="preserve">
     <value>发送交易报价 {0} -&gt; {1}, 物品数量 {2}, {3}</value>
   </data>
   <data name="DeListingSuccess" xml:space="preserve">
@@ -246,7 +246,7 @@
   <data name="ItemListingSuccess" xml:space="preserve">
     <value>共计 {0} 个物品上架 {1}</value>
   </data>
-  <data name="NoBotsAvailable" xml:space="preserve">
+  <data name="NoBotsAvilable" xml:space="preserve">
     <value>无可用机器人</value>
   </data>
   <data name="ItemListSuccessWaitConfirm" xml:space="preserve">

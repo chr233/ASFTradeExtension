@@ -154,7 +154,7 @@
     <value>{0} Version {1}</value>
   </data>
   <data name="EulaWarning" xml:space="preserve">
-    <value>{0}: ASFEnhance.EULA not agreed, some features is disabled</value>
+    <value>ASFEnhance.EULA not agreed, some features is disabled</value>
   </data>
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
@@ -163,115 +163,115 @@
     <value>==========================================</value>
   </data>
   <data name="DeListingSuccess" xml:space="preserve">
-    <value>成功下架了 {0} 个物品</value>
+    <value>Successfully cancelled {0} items</value>
   </data>
   <data name="CurrentCardInventoryShow" xml:space="preserve">
-    <value>{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张</value>
+    <value>{0}: Total {1} cards, {2} cards per set, Total {3} sets + {4} cards, Tradeable {5} sets + {6} cards</value>
   </data>
   <data name="CsMarketHistoryArgsTips" xml:space="preserve">
-    <value>参数无效 CSMARKETHISTORY [BotNames] [ClassId] , 不指定 ClassId 时下架全部物品</value>
+    <value>Arguments are invalid SENDCSITEM [Bots] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent.</value>
   </data>
   <data name="CsDeListingItemArgsTips" xml:space="preserve">
-    <value>参数无效 CSDELISTING [BotNames] [ClassId], 不指定 ClassId 时下架全部物品</value>
+    <value>Argument is invalid CSDELISTING [BotNames] [ClassId], if no ClassId is specified, all items will  be removed from the market</value>
   </data>
   <data name="FetchTradeLinkFailed" xml:space="preserve">
-    <value>自动获取交易链接失败</value>
+    <value>Failure to automatically fetch trading links</value>
   </data>
   <data name="InvalidClassId" xml:space="preserve">
-    <value>无效 ClassId</value>
+    <value>Invalid ClassId</value>
   </data>
   <data name="ItemListingSuccess" xml:space="preserve">
-    <value>共计 {0} 个物品上架 {1}</value>
+    <value>Total {0} items listed {1}</value>
   </data>
   <data name="ItemListSuccessWaitConfirm" xml:space="preserve">
-    <value>共计 {0} 个物品上架, 等待手动确认</value>
+    <value>Total {0} items listed, awaiting manual confirmation</value>
   </data>
   <data name="NoBotsAvilable" xml:space="preserve">
-    <value>无可用机器人</value>
+    <value>No available bots</value>
   </data>
   <data name="InventoryStatusBeforeTrade" xml:space="preserve">
-    <value>交易前库存状态:</value>
+    <value>Pre-trade inventory status</value>
   </data>
   <data name="ExpectToSendCardInfo" xml:space="preserve">
-    <value>预计发送 {0} 套, 共 {1} 张 卡牌</value>
+    <value>Expected to send {0} sets, total {1} cards</value>
   </data>
   <data name="Failure" xml:space="preserve">
-    <value>失败</value>
+    <value>Failure</value>
   </data>
   <data name="LoadInventoryFailedNetworkError" xml:space="preserve">
-    <value>网络异常, 读取库存信息失败</value>
+    <value>Failed to read inventory information due to network error</value>
   </data>
   <data name="NoAvilableCards" xml:space="preserve">
-    <value>无卡牌</value>
+    <value>No available cards</value>
   </data>
   <data name="NoAvilableItemToShow" xml:space="preserve">
-    <value>当前设置下无可显示的内容</value>
+    <value>Nothing to display under current settings</value>
   </data>
   <data name="TFAConfirmResult" xml:space="preserve">
-    <value>2FA自动确认{0}</value>
+    <value>2FA auto-confirmation {0}</value>
   </data>
   <data name="ThreeItemWithNum" xml:space="preserve">
-    <value>{0} {1} 数量 {2}</value>
+    <value>{0} {1} Quantity {2}</value>
   </data>
   <data name="CardInventoryIsEmpty" xml:space="preserve">
-    <value>卡牌库存为空</value>
+    <value>Card inventory is empty</value>
   </data>
   <data name="NoInformation" xml:space="preserve">
-    <value>无信息</value>
+    <value>No information</value>
   </data>
   <data name="NoSelingCsItemInFilter" xml:space="preserve">
-    <value>过滤条件下无正在出售的CSGO物品</value>
+    <value>No CS2 items available for sale with current filters</value>
   </data>
   <data name="NoSellingCsItem" xml:space="preserve">
-    <value>无正在出售的CSGO物品</value>
+    <value>No CS2 items for sale</value>
   </data>
   <data name="SellCsItemArgsTips" xml:space="preserve">
-    <value>参数无效 SELLCSITEM ClassId 数量 价格, 数量为-1时出售全部</value>
+    <value>Arguments is invalid SELLCSITEM ClassId Quantity Price, Sell All if Quantity is -1</value>
   </data>
   <data name="SendTradeFailedAppIdInvalid" xml:space="preserve">
-    <value>发送交易失败, AppId 可能无效</value>
+    <value>Failed to send trade, AppId may not be valid.</value>
   </data>
   <data name="SendCsItemArgsTips" xml:space="preserve">
-    <value>参数无效 SENDCSITEM [Bots] [ClassId] 发给每个Bot的数量, ClassId未指定时发送全部可交易物品, 否则只发送指定的物品</value>
+    <value>Arguments are invalid SENDCSITEM [Bots] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent.</value>
   </data>
   <data name="SengTradeSuccess" xml:space="preserve">
-    <value>发送交易报价 {0} -&gt; {1}, 物品数量 {2}, {3}</value>
+    <value>Send trade offer {0} -&gt; {1}, item quantity {2}, {3}</value>
   </data>
   <data name="SendTradeResult" xml:space="preserve">
-    <value>交易报价发送{0}</value>
+    <value>Trade offer sent {0}</value>
   </data>
   <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
-    <value>发送交易报价 {0} -&gt; {1} 失败, 无可用物品</value>
+    <value>Send trade offer {0} -&gt; {1} Failed, no items available</value>
   </data>
   <data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
-    <value>交易报价发送成功失败, 可交易卡牌数量不足</value>
+    <value>Failed to send trade offer, not enough cards available for trade.</value>
   </data>
   <data name="SteamIdInvalid" xml:space="preserve">
-    <value>SteamId 无效</value>
+    <value>SteamId Invalid</value>
   </data>
   <data name="ArgumentInvalidAppIds" xml:space="preserve">
-    <value>输入参数 AppIds 无效</value>
+    <value>Input argument AppIds Invalid</value>
   </data>
   <data name="AppIdInvalid" xml:space="preserve">
-    <value>无效 AppId</value>
+    <value>Invalid AppId</value>
   </data>
   <data name="ArgumentInvalidSCS2" xml:space="preserve">
-    <value>AppId 和 SetCount 必须大于0</value>
+    <value>AppId and SetCount must be above 0</value>
   </data>
   <data name="ArgumentInvalidSCS" xml:space="preserve">
-    <value>参数无效, 示例 730 2 交易链接</value>
+    <value>Invalid argument, Example 730 2 Transaction link</value>
   </data>
   <data name="ArgumentInvalidFSL" xml:space="preserve">
-    <value>参数有误, 示例: -p 2 -l 20 (第二页, 每页20条)</value>
+    <value>Wrong argument, example: -p 2 -l 20 (second page, 20 entries per page)</value>
   </data>
   <data name="ASFEnhanceRegisterFailed" xml:space="preserve">
-    <value>ASFEBridge 注册失败</value>
+    <value>ASFEBridge registration failed</value>
   </data>
   <data name="ASFEnhanceRegisterSuccess" xml:space="preserve">
-    <value>ASFEBridge 注册成功</value>
+    <value>ASFEBridge registration successful</value>
   </data>
   <data name="PluginStandalongMode" xml:space="preserve">
-    <value>推荐安装 ASFEnhance, 支持自动更新插件</value>
+    <value>Recommended to install ASFEnhance, support for automatic update plug-ins</value>
   </data>
   <data name="InternalError" xml:space="preserve">
     <value>Internal Error</value>

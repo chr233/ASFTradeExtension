@@ -3,6 +3,7 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
+using ASFTradeExtension.Core;
 using ASFTradeExtension.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,14 +15,13 @@ using System.Text;
 namespace ASFTradeExtension;
 
 [Export(typeof(IPlugin))]
-internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
+internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
 {
     public string Name => "ASF Trade Extension";
     public Version Version => MyVersion;
 
     private bool ASFEBridge;
 
-    [JsonProperty]
     public static PluginConfig Config => Utils.Config;
 
     private Timer? StatisticTimer;
@@ -67,7 +67,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
         {
             sb.AppendLine();
             sb.AppendLine(Langs.Line);
-            sb.AppendLine(Langs.EulaWarning);
+            sb.AppendLineFormat(Langs.EulaWarning, Name);
             sb.AppendLine(Langs.Line);
         }
 
@@ -76,7 +76,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             ASFLogger.LogGenericWarning(sb.ToString());
         }
         //统计
-        if (Config.Statistic)
+        if (Config.Statistic && !ASFEBridge)
         {
             var request = new Uri("https://asfe.chrxw.com/asftradeextension");
             StatisticTimer = new Timer(
@@ -121,7 +121,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             ASFLogger.LogGenericWarning(Langs.PluginStandalongMode);
         }
 
-        return Task.CompletedTask;
+        return Cache.CardSetManager.LoadCacheFile();
     }
 
     /// <summary>
@@ -352,6 +352,19 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             Csgo.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
             ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
         }
+        return Task.CompletedTask;
+    }
+
+    public Task OnBotDestroy(Bot bot)
+    {
+        Card.Command.Handlers.TryRemove(bot, out var _);
+        return Task.CompletedTask;
+    }
+
+    public Task OnBotInit(Bot bot)
+    {
+        var botHandler = new InventoryHandler(bot);
+        Card.Command.Handlers.TryAdd(bot, botHandler);
         return Task.CompletedTask;
     }
 }

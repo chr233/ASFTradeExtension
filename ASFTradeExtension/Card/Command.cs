@@ -2,13 +2,18 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
+using ASFTradeExtension.Core;
 using SteamKit2;
+using System.Collections.Concurrent;
 using System.Text;
+using static SteamKit2.Internal.CCloud_EnumerateUserApps_Response;
 
 namespace ASFTradeExtension.Card;
 
 internal static class Command
 {
+    internal static ConcurrentDictionary<Bot, InventoryHandler> Handlers { get; private set; } = new();
+
     /// <summary>
     /// 获取成套卡牌套数列表
     /// </summary>
@@ -17,6 +22,11 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetList(Bot bot, string? query)
     {
+        if (!Handlers.TryGetValue(bot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
+
         if (!bot.IsConnectedAndLoggedOn)
         {
             return bot.FormatBotResponse(Strings.BotNotConnected);
@@ -57,7 +67,7 @@ internal static class Command
             }
         }
 
-        var inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
+        var inventory = await handler.GetCardSetCache(false).ConfigureAwait(false);
         if (inventory == null)
         {
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
@@ -68,48 +78,42 @@ internal static class Command
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }
 
-        var appIds = Utils.OrderLisr(Utils.DistinctList(inventory, x => x.RealAppID)
-            .OrderByDescending(x => inventory.Count(y => y.RealAppID == x)));
-
-        var keys = appIds.Skip(page * count).Take(count);
+        var keys = inventory.Keys.ToList().Skip(page * count).Take(count);
         if (!keys.Any())
         {
-            return bot.FormatBotResponse(Langs.NoAvailableItemToShow);
+            return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
         }
-
-        var cardGroup = await Handler.GetAppCardGroup(bot, appIds, inventory).ConfigureAwait(false);
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
         foreach (uint appId in keys)
         {
-            if (cardGroup.TryGetValue(appId, out var bundle))
+            if (inventory.TryGetValue(appId, out var bundle))
             {
                 if (bundle.Assets != null)
                 {
-                    sb.AppendLine(
-                        string.Format(Langs.CurrentCardInventoryShow,
+                    sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                         appId, bundle.Assets.Count(), bundle.CardCountPerSet,
                         bundle.TotalSetCount, bundle.ExtraTotalCount,
-                        bundle.TradableSetCount, bundle.ExtraTradableCount)
+                        bundle.TradableSetCount, bundle.ExtraTradableCount
                     );
                 }
                 else
                 {
                     if (bundle.CardCountPerSet == -1)
                     {
-                        sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NetworkError));
+                        sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NetworkError);
                     }
                     else
                     {
-                        sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvailableCards));
+                        sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoAvilableCards);
                     }
                 }
             }
             else
             {
-                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoInformation));
+                sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoInformation);
             }
         }
 
@@ -134,11 +138,10 @@ internal static class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetList(bot, query))).ConfigureAwait(false);
-
         var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
@@ -152,82 +155,73 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetCountOfGame(Bot bot, string query)
     {
+        if (!Handlers.TryGetValue(bot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
+
         if (!bot.IsConnectedAndLoggedOn)
         {
             return bot.FormatBotResponse(Strings.BotNotConnected);
         }
 
-        var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        if (!queries.Any())
+        var entries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        if (!entries.Any())
         {
             return bot.FormatBotResponse(Langs.ArgumentInvalidAppIds);
         }
 
-        var appIds = queries.Select(q => uint.TryParse(q, out uint appId) ? appId : 0);
+        var inventory = await handler.GetCardSetCache(false).ConfigureAwait(false);
+        if (inventory == null)
+        {
+            return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
+        }
+
+        if (!inventory.Any())
+        {
+            return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
+        }
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
-        if (appIds.Any())
+        int i = 0;
+        foreach (var entry in entries)
         {
-            var inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
-            if (inventory == null)
+            if (!uint.TryParse(entry, out var appId) || appId == 0)
             {
-                return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
+                sb.AppendLine(string.Format(Langs.TwoItem, entries[i], Langs.AppIdInvalid));
             }
-
-            if (!inventory.Any())
+            else
             {
-                return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
-            }
-
-            var cardGroup = await Handler.GetAppCardGroup(bot, appIds, inventory).ConfigureAwait(false);
-
-            int i = 0;
-            foreach (uint appId in appIds)
-            {
-                if (appId == 0)
+                if (inventory.TryGetValue(appId, out var bundle))
                 {
-                    sb.AppendLine(string.Format(Langs.TwoItem, queries[i], Langs.AppIdInvalid));
-                }
-                else
-                {
-                    if (cardGroup.TryGetValue(appId, out var bundle))
+                    if (bundle.Assets != null)
                     {
-                        if (bundle.Assets != null)
-                        {
-                            sb.AppendLine(
-                                string.Format(Langs.CurrentCardInventoryShow,
-                                appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                                bundle.TotalSetCount, bundle.ExtraTotalCount,
-                                bundle.TradableSetCount, bundle.ExtraTradableCount)
-                            );
-                        }
-                        else
-                        {
-                            if (bundle.CardCountPerSet == -1)
-                            {
-                                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NetworkError));
-                            }
-                            else
-                            {
-                                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvailableCards));
-                            }
-                        }
+                        sb.AppendLine(
+                            string.Format(Langs.CurrentCardInventoryShow,
+                            appId, bundle.Assets.Count(), bundle.CardCountPerSet,
+                            bundle.TotalSetCount, bundle.ExtraTotalCount,
+                            bundle.TradableSetCount, bundle.ExtraTradableCount)
+                        );
                     }
                     else
                     {
-                        sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoInformation));
+                        if (bundle.CardCountPerSet == -1)
+                        {
+                            sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NetworkError));
+                        }
+                        else
+                        {
+                            sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
+                        }
                     }
                 }
+                else
+                {
+                    sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoInformation));
+                }
                 i++;
-            }
-        }
-        else
-        {
-            foreach (var q in queries)
-            {
-                sb.AppendLine(string.Format(Langs.TwoItem, q, Langs.AppIdInvalid));
             }
         }
 
@@ -252,7 +246,7 @@ internal static class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query))).ConfigureAwait(false);
@@ -273,6 +267,11 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseSendCardSet(Bot bot, string strAppId, string strSetCount, string tradeLink, bool autoConfirm)
     {
+        if (!Handlers.TryGetValue(bot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
+
         if (!bot.IsConnectedAndLoggedOn)
         {
             return bot.FormatBotResponse(Strings.BotNotConnected);
@@ -290,7 +289,7 @@ internal static class Command
             return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
         }
 
-        ulong targetSteamId = Utils.Steam322SteamId(ulong.Parse(match.Groups[1].Value));
+        ulong targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
         string tradeToken = match.Groups[2].Value;
 
         if (!new SteamID(targetSteamId).IsIndividualAccount)
@@ -298,13 +297,16 @@ internal static class Command
             return bot.FormatBotResponse(Langs.SteamIdInvalid);
         }
 
-        var inventory = await Handler.FetchBotCards(bot).ConfigureAwait(false);
+        var inventory = await handler.GetCardSetCache(false).ConfigureAwait(false);
         if (inventory == null)
         {
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
         }
 
-        var bundle = await Handler.GetAppCardBundle(bot, appId, inventory).ConfigureAwait(false);
+        if (!inventory.TryGetValue(appId, out var bundle))
+        {
+            return bot.FormatBotResponse(Langs.TwoItem, appId, Langs.NoAvilableCards);
+        }
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
@@ -367,7 +369,7 @@ internal static class Command
             }
             else
             {
-                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvailableCards));
+                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
             }
             sb.AppendLine(Langs.SendTradeFailedAppIdInvalid);
         }
@@ -396,11 +398,10 @@ internal static class Command
 
         if (bots == null || bots.Count == 0)
         {
-            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseSendCardSet(bot, strAppId, strSetCount, tradeLink, autoConfirm))).ConfigureAwait(false);
-
         var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;

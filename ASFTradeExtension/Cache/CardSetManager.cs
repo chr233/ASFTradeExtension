@@ -1,7 +1,6 @@
 using ArchiSteamFarm.Steam;
-using Newtonsoft.Json;
-using System.Collections.Concurrent;
 using ASFTradeExtension.Data;
+using Newtonsoft.Json;
 
 namespace ASFTradeExtension.Cache;
 

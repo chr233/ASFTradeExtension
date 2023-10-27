@@ -169,7 +169,7 @@
     <value>{0}: Total {1} cards, {2} cards per set, Total {3} sets + {4} cards, Tradeable {5} sets + {6} cards</value>
   </data>
   <data name="CsMarketHistoryArgsTips" xml:space="preserve">
-    <value>Arguments are invalid SENDCSITEM [Bots] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent.</value>
+    <value>Arguments are invalid SENDCSITEM [Bots] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent</value>
   </data>
   <data name="CsDeListingItemArgsTips" xml:space="preserve">
     <value>Argument is invalid CSDELISTING [BotNames] [ClassId], if no ClassId is specified, all items will  be removed from the market</value>
@@ -229,10 +229,10 @@
     <value>Arguments is invalid SELLCSITEM ClassId Quantity Price, Sell All if Quantity is -1</value>
   </data>
   <data name="SendTradeFailedAppIdInvalid" xml:space="preserve">
-    <value>Failed to send trade, AppId may not be valid.</value>
+    <value>Failed to send trade, AppId may not be valid</value>
   </data>
   <data name="SendCsItemArgsTips" xml:space="preserve">
-    <value>Arguments are invalid SENDCSITEM [Bots] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent.</value>
+    <value>Arguments are invalid SENDCSITEM [Bots] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent</value>
   </data>
   <data name="SengTradeSuccess" xml:space="preserve">
     <value>Send trade offer {0} -&gt; {1}, item quantity {2}, {3}</value>
@@ -244,7 +244,7 @@
     <value>Send trade offer {0} -&gt; {1} Failed, no items available</value>
   </data>
   <data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
-    <value>Failed to send trade offer, not enough cards available for trade.</value>
+    <value>Failed to send trade offer, not enough cards available for trade</value>
   </data>
   <data name="SteamIdInvalid" xml:space="preserve">
     <value>SteamId Invalid</value>
@@ -259,10 +259,10 @@
     <value>AppId and SetCount must be above 0</value>
   </data>
   <data name="ArgumentInvalidSCS" xml:space="preserve">
-    <value>Invalid argument, Example 730 2 Transaction link</value>
+    <value>Invalid argument, Example: 730 2 Trade link</value>
   </data>
   <data name="ArgumentInvalidFSL" xml:space="preserve">
-    <value>Wrong argument, example: -p 2 -l 20 (second page, 20 entries per page)</value>
+    <value>Invalid argument, Example: -p 2 -l 20 (second page, 20 entries per page)</value>
   </data>
   <data name="ASFEnhanceRegisterFailed" xml:space="preserve">
     <value>ASFEBridge registration failed</value>

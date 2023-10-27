@@ -172,7 +172,7 @@
     <value>Arguments are invalid SENDCSITEM [BotNames] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent</value>
   </data>
   <data name="CsDeListingItemArgsTips" xml:space="preserve">
-    <value>Arguments are invalid CSDELISTING [BotNames] [ClassId], if no ClassId is specified, all items will  be removed from the market</value>
+    <value>Arguments are invalid CSDELISTING [BotNames] [ClassId], if no ClassId is specified, all items will be removed from the market</value>
   </data>
   <data name="FetchTradeLinkFailed" xml:space="preserve">
     <value>Failure to automatically fetch trading links</value>
@@ -190,7 +190,7 @@
     <value>No available bots</value>
   </data>
   <data name="InventoryStatusBeforeTrade" xml:space="preserve">
-    <value>Pre-trade inventory status:4</value>
+    <value>Pre-trade inventory status:</value>
   </data>
   <data name="ExpectToSendCardInfo" xml:space="preserve">
     <value>Expected to send {0} sets, total {1} cards</value>

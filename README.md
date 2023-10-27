@@ -19,7 +19,7 @@
 
 ASFTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https://keylol.com/t876377-1-1)
 
-[Русская Версия](README.ru.md)
+[Русская Версия](README.ru.md) | [English Version](README.en.md)
 
 ## EULA
 
@@ -39,25 +39,25 @@ Not compatible with the common version of ASF currently, use generic version of 
 
 1. 从 [GitHub Releases](https://github.com/chr233/ASFTradeExtension/releases) 下载插件的最新版本
 2. 解压后将 `ASFTradeExtension.dll` 丢进 `ArchiSteamFarm` 目录下的 `plugins` 文件夹
-3. 重新启动 `ArchiSteamFarm` , 使用命令 `CTE` 来检查插件是否正常工作
+3. 重新启动 `ArchiSteamFarm` , 使用命令 `ATE` 来检查插件是否正常工作
 
 ### 使用命令升级插件
 
 > 可以使用插件自带的命令自带更新插件
 > ASF 版本升级有可能出现不兼容情况, 如果发现插件无法加载请尝试更新 ASF
 
-- `CTEVERSION` / `CTEV` 检查插件更新
-- `CTEUPDATE` / `CTEU` 自动更新插件到最新版本 (需要手动重启 ASF)
+- `ATEVERSION` / `ATEV` 检查插件更新
+- `ATEUPDATE` / `ATEU` 自动更新插件到最新版本 (需要手动重启 ASF)
 
 ### 更新日志
 
 | ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                             |
-| --------------------------------------------------------------------------- | :-----------: | ------------------------------------ |
-| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                      |
-| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |    5.4.9.3    | ASF -> 5.4.9.3                       |
-| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |    5.4.8.3    | 修改了一些代码, 卡牌交易功能有待测试 |
-| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复                             |
-| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本                           |
+| --------------------------------------------------------------------------- | :-----------: | --------------------------------- |
+| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                   |
+| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |    5.4.9.3    | ASF -> 5.4.9.3                    |
+| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |    5.4.8.3    | 修改了一些代码, 卡牌交易功能有待测试   |
+| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复                           |
+| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本                          |
 
 <details>
   <summary>历史版本</summary>
@@ -90,12 +90,12 @@ ASF.json
 }
 ```
 
-| 配置项            | 类型   | 默认值 | 说明                                                                                     |
-| ----------------- | ------ | ------ | ---------------------------------------------------------------------------------------- |
-| `EULA`            | bool   | `true` | 是否同意 [EULA](#EULA)\*                                                                 |
-| `Statistic`       | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                       |
-| `DisabledCmds`    | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFTradeExtension` 中的命令生效 |
-| `MaxItemPerTrade` | ushort | `255`  | 单个交易最多物品数量, ASF 的默认值是 255, 如果报价中的物品超过此数量会自动拆分成多个报价 |
+| 配置项             | 类型   | 默认值  | 说明                                                                                |
+| ----------------- | ------ | ------ | ---------------------------------------------------------------------------------- |
+| `EULA`            | bool   | `true` | 是否同意 [EULA](#EULA)\*                                                            |
+| `Statistic`       | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                          |
+| `DisabledCmds`    | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFTradeExtension` 中的命令生    |
+| `MaxItemPerTrade` | ushort | `255`  | 单个交易最多物品数量, ASF 的默认值是 255, 如果报价中的物品超过此数量会自动拆分成多个         |
 
 > \* 同意 [EULA](#EULA) 后, ASFTradeExtension 将会开放全部命令
 >
@@ -104,36 +104,36 @@ ASF.json
 > \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `ASFTradeExtension` 中的命令有效
 > 例如配置为 `["foo","BAR"]` , 则代表 `FOO` 和 `BAR` 命令将会被禁用
 > 如果无需禁用任何命令, 请将此项配置为 `null` 或者 `[]`
-> 当某条命令被禁用时, 仍然可以使用 `CTE.xxx` 的形式调用被禁用的命令, 例如 `CTE.FULLSETLIST`
+> 当某条命令被禁用时, 仍然可以使用 `ATE.xxx` 的形式调用被禁用的命令, 例如 `ATE.FULLSETLIST`
 
 ## 插件指令说明
 
 ### 插件更新
 
-| 命令                | 缩写   | 权限            | 说明                                                     |
-| ------------------- | ------ | --------------- | -------------------------------------------------------- |
-| `ASFTradeExtension` | `CTE`  | `FamilySharing` | 查看 ASFTradeExtension 的版本                            |
-| `CTEVERSION`        | `CTEV` | `Operator`      | 检查 ASFTradeExtension 是否为最新版本                    |
-| `CTEUPDATE`         | `CTEU` | `Owner`         | 自动更新 ASFTradeExtension 到最新版本 (需要手动重启 ASF) |
+| 命令                 | 缩写   | 权限             | 说明                                                  |
+| ------------------- | ------ | --------------- | ----------------------------------------------------- |
+| `ASFTradeExtension` | `ATE`  | `FamilySharing` | 查看 ASFTradeExtension 的版本                          |
+| `ATEVERSION`        | `ATEV` | `Operator`      | 检查 ASFTradeExtension 是否为最新版本                   |
+| `ATEUPDATE`         | `ATEU` | `Owner`         | 自动更新 ASFTradeExtension 到最新版本 (需要手动重启 ASF   |
 
 ### 卡牌交易
 
-| 命令                                           | 缩写   | 权限       | 说明                                                         |
-| ---------------------------------------------- | ------ | ---------- | ------------------------------------------------------------ |
+| 命令                                           | 缩写    | 权限        | 说明                                                    |
+| ---------------------------------------------- | ------ | ---------- | ------------------------------------------------------  |
 | `FULLSETLIST [Bots] [Config]`                  | `FSL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
-| `FULLSET [Bots] <appIds>`                      | `FS`   | `Operator` | 显示指定 App 的卡牌套数信息                                  |
+| `FULLSET [Bots] <appIds>`                      | `FS`   | `Operator` | 显示指定 App 的卡牌套数信息                                |
 | `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的卡牌          |
 | `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)      |
 
-### CSGO 库存交易
+### CS2 库存交易
 
-| 命令                                     | 缩写   | 权限       | 说明                                                                         |
-| ---------------------------------------- | ------ | ---------- | ---------------------------------------------------------------------------- |
-| `CSITEMLIST [Bots] [Config]`             | `CIL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]                 |
-| `CSSENDITEM [Bots]`                      | `CSI`  | `Master`   | 发送 Bots 的 CSGO 库存到其余在线 Bot                                         |
-| `2CSSENDITEM [Bots]`                     | `2CSI` | `Master`   | 同 `CSSENDITEM`, 发送交易后自动确认交易 (需要配置 2FA)                       |
-| `CSSENDITEM [Bots] ClassId CountPerBot`  | `CSI`  | `Master`   | 发送 Bots 的 CSGO 库存到其余在线 Bot, 指定物品 ClassId 和每个 Bot 接收的数量 |
-| `2CSSENDITEM [Bots] ClassId CountPerBot` | `2CSI` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)                      |
+| 命令                                      | 缩写   | 权限        | 说明                                                                  |
+| ---------------------------------------- | ------ | ---------- | --------------------------------------------------------------------- |
+| `CSITEMLIST [Bots] [Config]`             | `CIL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]               |
+| `CSSENDITEM [Bots]`                      | `CSI`  | `Master`   | 发送 Bots 的 CS2 库存到其余在线 Bot                                     |
+| `2CSSENDITEM [Bots]`                     | `2CSI` | `Master`   | 同 `CSSENDITEM`, 发送交易后自动确认交易 (需要配置 2FA)                     |
+| `CSSENDITEM [Bots] ClassId CountPerBot`  | `CSI`  | `Master`   | 发送 Bots 的 CS2 库存到其余在线 Bot, 指定物品 ClassId 和每个 Bot 接收的数量 |
+| `2CSSENDITEM [Bots] ClassId CountPerBot` | `2CSI` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)                    |
 
 ---
 

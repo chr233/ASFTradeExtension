@@ -21,9 +21,10 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
     private bool ASFEBridge;
 
+    [JsonProperty]
     public static PluginConfig Config => Utils.Config;
 
-    private Timer? StatisticTimer { get; set; }
+    private Timer? StatisticTimer;
 
     /// <summary>
     /// ASF启动事件
@@ -59,24 +60,23 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
 
         Utils.Config = config ?? new();
 
-        var warnings = new StringBuilder();
+        var sb = new StringBuilder();
 
         //使用协议
         if (!Config.EULA)
         {
-            warnings.AppendLine();
-            warnings.AppendLine(Langs.Line);
-            warnings.AppendLineFormat(Langs.EulaWarning, Name);
-            warnings.AppendLine(Langs.Line);
+            sb.AppendLine();
+            sb.AppendLine(Langs.Line);
+            sb.AppendLine(Langs.EulaWarning);
+            sb.AppendLine(Langs.Line);
         }
 
-        if (warnings.Length > 0)
+        if (sb.Length > 0)
         {
-            ASFLogger.LogGenericWarning(warnings.ToString());
+            ASFLogger.LogGenericWarning(sb.ToString());
         }
-
         //统计
-        if (Config.Statistic && !ASFEBridge)
+        if (Config.Statistic)
         {
             var request = new Uri("https://asfe.chrxw.com/asftradeextension");
             StatisticTimer = new Timer(
@@ -147,7 +147,7 @@ internal sealed class ASFTradeExtension : IASF, IBotCommand2, IBotTradeOffer, IB
             1 => cmd switch //不带参数
             {
                 //Plugin Info
-                "ASFTRADEXTENSION" or
+                "ASFTradeExtension" or
                 "ATE" when access >= EAccess.FamilySharing =>
                     Task.FromResult(PluginInfo),
 

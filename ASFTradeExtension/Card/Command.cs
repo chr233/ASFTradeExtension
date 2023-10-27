@@ -74,7 +74,7 @@ internal static class Command
         var keys = appIds.Skip(page * count).Take(count);
         if (!keys.Any())
         {
-            return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
+            return bot.FormatBotResponse(Langs.NoAvailableItemToShow);
         }
 
         var cardGroup = await Handler.GetAppCardGroup(bot, appIds, inventory).ConfigureAwait(false);
@@ -103,7 +103,7 @@ internal static class Command
                     }
                     else
                     {
-                        sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
+                        sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvailableCards));
                     }
                 }
             }
@@ -211,7 +211,7 @@ internal static class Command
                             }
                             else
                             {
-                                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
+                                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvailableCards));
                             }
                         }
                     }
@@ -367,7 +367,7 @@ internal static class Command
             }
             else
             {
-                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvilableCards));
+                sb.AppendLine(string.Format(Langs.TwoItem, appId, Langs.NoAvailableCards));
             }
             sb.AppendLine(Langs.SendTradeFailedAppIdInvalid);
         }

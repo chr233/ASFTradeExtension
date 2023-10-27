@@ -1,28 +1,29 @@
 using ArchiSteamFarm.Steam;
-using ASFTradeExtension.Data;
 using Newtonsoft.Json;
-using SteamKit2.Internal;
 using System.Collections.Concurrent;
-using System.Text;
+using ASFTradeExtension.Data;
 
 namespace ASFTradeExtension.Cache;
 
 internal static class CardSetManager
 {
-    private static CardCache FullSetCount { get; set; } = new();
+    /// <summary>
+    /// 卡牌套数信息缓存
+    /// </summary>
+    private static CardSetCache FullSetCountCache { get; set; } = new();
 
-    public static async Task<int> GetCardSetCount(Bot bot, uint appId)
-    {
-        if (FullSetCount.TryGetValue(appId, out var value))
-        {
-            return value;
-        }
-        return await FetchCardSetCount(bot, appId).ConfigureAwait(false);
-    }
+    internal static int CacheCount => FullSetCountCache.Count;
 
-    private static async Task<int> FetchCardSetCount(Bot bot, uint appId)
+    /// <summary>
+    /// 获取卡牌套数
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="subPath"></param>
+    /// <param name="appId"></param>
+    /// <returns></returns>
+    private static async Task<int> FetchCardSetCount(Bot bot, string subPath, uint appId)
     {
-        var request = new Uri(SteamCommunityURL, $"/profiles/{bot.SteamID}/gamecards/{appId}/");
+        var request = new Uri(SteamCommunityURL, $"{subPath}/gamecards/{appId}/");
 
         var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
@@ -33,7 +34,7 @@ internal static class CardSetManager
 
         if (response.FinalUri.PathAndQuery.EndsWith("badges"))
         {
-            FullSetCount.TryAdd(appId, 0);
+            FullSetCountCache[appId] = 0;
             return 0;
         }
 
@@ -43,8 +44,34 @@ internal static class CardSetManager
         }
 
         var count = response.Content.QuerySelectorAll("div.badge_card_set_card").Length;
-        FullSetCount.TryAdd(appId, count);
+        FullSetCountCache[appId] = count;
         return count;
+    }
+
+    /// <summary>
+    /// 获取卡牌套数
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="subPath"></param>
+    /// <param name="appId"></param>
+    /// <param name="semaphore"></param>
+    /// <returns></returns>
+    internal static async Task<int> GetCardSetCount(Bot bot, string subPath, uint appId, SemaphoreSlim semaphore)
+    {
+        if (FullSetCountCache.TryGetValue(appId, out var value))
+        {
+            return value;
+        }
+
+        try
+        {
+            await semaphore.WaitAsync().ConfigureAwait(false);
+            return await FetchCardSetCount(bot, subPath, appId).ConfigureAwait(false);
+        }
+        finally
+        {
+            semaphore.Release();
+        }
     }
 
     /// <summary>
@@ -54,7 +81,7 @@ internal static class CardSetManager
     private static string GetFilePath()
     {
         var pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
-        var filePath = Path.Combine(pluginFolder, "CardSetCache.json");
+        var filePath = Path.Combine(pluginFolder, "ATE_Cache.json");
         return filePath;
     }
 
@@ -70,10 +97,10 @@ internal static class CardSetManager
                 var raw = await sr.ReadToEndAsync().ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(raw))
                 {
-                    var dict = JsonConvert.DeserializeObject<CardCache>(raw);
+                    var dict = JsonConvert.DeserializeObject<CardSetCache>(raw);
                     if (dict != null)
                     {
-                        FullSetCount = dict;
+                        FullSetCountCache = dict;
                         return;
                     }
                 }
@@ -94,7 +121,7 @@ internal static class CardSetManager
             var filePath = GetFilePath();
             using var fs = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            var json = JsonConvert.SerializeObject(FullSetCount);
+            var json = JsonConvert.SerializeObject(FullSetCountCache);
             await sw.WriteAsync(json).ConfigureAwait(false);
         }
         catch (Exception ex)

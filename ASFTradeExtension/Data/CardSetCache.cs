@@ -6,6 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ASFTradeExtension.Data;
-internal sealed class CardCache : ConcurrentDictionary<uint, int>
+internal sealed class CardSetCache : ConcurrentDictionary<uint, int>
 {
 }

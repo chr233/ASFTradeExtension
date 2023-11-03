@@ -24,4 +24,9 @@ public sealed record PluginConfig
     /// </summary>
     [JsonProperty(Required = Required.Default)]
     public ushort MaxItemPerTrade { get; set; } = byte.MaxValue;
+    /// <summary>
+    /// 缓存生存时间(秒)
+    /// </summary>
+    [JsonProperty(Required = Required.Default)]
+    public ushort CacheTTL { get; set; } = 300;
 }

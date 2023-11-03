@@ -412,7 +412,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 推荐安装 ASFEnhance, 支持自动更新插件 的本地化字符串。
+        ///   查找类似 推荐安装 ASFEnhance, 支持自动更新插件. 的本地化字符串。
         /// </summary>
         internal static string PluginStandalongMode {
             get {
@@ -486,9 +486,9 @@ namespace ASFTradeExtension.Localization {
         /// <summary>
         ///   查找类似 发送交易报价 {0} -&gt; {1}, 物品数量 {2}, {3} 的本地化字符串。
         /// </summary>
-        internal static string SengTradeSuccess {
+        internal static string SendTradeSuccess {
             get {
-                return ResourceManager.GetString("SengTradeSuccess", resourceCulture);
+                return ResourceManager.GetString("SendTradeSuccess", resourceCulture);
             }
         }
         

@@ -6,7 +6,6 @@ using ASFTradeExtension.Core;
 using SteamKit2;
 using System.Collections.Concurrent;
 using System.Text;
-using static SteamKit2.Internal.CCloud_EnumerateUserApps_Response;
 
 namespace ASFTradeExtension.Card;
 
@@ -95,7 +94,7 @@ internal static class Command
                 {
                     sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                         appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                        bundle.TotalSetCount, bundle.ExtraTotalCount,
+                        -1, -1, //bundle.TotalSetCount, bundle.ExtraTotalCount,
                         bundle.TradableSetCount, bundle.ExtraTradableCount
                     );
                 }
@@ -201,7 +200,7 @@ internal static class Command
                         sb.AppendLine(
                             string.Format(Langs.CurrentCardInventoryShow,
                             appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                            bundle.TotalSetCount, bundle.ExtraTotalCount,
+                            -1, -1,    //bundle.TotalSetCount, bundle.ExtraTotalCount,
                             bundle.TradableSetCount, bundle.ExtraTradableCount)
                         );
                     }
@@ -317,7 +316,7 @@ internal static class Command
             sb.AppendLine(
                 string.Format(Langs.CurrentCardInventoryShow,
                 appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                bundle.TotalSetCount, bundle.ExtraTotalCount,
+                //bundle.TotalSetCount, bundle.ExtraTotalCount,
                 bundle.TradableSetCount, bundle.ExtraTradableCount)
             );
 
@@ -328,17 +327,18 @@ internal static class Command
             else
             {
                 var offer = new List<Asset>();
-                var flag = Utils.DistinctList(bundle.Assets, x => x.ClassID).ToDictionary(x => x, _ => setCount);
+                //TODO
+                //var flag = Utils.DistinctList(bundle.Assets, x => x.ClassID).ToDictionary(x => x, _ => setCount);
 
-                foreach (var asset in bundle.Assets)
-                {
-                    ulong clsId = asset.ClassID;
-                    if (flag[clsId] > 0)
-                    {
-                        offer.Add(asset);
-                        flag[clsId]--;
-                    }
-                }
+                //foreach (var asset in bundle.Assets)
+                //{
+                //    ulong clsId = asset.ClassID;
+                //    if (flag[clsId] > 0)
+                //    {
+                //        offer.Add(asset);
+                //        flag[clsId]--;
+                //    }
+                //}
 
                 if (offer.Any())
                 {

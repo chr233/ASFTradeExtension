@@ -154,7 +154,7 @@
     <value>{0} Версия {1}</value>
   </data>
   <data name="EulaWarning" xml:space="preserve">
-    <value>"ASFTradeExtension.EULA" не принят, некоторые функции отключены</value>
+    <value>{0}: "ASFTradeExtension.EULA" не принят, некоторые функции отключены</value>
   </data>
   <data name="AppIdInvalid" xml:space="preserve">
     <value>Неверный AppId</value>
@@ -201,12 +201,6 @@
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
-  <data name="NoAvailableItemToShow" xml:space="preserve">
-    <value>При текущих настройках ничего не отображается</value>
-  </data>
-  <data name="NoAvailableCards" xml:space="preserve">
-    <value>Карточки отсутствуют</value>
-  </data>
   <data name="NoInformation" xml:space="preserve">
     <value>Информация отсутствует</value>
   </data>
@@ -221,9 +215,6 @@
   </data>
   <data name="SellCsItemArgsTips" xml:space="preserve">
     <value>Параметр SELLCSITEM недействителен [BotNames] [ClassId] , если ClassId не указан, то все элементы будут выставленны на продажу, Продать все, когда ClassId равен -1</value>
-  </data>
-  <data name="SendTradeFailedNoItemAvailable" xml:space="preserve">
-    <value>Отправить трейд {0} -&gt; {1} Отклонено, нет предметов в наличии</value>
   </data>
   <data name="SendTradeSuccess" xml:space="preserve">
     <value>Отправить трейд {0} -&gt; {1}, количество предметов {2}, {3}</value>
@@ -245,9 +236,6 @@
   </data>
   <data name="ItemListingSuccess" xml:space="preserve">
     <value>Всего {0} предметов, выставленных на продажу {1}</value>
-  </data>
-  <data name="NoBotsAvailable" xml:space="preserve">
-    <value>Нет доступных ботов</value>
   </data>
   <data name="ItemListSuccessWaitConfirm" xml:space="preserve">
     <value>&gt;Всего {0} предметов, выставленных на продажу, Ожидание 2FA подтверждения</value>
@@ -272,5 +260,20 @@
   </data>
   <data name="PluginStandalongMode" xml:space="preserve">
     <value>Мы рекомендуем установить плагин ASFEnhance, поддерживающий автоматическое обновление.</value>
+  </data>
+  <data name="NoAvilableCards" xml:space="preserve">
+    <value>Карточки отсутствуют</value>
+  </data>
+  <data name="NoAvilableItemToShow" xml:space="preserve">
+    <value>При текущих настройках ничего не отображается</value>
+  </data>
+  <data name="NoBotsAvilable" xml:space="preserve">
+    <value>Нет доступных ботов</value>
+  </data>
+  <data name="InternalError" xml:space="preserve">
+    <value>Internal Error</value>
+  </data>
+  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
+    <value>发送交易报价 {0} -&gt; {1} 失败, 无可用物品</value>
   </data>
 </root>

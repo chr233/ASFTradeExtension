@@ -5,7 +5,6 @@ using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Composition;
@@ -71,10 +70,21 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
             sb.AppendLine(Langs.Line);
         }
 
+        if (Config.MaxItemPerTrade < byte.MaxValue)
+        {
+            Config.MaxItemPerTrade = byte.MaxValue;
+        }
+
+        if (Config.CacheTTL < 300)
+        {
+            Config.CacheTTL = 300;
+        }
+
         if (sb.Length > 0)
         {
             ASFLogger.LogGenericWarning(sb.ToString());
         }
+
         //统计
         if (Config.Statistic && !ASFEBridge)
         {
@@ -89,6 +99,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
                 TimeSpan.FromHours(24)
             );
         }
+
 
         return Task.CompletedTask;
     }
@@ -109,7 +120,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
         const string cmdPrefix = "ATE";
         const string repoName = "ASFTradeExtension";
 
-        ASFEBridge = AdapterBtidge.InitAdapter(Name, pluginId, cmdPrefix, repoName, handler);
+        ASFEBridge = AdapterBridge.InitAdapter(Name, pluginId, cmdPrefix, repoName, handler);
 
         if (ASFEBridge)
         {

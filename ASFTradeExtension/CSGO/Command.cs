@@ -15,6 +15,7 @@ internal static partial class Command
     /// 获取CSGO库存
     /// </summary>
     /// <param name="bot"></param>
+    /// <param name="query"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseCsItemList(Bot bot, string? query)
     {
@@ -148,6 +149,7 @@ internal static partial class Command
     /// 获取指定CSGO库存数量
     /// </summary>
     /// <param name="bot"></param>
+    /// <param name="query"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseCSItemCount(Bot bot, string query)
     {
@@ -229,6 +231,7 @@ internal static partial class Command
     /// 获取指定CSGO库存数量 (多个Bot)
     /// </summary>
     /// <param name="botNames"></param>
+    /// <param name="query"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     internal static async Task<string?> ResponseCSItemCount(string botNames, string query)

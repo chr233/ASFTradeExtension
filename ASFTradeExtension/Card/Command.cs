@@ -72,7 +72,7 @@ internal static class Command
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
         }
 
-        if (!inventory.Any())
+        if (inventory.Count == 0)
         {
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }

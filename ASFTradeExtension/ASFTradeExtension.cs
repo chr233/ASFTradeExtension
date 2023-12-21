@@ -168,24 +168,24 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
                     Card.Command.ResponseFullSetList(bot, null),
 
                 //CSGO
-                "CSITEMLIST" or
-                "CIL" when access >= EAccess.Operator =>
-                    Csgo.Command.ResponseCsItemList(bot, null),
+                //"CSITEMLIST" or
+                //"CIL" when access >= EAccess.Operator =>
+                //    Csgo.Command.ResponseCsItemList(bot, null),
 
-                "CSSENDITEM" or
-                "CSI" when access >= EAccess.Master =>
-                    Csgo.Command.ResponseSendCsItem(bot, null, null, false),
-                "2CSSENDITEM" or
-                "2CSI" when access >= EAccess.Master =>
-                    Csgo.Command.ResponseSendCsItem(bot, null, null, true),
+                //"CSSENDITEM" or
+                //"CSI" when access >= EAccess.Master =>
+                //    Csgo.Command.ResponseSendCsItem(bot, null, null, false),
+                //"2CSSENDITEM" or
+                //"2CSI" when access >= EAccess.Master =>
+                //    Csgo.Command.ResponseSendCsItem(bot, null, null, true),
 
-                "CSMARKETHISTORY" or
-                "CMH" when access >= EAccess.Operator =>
-                    Csgo.Command.ResponseGetCsMarketInfo(bot, null),
+                //"CSMARKETHISTORY" or
+                //"CMH" when access >= EAccess.Operator =>
+                //    Csgo.Command.ResponseGetCsMarketInfo(bot, null),
 
-                "CSDELISTING" or
-                "CDL" when access >= EAccess.Master =>
-                    Csgo.Command.ResponseCsRemoveListing(bot, null),
+                //"CSDELISTING" or
+                //"CDL" when access >= EAccess.Master =>
+                //    Csgo.Command.ResponseCsRemoveListing(bot, null),
 
                 _ => null,
             },
@@ -224,71 +224,71 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
                     Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true),
 
                 //CSGO
-                "CSITEMLIST" or
-                "CIL" when access >= EAccess.Operator && argLength == 2 =>
-                    Csgo.Command.ResponseCsItemList(args[1], null),
-                "CSITEMLIST" or
-                "CIL" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                    Csgo.Command.ResponseCsItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")),
-                "CSITEMLIST" or
-                "CIL" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                    Csgo.Command.ResponseCsItemList(bot, Utilities.GetArgsAsText(args, 1, ",")),
+                //"CSITEMLIST" or
+                //"CIL" when access >= EAccess.Operator && argLength == 2 =>
+                //    Csgo.Command.ResponseCsItemList(args[1], null),
+                //"CSITEMLIST" or
+                //"CIL" when access >= EAccess.Operator && argLength % 2 == 0 =>
+                //    Csgo.Command.ResponseCsItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")),
+                //"CSITEMLIST" or
+                //"CIL" when access >= EAccess.Operator && argLength % 2 != 0 =>
+                //    Csgo.Command.ResponseCsItemList(bot, Utilities.GetArgsAsText(args, 1, ",")),
 
 
-                "CSSENDITEM" or
-                "CSI" when access >= EAccess.Master && argLength == 4 =>
-                    Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], false),
-                "CSSENDITEM" or
-                "CSI" when access >= EAccess.Master && argLength == 3 =>
-                    Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], false),
-                "CSSENDITEM" or
-                "CSI" when access >= EAccess.Master && argLength == 2 =>
-                    Csgo.Command.ResponseSendCsItem(args[1], null, null, false),
+                //"CSSENDITEM" or
+                //"CSI" when access >= EAccess.Master && argLength == 4 =>
+                //    Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], false),
+                //"CSSENDITEM" or
+                //"CSI" when access >= EAccess.Master && argLength == 3 =>
+                //    Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], false),
+                //"CSSENDITEM" or
+                //"CSI" when access >= EAccess.Master && argLength == 2 =>
+                //    Csgo.Command.ResponseSendCsItem(args[1], null, null, false),
 
 
-                "2CSSENDITEM" or
-                "2CSI" when access >= EAccess.Master && argLength == 4 =>
-                    Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], true),
-                "2CSSENDITEM" or
-                "2CSI" when access >= EAccess.Master && argLength == 3 =>
-                    Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], true),
-                "2CSSENDITEM" or
-                "2CSI" when access >= EAccess.Master && argLength == 2 =>
-                    Csgo.Command.ResponseSendCsItem(args[1], null, null, true),
+                //"2CSSENDITEM" or
+                //"2CSI" when access >= EAccess.Master && argLength == 4 =>
+                //    Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], true),
+                //"2CSSENDITEM" or
+                //"2CSI" when access >= EAccess.Master && argLength == 3 =>
+                //    Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], true),
+                //"2CSSENDITEM" or
+                //"2CSI" when access >= EAccess.Master && argLength == 2 =>
+                //    Csgo.Command.ResponseSendCsItem(args[1], null, null, true),
 
 
-                "CSSELLITEM" or
-                "CEI" when access >= EAccess.Master && argLength == 5 =>
-                    Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], false),
-                "CSSELLITEM" or
-                "CEI" when access >= EAccess.Master && argLength == 4 =>
-                    Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], false),
+                //"CSSELLITEM" or
+                //"CEI" when access >= EAccess.Master && argLength == 5 =>
+                //    Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], false),
+                //"CSSELLITEM" or
+                //"CEI" when access >= EAccess.Master && argLength == 4 =>
+                //    Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], false),
 
-                "2CSSELLITEM" or
-                "2CEI" when access >= EAccess.Master && argLength == 5 =>
-                    Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], true),
-                "2CSSELLITEM" or
-                "2CEI" when access >= EAccess.Master && argLength == 4 =>
-                    Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], true),
+                //"2CSSELLITEM" or
+                //"2CEI" when access >= EAccess.Master && argLength == 5 =>
+                //    Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], true),
+                //"2CSSELLITEM" or
+                //"2CEI" when access >= EAccess.Master && argLength == 4 =>
+                //    Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], true),
 
-                "CSMARKETHISTORY" or
-                "CMH" when access >= EAccess.Operator =>
-                    Csgo.Command.ResponseGetCsMarketInfo(SkipBotNames(args, 1, 1), args.Last()),
+                //"CSMARKETHISTORY" or
+                //"CMH" when access >= EAccess.Operator =>
+                //    Csgo.Command.ResponseGetCsMarketInfo(SkipBotNames(args, 1, 1), args.Last()),
 
 
-                "CSDELISTING" or
-                "CDL" when access >= EAccess.Master && argLength >= 3 =>
-                    Csgo.Command.ResponseCsRemoveListing(SkipBotNames(args, 1, 1), args.Last()),
-                "CSDELISTING" or
-                  "CDL" when access >= EAccess.Master =>
-                    Csgo.Command.ResponseCsRemoveListing(bot, args[1]),
+                //"CSDELISTING" or
+                //"CDL" when access >= EAccess.Master && argLength >= 3 =>
+                //    Csgo.Command.ResponseCsRemoveListing(SkipBotNames(args, 1, 1), args.Last()),
+                //"CSDELISTING" or
+                //  "CDL" when access >= EAccess.Master =>
+                //    Csgo.Command.ResponseCsRemoveListing(bot, args[1]),
 
-                "TRANSFERCSGO" or
-                "TRC" when argLength == 3 && access >= EAccess.Master =>
-                    Csgo.Command.ResponseBotStatus(args[1], args[2], null),
-                "TRANSFERCSGO" or
-                "TRC" when argLength == 4 && access >= EAccess.Master =>
-                    Csgo.Command.ResponseBotStatus(args[1], args[2], args[3]),
+                //"TRANSFERCSGO" or
+                //"TRC" when argLength == 3 && access >= EAccess.Master =>
+                //    Csgo.Command.ResponseBotStatus(args[1], args[2], null),
+                //"TRANSFERCSGO" or
+                //"TRC" when argLength == 4 && access >= EAccess.Master =>
+                //    Csgo.Command.ResponseBotStatus(args[1], args[2], args[3]),
 
                 _ => null,
             }

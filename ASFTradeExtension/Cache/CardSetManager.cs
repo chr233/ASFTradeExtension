@@ -1,17 +1,23 @@
 using ArchiSteamFarm.Steam;
-using ASFTradeExtension.Data;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 
 namespace ASFTradeExtension.Cache;
 
-internal static class CardSetManager
+/// <summary>
+/// 卡牌套数管理类
+/// </summary>
+internal class CardSetManager
 {
     /// <summary>
     /// 卡牌套数信息缓存
     /// </summary>
-    private static CardSetCache FullSetCountCache { get; set; } = new();
+    private ConcurrentDictionary<uint, int> FullSetCountCache { get; set; } = new();
 
-    internal static int CacheCount => FullSetCountCache.Count;
+    /// <summary>
+    /// 缓存数量
+    /// </summary>
+    internal int CacheCount => FullSetCountCache.Count;
 
     /// <summary>
     /// 获取卡牌套数
@@ -20,9 +26,13 @@ internal static class CardSetManager
     /// <param name="subPath"></param>
     /// <param name="appId"></param>
     /// <returns></returns>
-    private static async Task<int> FetchCardSetCount(Bot bot, string subPath, uint appId)
+    private async Task<int> FetchCardSetCount(Bot bot, string subPath, uint appId)
     {
-        var request = new Uri(SteamCommunityURL, $"{subPath}/gamecards/{appId}/");
+        if (!subPath.EndsWith('/'))
+        {
+            subPath += '/';
+        }
+        var request = new Uri(SteamCommunityURL, $"{subPath}gamecards/{appId}/");
 
         var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
@@ -55,7 +65,7 @@ internal static class CardSetManager
     /// <param name="appId"></param>
     /// <param name="semaphore"></param>
     /// <returns></returns>
-    internal static async Task<int> GetCardSetCount(Bot bot, string subPath, uint appId, SemaphoreSlim semaphore)
+    internal async Task<int> GetCardSetCount(Bot bot, string subPath, uint appId, SemaphoreSlim semaphore)
     {
         if (FullSetCountCache.TryGetValue(appId, out var value))
         {
@@ -74,7 +84,7 @@ internal static class CardSetManager
     }
 
     /// <summary>
-    /// 获取Cookies文件路径
+    /// 获取库存缓存文件路径
     /// </summary>
     /// <returns></returns>
     private static string GetFilePath()
@@ -84,7 +94,11 @@ internal static class CardSetManager
         return filePath;
     }
 
-    internal static async Task LoadCacheFile()
+    /// <summary>
+    /// 加载缓存文件
+    /// </summary>
+    /// <returns></returns>
+    internal async Task LoadCacheFile()
     {
         try
         {
@@ -96,7 +110,7 @@ internal static class CardSetManager
                 var raw = await sr.ReadToEndAsync().ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(raw))
                 {
-                    var dict = JsonConvert.DeserializeObject<CardSetCache>(raw);
+                    var dict = JsonConvert.DeserializeObject<ConcurrentDictionary<uint, int>>(raw);
                     if (dict != null)
                     {
                         FullSetCountCache = dict;
@@ -113,7 +127,11 @@ internal static class CardSetManager
         }
     }
 
-    internal static async Task SaveCacheFile()
+    /// <summary>
+    /// 保存缓存文件
+    /// </summary>
+    /// <returns></returns>
+    internal async Task SaveCacheFile()
     {
         try
         {

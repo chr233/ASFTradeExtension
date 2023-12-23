@@ -93,9 +93,9 @@ internal static class Command
                 if (bundle.Assets != null)
                 {
                     sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
-                        appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                        -1, -1, //bundle.TotalSetCount, bundle.ExtraTotalCount,
-                        bundle.TradableSetCount, bundle.ExtraTradableCount
+                        appId, bundle.Assets.Count, bundle.CardCountPerSet,
+                        bundle.TradableSetCount, bundle.ExtraTradableCount,
+                        bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
                     );
                 }
                 else
@@ -165,7 +165,7 @@ internal static class Command
         }
 
         var entries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        if (!entries.Any())
+        if (entries.Length == 0)
         {
             return bot.FormatBotResponse(Langs.ArgumentInvalidAppIds);
         }
@@ -176,7 +176,7 @@ internal static class Command
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
         }
 
-        if (!inventory.Any())
+        if (inventory.Count == 0)
         {
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }
@@ -199,9 +199,9 @@ internal static class Command
                     {
                         sb.AppendLine(
                             string.Format(Langs.CurrentCardInventoryShow,
-                            appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                            -1, -1,    //bundle.TotalSetCount, bundle.ExtraTotalCount,
-                            bundle.TradableSetCount, bundle.ExtraTradableCount)
+                            appId, bundle.Assets.Count, bundle.CardCountPerSet,
+                            bundle.TradableSetCount, bundle.ExtraTradableCount,
+                            bundle.NonTradableSetCount, bundle.ExtraNonTradableCount)
                         );
                     }
                     else
@@ -313,11 +313,10 @@ internal static class Command
         if (bundle.Assets != null)
         {
             sb.AppendLine(Langs.InventoryStatusBeforeTrade);
-            sb.AppendLine(
-                string.Format(Langs.CurrentCardInventoryShow,
-                appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                //bundle.TotalSetCount, bundle.ExtraTotalCount,
-                bundle.TradableSetCount, bundle.ExtraTradableCount)
+            sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
+                appId, bundle.Assets.Count, bundle.CardCountPerSet,
+                bundle.TradableSetCount, bundle.ExtraTradableCount,
+                bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
             );
 
             if (bundle.TradableSetCount < setCount)
@@ -340,7 +339,7 @@ internal static class Command
                 //    }
                 //}
 
-                if (offer.Any())
+                if (offer.Count != 0)
                 {
                     sb.AppendLine(string.Format(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet));
                     var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Utils.Config.MaxItemPerTrade).ConfigureAwait(false);
@@ -407,5 +406,52 @@ internal static class Command
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
 
+    /// <summary>
+    /// 刷新库存缓存
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseReloadCache(Bot bot)
+    {
+        if (!Handlers.TryGetValue(bot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
 
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
+
+        handler.ExpiredCache();
+        await handler.GetBotInventory(true).ConfigureAwait(false);
+
+        return "刷新库存缓存完成";
+    }
+
+    /// <summary>
+    /// 刷新库存缓存 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseReloadCache(string botNames)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        var bots = Bot.GetBots(botNames);
+
+        if (bots == null || bots.Count == 0)
+        {
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseReloadCache(bot))).ConfigureAwait(false);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
 }

@@ -2,31 +2,30 @@ using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ASFTradeExtension.Cache;
 using ASFTradeExtension.Data;
 
 namespace ASFTradeExtension.Core;
-internal class InventoryHandler
+internal class InventoryHandler(Bot bot)
 {
     /// <summary>
     /// 当前机器人
     /// </summary>
-    private Bot Bot { get; init; }
+    private Bot Bot { get; init; } = bot;
 
     /// <summary>
     /// 处于交易中的物品资源ID
     /// </summary>
-    private HashSet<ulong> InTradeItemAssetIDs { get; set; }
+    private HashSet<ulong> InTradeItemAssetIDs { get; set; } = [];
 
     /// <summary>
     /// 机器人库存缓存
     /// </summary>
-    private List<Asset> InventoryCache { get; set; }
+    private List<Asset> InventoryCache { get; set; } = [];
 
     /// <summary>
     /// 卡牌套数信息缓存
     /// </summary>
-    private Dictionary<uint, AssetBundle> CardSetCache { get; set; }
+    private Dictionary<uint, AssetBundle> CardSetCache { get; set; } = [];
 
     /// <summary>
     /// 缓存更新时间
@@ -37,14 +36,6 @@ internal class InventoryHandler
     /// 缓存是否过期
     /// </summary>
     private bool NeedUpdate => DateTime.Now - UpdateTime > TimeSpan.FromMinutes(10);
-
-    public InventoryHandler(Bot bot)
-    {
-        Bot = bot;
-        InTradeItemAssetIDs = new HashSet<ulong>();
-        InventoryCache = new List<Asset>();
-        CardSetCache = new Dictionary<uint, AssetBundle>();
-    }
 
     /// <summary>
     /// 更新机器人库存缓存
@@ -149,16 +140,16 @@ internal class InventoryHandler
             return assetBundleDict;
         }
 
-        var oldCacheCount = CardSetManager.CacheCount;
+        var oldCacheCount = Utils.CardSetCache.CacheCount;
 
         var semaphore = new SemaphoreSlim(5, 5);
         var appIds = GetAppIds(inventory);
-        var countPerSets = await Utilities.InParallel(appIds.Select(appId => CardSetManager.GetCardSetCount(Bot, subPath, appId, semaphore))).ConfigureAwait(false);
+        var countPerSets = await Utilities.InParallel(appIds.Select(appId => Utils.CardSetCache.GetCardSetCount(Bot, subPath, appId, semaphore))).ConfigureAwait(false);
 
         //缓存有更新, 写入文件
-        if (oldCacheCount != CardSetManager.CacheCount)
+        if (oldCacheCount != Utils.CardSetCache.CacheCount)
         {
-            await CardSetManager.SaveCacheFile().ConfigureAwait(false);
+            await Utils.CardSetCache.SaveCacheFile().ConfigureAwait(false);
         }
 
         //防止越界访问
@@ -178,7 +169,7 @@ internal class InventoryHandler
             {
                 assetBundleDict[appId] = new AssetBundle
                 {
-                    Assets = new List<Asset>(),
+                    Assets = [],
                     CardCountPerSet = setCount,
                     TradableSetCount = 0,
                     NonTradableSetCount = 0,
@@ -186,7 +177,7 @@ internal class InventoryHandler
                     ExtraNonTradableCount = 0,
                 };
 
-                appClassIDsDict[appId] = new HashSet<ulong>();
+                appClassIDsDict[appId] = [];
             }
         }
 

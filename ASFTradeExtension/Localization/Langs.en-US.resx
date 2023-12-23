@@ -166,7 +166,7 @@
     <value>Successfully cancelled {0} items</value>
   </data>
   <data name="CurrentCardInventoryShow" xml:space="preserve">
-    <value>{0}: Total {1} cards, {2} cards per set, Total {3} sets + {4} cards, Tradeable {5} sets + {6} cards</value>
+    <value>{0}: 总计 {1}张, 每套 {2}张, 可交易 {3}套 +{4}张, 不可交易 {5}套 +{6}张</value>
   </data>
   <data name="CsMarketHistoryArgsTips" xml:space="preserve">
     <value>Arguments are invalid SENDCSITEM [BotNames] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent</value>

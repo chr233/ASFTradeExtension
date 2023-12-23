@@ -178,7 +178,7 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 {0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张 的本地化字符串。
+        ///   查找类似 {0}: 总计 {1}张, 每套 {2}张, 可交易 {3}套 +{4}张, 不可交易 {5}套 +{6}张 的本地化字符串。
         /// </summary>
         internal static string CurrentCardInventoryShow {
             get {

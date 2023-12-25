@@ -66,53 +66,54 @@ internal static class Command
             }
         }
 
-        var inventory = await handler.GetCardSetCache(false).ConfigureAwait(false);
-        if (inventory == null)
+        var inventoryBundles = await handler.GetCardSetCache(false).ConfigureAwait(false);
+        if (inventoryBundles == null)
         {
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
         }
 
-        if (inventory.Count == 0)
+        if (inventoryBundles.Count == 0)
         {
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }
 
-        var keys = inventory.Keys.ToList().Skip(page * count).Take(count);
-        if (!keys.Any())
+        var bundles = inventoryBundles
+            .OrderByDescending(static kv => kv.Value.Assets.Count)
+            .Select(static kv => kv.Value)
+            .Skip(page * count)
+            .Take(count)
+            .ToList();
+
+        if (bundles.Count == 0)
         {
             return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
         }
 
+        await handler.LoadAppCardGroup(bundles).ConfigureAwait(false);
+
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
-        foreach (uint appId in keys)
+        foreach (var bundle in bundles)
         {
-            if (inventory.TryGetValue(appId, out var bundle))
+            if (bundle.Assets != null)
             {
-                if (bundle.Assets != null)
-                {
-                    sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
-                        appId, bundle.Assets.Count, bundle.CardCountPerSet,
-                        bundle.TradableSetCount, bundle.ExtraTradableCount,
-                        bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
-                    );
-                }
-                else
-                {
-                    if (bundle.CardCountPerSet == -1)
-                    {
-                        sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NetworkError);
-                    }
-                    else
-                    {
-                        sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoAvilableCards);
-                    }
-                }
+                sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
+                    bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
+                    bundle.TradableSetCount, bundle.ExtraTradableCount,
+                    bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
+                );
             }
             else
             {
-                sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoInformation);
+                if (bundle.CardCountPerSet == -1)
+                {
+                    sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NetworkError);
+                }
+                else
+                {
+                    sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NoAvilableCards);
+                }
             }
         }
 

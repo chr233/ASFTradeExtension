@@ -84,6 +84,16 @@ internal class CardSetManager
     }
 
     /// <summary>
+    /// 从缓存中读取卡牌套数
+    /// </summary>
+    /// <param name="appId"></param>
+    /// <returns></returns>
+    internal int GetCardSetCountFromCache(uint appId)
+    {
+        return FullSetCountCache.TryGetValue(appId, out var value) ? value : -1;
+    }
+
+    /// <summary>
     /// 获取库存缓存文件路径
     /// </summary>
     /// <returns></returns>

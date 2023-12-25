@@ -67,7 +67,7 @@ internal class InventoryHandler(Bot bot)
             }
 
             InTradeItemAssetIDs = tmpInTradeList;
-            CardSetCache = await GetAppCardGroup(InventoryCache).ConfigureAwait(false);
+            CardSetCache = await GetAppCardGroupLazyLoad(InventoryCache).ConfigureAwait(false);
 
             UpdateTime = DateTime.Now;
             return true;
@@ -125,10 +125,11 @@ internal class InventoryHandler(Bot bot)
     }
 
     /// <summary>
-    /// 获取卡牌套数信息
+    /// 获取卡牌套数信息, 完整加载整个库存
     /// </summary>
     /// <param name="inventory"></param>
     /// <returns></returns>
+    [Obsolete]
     private async Task<Dictionary<uint, AssetBundle>> GetAppCardGroup(List<Asset> inventory)
     {
         //卡牌套数字段
@@ -170,6 +171,7 @@ internal class InventoryHandler(Bot bot)
                 assetBundleDict[appId] = new AssetBundle
                 {
                     Assets = [],
+                    AppId = appId,
                     CardCountPerSet = setCount,
                     TradableSetCount = 0,
                     NonTradableSetCount = 0,
@@ -237,6 +239,193 @@ internal class InventoryHandler(Bot bot)
     }
 
     /// <summary>
+    /// 获取卡牌套数信息, 懒加载
+    /// </summary>
+    /// <param name="inventory"></param>
+    /// <returns></returns>
+    private async Task<Dictionary<uint, AssetBundle>> GetAppCardGroupLazyLoad(List<Asset> inventory)
+    {
+        //卡牌套数字段
+        var assetBundleDict = new Dictionary<uint, AssetBundle>();
+
+        var subPath = await ValidProfileLink($"/profiles/{Bot.SteamID}").ConfigureAwait(false);
+        if (string.IsNullOrEmpty(subPath))
+        {
+            return assetBundleDict;
+        }
+
+        var appIds = GetAppIds(inventory);
+
+        var appClassIDsDict = new Dictionary<uint, HashSet<ulong>>();
+
+        //int i = 0;
+        foreach (var appId in appIds)
+        {
+            var cardSetCount = Utils.CardSetCache.GetCardSetCountFromCache(appId);
+            assetBundleDict[appId] = new AssetBundle
+            {
+                Assets = [],
+                AppId = appId,
+                CardCountPerSet = cardSetCount,
+                TradableSetCount = 0,
+                NonTradableSetCount = 0,
+                ExtraTradableCount = 0,
+                ExtraNonTradableCount = 0,
+            };
+
+            appClassIDsDict[appId] = [];
+        }
+
+        foreach (var asset in inventory)
+        {
+            if (!assetBundleDict.TryGetValue(asset.RealAppID, out var bundle) || !appClassIDsDict.TryGetValue(asset.RealAppID, out var classIDs))
+            {
+                continue;
+            }
+
+            bundle.Assets.Add(asset);
+            classIDs.Add(asset.ClassID);
+        }
+
+        foreach (var (appId, bundle) in assetBundleDict)
+        {
+            //跳过没有缓存的AppID和未加载卡牌套数信息的AppID
+            if (!appClassIDsDict.TryGetValue(appId, out var classIDs) || !bundle.Loaded)
+            {
+                continue;
+            }
+
+            //可交易clsId张数
+            var tradableSet = new Dictionary<ulong, int>();
+            //所有clsId张数
+            var nonTradableSet = new Dictionary<ulong, int>();
+
+            //按clsId统计卡牌张数
+            foreach (var asset in bundle.Assets)
+            {
+                var clsId = asset.ClassID;
+
+
+                if (asset.Tradable)
+                {
+                    tradableSet.Increase(clsId);
+                }
+                else
+                {
+                    nonTradableSet.Increase(clsId);
+                }
+            }
+
+            //统计套数信息
+            var tradableCount = tradableSet.Count == bundle.CardCountPerSet ? tradableSet.Values.MinValue() : 0;
+            var nonTradableCount = nonTradableSet.Count == bundle.CardCountPerSet ? nonTradableSet.Values.MinValue() : 0;
+
+            var extraTradableCount = tradableSet.Values.SumValue() - bundle.CardCountPerSet * tradableCount;
+            var extraNonTradableCount = nonTradableSet.Values.SumValue() - bundle.CardCountPerSet * nonTradableCount;
+
+            bundle.TradableSetCount = tradableCount;
+            bundle.NonTradableSetCount = nonTradableCount;
+            bundle.ExtraTradableCount = extraTradableCount;
+            bundle.ExtraNonTradableCount = extraNonTradableCount;
+        }
+
+        return assetBundleDict;
+    }
+
+
+    /// <summary>
+    /// 获取卡牌套数信息, 完整加载整个库存
+    /// </summary>
+    /// <param name="bundles"></param>
+    /// <returns></returns>
+    internal async Task LoadAppCardGroup(List<AssetBundle> bundles)
+    {
+        //卡牌套数字段
+        var lazyLoadBundles = new List<AssetBundle>();
+        foreach (var bundle in bundles)
+        {
+            if (!bundle.Loaded)
+            {
+                lazyLoadBundles.Add(bundle);
+            }
+        }
+
+        if (lazyLoadBundles.Count == 0)
+        {
+            return;
+        }
+
+        var oldCacheCount = Utils.CardSetCache.CacheCount;
+
+        var subPath = await ValidProfileLink($"/profiles/{Bot.SteamID}").ConfigureAwait(false);
+        if (string.IsNullOrEmpty(subPath))
+        {
+            return;
+        }
+
+        var semaphore = new SemaphoreSlim(5, 5);
+        var countPerSets = await Utilities.InParallel(lazyLoadBundles.Select(bundle => Utils.CardSetCache.GetCardSetCount(Bot, subPath, bundle.AppId, semaphore))).ConfigureAwait(false);
+
+        //缓存有更新, 写入文件
+        if (oldCacheCount != Utils.CardSetCache.CacheCount)
+        {
+            await Utils.CardSetCache.SaveCacheFile().ConfigureAwait(false);
+        }
+
+        //防止越界访问
+        if (countPerSets.Count < lazyLoadBundles.Count)
+        {
+            return;
+        }
+
+        int i = 0;
+        foreach (var bundle in lazyLoadBundles)
+        {
+            var setCount = countPerSets[i++];
+            var appId = bundle.AppId;
+
+            if (setCount >= 5)
+            {
+                bundle.CardCountPerSet = setCount;
+
+                //可交易clsId张数
+                var tradableSet = new Dictionary<ulong, int>();
+                //所有clsId张数
+                var nonTradableSet = new Dictionary<ulong, int>();
+
+                //按clsId统计卡牌张数
+                foreach (var asset in bundle.Assets)
+                {
+                    var clsId = asset.ClassID;
+
+
+                    if (asset.Tradable)
+                    {
+                        tradableSet.Increase(clsId);
+                    }
+                    else
+                    {
+                        nonTradableSet.Increase(clsId);
+                    }
+                }
+
+                //统计套数信息
+                var tradableCount = tradableSet.Count == bundle.CardCountPerSet ? tradableSet.Values.MinValue() : 0;
+                var nonTradableCount = nonTradableSet.Count == bundle.CardCountPerSet ? nonTradableSet.Values.MinValue() : 0;
+
+                var extraTradableCount = tradableSet.Values.SumValue() - bundle.CardCountPerSet * tradableCount;
+                var extraNonTradableCount = nonTradableSet.Values.SumValue() - bundle.CardCountPerSet * nonTradableCount;
+
+                bundle.TradableSetCount = tradableCount;
+                bundle.NonTradableSetCount = nonTradableCount;
+                bundle.ExtraTradableCount = extraTradableCount;
+                bundle.ExtraNonTradableCount = extraNonTradableCount;
+            }
+        }
+    }
+
+
+    /// <summary>
     /// 设置缓存立即过期
     /// </summary>
     internal void ExpiredCache()
@@ -275,7 +464,7 @@ internal class InventoryHandler(Bot bot)
         }
 
         InventoryCache = inventory;
-        CardSetCache = await GetAppCardGroup(InventoryCache).ConfigureAwait(false);
+        CardSetCache = await GetAppCardGroupLazyLoad(InventoryCache).ConfigureAwait(false);
     }
 
     /// <summary>

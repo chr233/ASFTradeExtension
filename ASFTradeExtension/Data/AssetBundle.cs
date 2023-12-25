@@ -9,6 +9,15 @@ internal sealed record AssetBundle
     /// </summary>
     public List<Asset> Assets { get; set; } = null!;
     /// <summary>
+    /// AppId
+    /// </summary>
+    public uint AppId { get; set; }
+    /// <summary>
+    /// 是否已加载
+    /// </summary>
+    public bool Loaded => CardCountPerSet > 0;
+
+    /// <summary>
     /// 一套卡牌的数量, 5~15
     /// </summary>
     public int CardCountPerSet { get; set; }

@@ -2,7 +2,9 @@ using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Steam.Exchange;
 using ASFTradeExtension.Data;
+using static ArchiSteamFarm.Steam.Exchange.ParseTradeResult;
 
 namespace ASFTradeExtension.Core;
 internal class InventoryHandler(Bot bot)
@@ -35,7 +37,7 @@ internal class InventoryHandler(Bot bot)
     /// <summary>
     /// 缓存是否过期
     /// </summary>
-    private bool NeedUpdate => DateTime.Now - UpdateTime > TimeSpan.FromMinutes(10);
+    private bool NeedUpdate => DateTime.Now - UpdateTime > TimeSpan.FromSeconds(Config.CacheTTL);
 
     /// <summary>
     /// 更新机器人库存缓存
@@ -129,7 +131,7 @@ internal class InventoryHandler(Bot bot)
     /// </summary>
     /// <param name="inventory"></param>
     /// <returns></returns>
-    [Obsolete]
+    [Obsolete("使用 GetAppCardGroupLazyLoad 和 LoadAppCardGroup 替代本方法")]
     private async Task<Dictionary<uint, AssetBundle>> GetAppCardGroup(List<Asset> inventory)
     {
         //卡牌套数字段
@@ -382,7 +384,6 @@ internal class InventoryHandler(Bot bot)
         foreach (var bundle in lazyLoadBundles)
         {
             var setCount = countPerSets[i++];
-            var appId = bundle.AppId;
 
             if (setCount >= 5)
             {
@@ -495,5 +496,32 @@ internal class InventoryHandler(Bot bot)
 
         var errorNode = document.QuerySelector("#responsive_page_template_content > div.error_ctn");
         return errorNode == null;
+    }
+
+    /// <summary>
+    /// 缓存中物品
+    /// </summary>
+    /// <param name="tradeResult"></param>
+    internal void AddInTradeItems(ParseTradeResult tradeResult)
+    {
+        if (tradeResult.Result == EResult.Accepted)
+        {
+            if (tradeResult.ItemsToReceive != null)
+            {
+                foreach (var asset in tradeResult.ItemsToReceive)
+                {
+                    InventoryCache.Add(asset);
+                    InTradeItemAssetIDs.Add(asset.AssetID);
+                }
+            }
+
+            if (tradeResult.ItemsToGive != null)
+            {
+                foreach (var asset in tradeResult.ItemsToGive)
+                {
+                    InTradeItemAssetIDs.Add(asset.AssetID);
+                }
+            }
+        }
     }
 }

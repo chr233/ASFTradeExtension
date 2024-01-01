@@ -369,6 +369,11 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
         {
             Csgo.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
             ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
+
+            if (Card.Command.Handlers.TryGetValue(bot, out var cardHandler))
+            {
+                cardHandler.AddInTradeItems(tradeResult);
+            }
         }
         return Task.CompletedTask;
     }

@@ -139,4 +139,25 @@ internal static class Utils
     {
         return string.Join(',', args[skipStart..(args.Length - skipEnd)]);
     }
+
+    internal static HashSet<T> DistinctList<T>(IEnumerable<T> values)
+    {
+        var result = new HashSet<T>();
+        foreach (var value in values)
+        {
+            result.Add(value);
+        }
+        return result;
+    }
+
+    internal static HashSet<V> DistinctList<T, V>(IEnumerable<T> values, Func<T, V> selector)
+    {
+        var result = new HashSet<V>();
+
+        foreach (var value in values)
+        {
+            result.Add(selector(value));
+        }
+        return result;
+    }
 }

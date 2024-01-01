@@ -328,22 +328,24 @@ internal static class Command
             {
                 var offer = new List<Asset>();
                 //TODO
-                //var flag = Utils.DistinctList(bundle.Assets, x => x.ClassID).ToDictionary(x => x, _ => setCount);
+                var flag = DistinctList(bundle.Assets, x => x.ClassID).ToDictionary(x => x, _ => setCount);
 
-                //foreach (var asset in bundle.Assets)
-                //{
-                //    ulong clsId = asset.ClassID;
-                //    if (flag[clsId] > 0)
-                //    {
-                //        offer.Add(asset);
-                //        flag[clsId]--;
-                //    }
-                //}
+                foreach (var asset in bundle.Assets)
+                {
+                    ulong clsId = asset.ClassID;
+                    if (flag[clsId] > 0)
+                    {
+                        offer.Add(asset);
+                        flag[clsId]--;
+                    }
+                }
 
                 if (offer.Count != 0)
                 {
+                    await handler.AddInTradeItems(offer).ConfigureAwait(false);
+
                     sb.AppendLine(string.Format(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet));
-                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Utils.Config.MaxItemPerTrade).ConfigureAwait(false);
+                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
                     if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
                     {

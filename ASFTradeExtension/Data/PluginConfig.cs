@@ -28,5 +28,5 @@ public sealed record PluginConfig
     /// 缓存生存时间(秒)
     /// </summary>
     [JsonProperty(Required = Required.Default)]
-    public ushort CacheTTL { get; set; } = 300;
+    public ushort CacheTTL { get; set; } = 600;
 }

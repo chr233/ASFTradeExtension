@@ -3,6 +3,7 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
+using ASFTradeExtension.Cache;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data;
 using Newtonsoft.Json.Linq;
@@ -132,7 +133,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
             ASFLogger.LogGenericWarning(Langs.PluginStandalongMode);
         }
 
-        return Cache.CardSetManager.LoadCacheFile();
+        return Utils.CardSetCache.LoadCacheFile();
     }
 
     /// <summary>
@@ -166,6 +167,9 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
                 "FULLSETLIST" or
                 "FSL" when access >= EAccess.Operator =>
                     Card.Command.ResponseFullSetList(bot, null),
+
+                "RELOADCACHE" when access >= EAccess.Operator =>
+                    Card.Command.ResponseReloadCache(bot),
 
                 //CSGO
                 //"CSITEMLIST" or
@@ -204,7 +208,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
 
                 "FULLSET" or
                 "FS" when argLength >= 3 && access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 1, ",")),
+                    Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ",")),
                 "FULLSET" or
                 "FS" when access >= EAccess.Operator =>
                     Card.Command.ResponseFullSetCountOfGame(bot, args[1]),
@@ -222,6 +226,9 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
                 "2SENDCARDSET" or
                 "2SCS" when access >= EAccess.Master && argLength == 4 =>
                     Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true),
+
+                "RELOADCACHE" when access >= EAccess.Operator =>
+                    Card.Command.ResponseReloadCache(Utilities.GetArgsAsText(args, 1, ",")),
 
                 //CSGO
                 //"CSITEMLIST" or
@@ -342,7 +349,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
             _ = Task.Run(async () =>
             {
                 await Task.Delay(500).ConfigureAwait(false);
-                Utils.ASFLogger.LogGenericException(ex);
+                ASFLogger.LogGenericException(ex);
             }).ConfigureAwait(false);
 
             return ex.StackTrace;
@@ -362,6 +369,11 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
         {
             Csgo.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
             ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
+
+            if (Card.Command.Handlers.TryGetValue(bot, out var cardHandler))
+            {
+                cardHandler.AddInTradeItems(tradeResult);
+            }
         }
         return Task.CompletedTask;
     }

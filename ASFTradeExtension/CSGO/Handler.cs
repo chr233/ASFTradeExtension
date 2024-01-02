@@ -89,7 +89,7 @@ internal static class Handler
                 }
                 else
                 {
-                    itemDict.Add(type, new List<Asset> { item });
+                    itemDict.Add(type, [item]);
                 }
             }
 

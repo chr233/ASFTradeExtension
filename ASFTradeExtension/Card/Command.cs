@@ -66,53 +66,54 @@ internal static class Command
             }
         }
 
-        var inventory = await handler.GetCardSetCache(false).ConfigureAwait(false);
-        if (inventory == null)
+        var inventoryBundles = await handler.GetCardSetCache(false).ConfigureAwait(false);
+        if (inventoryBundles == null)
         {
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
         }
 
-        if (inventory.Count == 0)
+        if (inventoryBundles.Count == 0)
         {
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }
 
-        var keys = inventory.Keys.ToList().Skip(page * count).Take(count);
-        if (!keys.Any())
+        var bundles = inventoryBundles
+            .OrderByDescending(static kv => kv.Value.Assets.Count)
+            .Select(static kv => kv.Value)
+            .Skip(page * count)
+            .Take(count)
+            .ToList();
+
+        if (bundles.Count == 0)
         {
             return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
         }
 
+        await handler.LoadAppCardGroup(bundles).ConfigureAwait(false);
+
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
-        foreach (uint appId in keys)
+        foreach (var bundle in bundles)
         {
-            if (inventory.TryGetValue(appId, out var bundle))
+            if (bundle.Assets != null)
             {
-                if (bundle.Assets != null)
-                {
-                    sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
-                        appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                        -1, -1, //bundle.TotalSetCount, bundle.ExtraTotalCount,
-                        bundle.TradableSetCount, bundle.ExtraTradableCount
-                    );
-                }
-                else
-                {
-                    if (bundle.CardCountPerSet == -1)
-                    {
-                        sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NetworkError);
-                    }
-                    else
-                    {
-                        sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoAvilableCards);
-                    }
-                }
+                sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
+                    bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
+                    bundle.TradableSetCount, bundle.ExtraTradableCount,
+                    bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
+                );
             }
             else
             {
-                sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoInformation);
+                if (bundle.CardCountPerSet == -1)
+                {
+                    sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NetworkError);
+                }
+                else
+                {
+                    sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NoAvilableCards);
+                }
             }
         }
 
@@ -165,7 +166,7 @@ internal static class Command
         }
 
         var entries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        if (!entries.Any())
+        if (entries.Length == 0)
         {
             return bot.FormatBotResponse(Langs.ArgumentInvalidAppIds);
         }
@@ -176,7 +177,7 @@ internal static class Command
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
         }
 
-        if (!inventory.Any())
+        if (inventory.Count == 0)
         {
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
         }
@@ -199,9 +200,9 @@ internal static class Command
                     {
                         sb.AppendLine(
                             string.Format(Langs.CurrentCardInventoryShow,
-                            appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                            -1, -1,    //bundle.TotalSetCount, bundle.ExtraTotalCount,
-                            bundle.TradableSetCount, bundle.ExtraTradableCount)
+                            appId, bundle.Assets.Count, bundle.CardCountPerSet,
+                            bundle.TradableSetCount, bundle.ExtraTradableCount,
+                            bundle.NonTradableSetCount, bundle.ExtraNonTradableCount)
                         );
                     }
                     else
@@ -313,11 +314,10 @@ internal static class Command
         if (bundle.Assets != null)
         {
             sb.AppendLine(Langs.InventoryStatusBeforeTrade);
-            sb.AppendLine(
-                string.Format(Langs.CurrentCardInventoryShow,
-                appId, bundle.Assets.Count(), bundle.CardCountPerSet,
-                //bundle.TotalSetCount, bundle.ExtraTotalCount,
-                bundle.TradableSetCount, bundle.ExtraTradableCount)
+            sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
+                appId, bundle.Assets.Count, bundle.CardCountPerSet,
+                bundle.TradableSetCount, bundle.ExtraTradableCount,
+                bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
             );
 
             if (bundle.TradableSetCount < setCount)
@@ -328,22 +328,24 @@ internal static class Command
             {
                 var offer = new List<Asset>();
                 //TODO
-                //var flag = Utils.DistinctList(bundle.Assets, x => x.ClassID).ToDictionary(x => x, _ => setCount);
+                var flag = DistinctList(bundle.Assets, x => x.ClassID).ToDictionary(x => x, _ => setCount);
 
-                //foreach (var asset in bundle.Assets)
-                //{
-                //    ulong clsId = asset.ClassID;
-                //    if (flag[clsId] > 0)
-                //    {
-                //        offer.Add(asset);
-                //        flag[clsId]--;
-                //    }
-                //}
-
-                if (offer.Any())
+                foreach (var asset in bundle.Assets)
                 {
+                    ulong clsId = asset.ClassID;
+                    if (flag[clsId] > 0)
+                    {
+                        offer.Add(asset);
+                        flag[clsId]--;
+                    }
+                }
+
+                if (offer.Count != 0)
+                {
+                    await handler.AddInTradeItems(offer).ConfigureAwait(false);
+
                     sb.AppendLine(string.Format(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet));
-                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Utils.Config.MaxItemPerTrade).ConfigureAwait(false);
+                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
                     if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
                     {
@@ -407,5 +409,52 @@ internal static class Command
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
 
+    /// <summary>
+    /// 刷新库存缓存
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseReloadCache(Bot bot)
+    {
+        if (!Handlers.TryGetValue(bot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
 
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
+
+        handler.ExpiredCache();
+        await handler.GetBotInventory(true).ConfigureAwait(false);
+
+        return "刷新库存缓存完成";
+    }
+
+    /// <summary>
+    /// 刷新库存缓存 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseReloadCache(string botNames)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        var bots = Bot.GetBots(botNames);
+
+        if (bots == null || bots.Count == 0)
+        {
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseReloadCache(bot))).ConfigureAwait(false);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
 }

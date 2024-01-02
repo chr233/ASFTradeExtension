@@ -2,6 +2,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
+using ASFTradeExtension.Cache;
 using ASFTradeExtension.Data;
 using System.Reflection;
 using System.Text;
@@ -14,6 +15,8 @@ internal static class Utils
     /// 插件配置
     /// </summary>
     internal static PluginConfig Config { get; set; } = new();
+
+    internal static CardSetManager CardSetCache { get; } = new();
 
     /// <summary>
     /// 格式化返回文本
@@ -135,5 +138,26 @@ internal static class Utils
     internal static string SkipBotNames(string[] args, int skipStart, int skipEnd)
     {
         return string.Join(',', args[skipStart..(args.Length - skipEnd)]);
+    }
+
+    internal static HashSet<T> DistinctList<T>(IEnumerable<T> values)
+    {
+        var result = new HashSet<T>();
+        foreach (var value in values)
+        {
+            result.Add(value);
+        }
+        return result;
+    }
+
+    internal static HashSet<V> DistinctList<T, V>(IEnumerable<T> values, Func<T, V> selector)
+    {
+        var result = new HashSet<V>();
+
+        foreach (var value in values)
+        {
+            result.Add(selector(value));
+        }
+        return result;
     }
 }

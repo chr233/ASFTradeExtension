@@ -1,4 +1,4 @@
-  namespace ASFTradeExtension;
+namespace ASFTradeExtension;
 internal static class LinqUtils
 {
     /// <summary>

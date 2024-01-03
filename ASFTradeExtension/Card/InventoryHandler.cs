@@ -137,7 +137,7 @@ internal class InventoryHandler(Bot bot)
         //卡牌套数字段
         var assetBundleDict = new Dictionary<uint, AssetBundle>();
 
-        var subPath = await ValidProfileLink($"/profiles/{Bot.SteamID}").ConfigureAwait(false);
+        var subPath = await Bot.GetProfileLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(subPath))
         {
             return assetBundleDict;
@@ -250,7 +250,7 @@ internal class InventoryHandler(Bot bot)
         //卡牌套数字段
         var assetBundleDict = new Dictionary<uint, AssetBundle>();
 
-        var subPath = await ValidProfileLink($"/profiles/{Bot.SteamID}").ConfigureAwait(false);
+        var subPath = await Bot.GetProfileLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(subPath))
         {
             return assetBundleDict;
@@ -359,7 +359,7 @@ internal class InventoryHandler(Bot bot)
 
         var oldCacheCount = Utils.CardSetCache.CacheCount;
 
-        var subPath = await ValidProfileLink($"/profiles/{Bot.SteamID}").ConfigureAwait(false);
+        var subPath = await Bot.GetProfileLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(subPath))
         {
             return;
@@ -398,7 +398,6 @@ internal class InventoryHandler(Bot bot)
                 foreach (var asset in bundle.Assets)
                 {
                     var clsId = asset.ClassID;
-
 
                     if (asset.Tradable)
                     {
@@ -469,37 +468,7 @@ internal class InventoryHandler(Bot bot)
     }
 
     /// <summary>
-    /// 验证个人资料链接
-    /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    internal async Task<string?> ValidProfileLink(string path)
-    {
-        var request = new Uri(SteamCommunityURL, path);
-
-        var response = await Bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
-
-        return ParseProfilePage(response?.Content) ? response!.FinalUri.PathAndQuery : null;
-    }
-
-    /// <summary>
-    /// 解析个人资料页面
-    /// </summary>
-    /// <param name="document"></param>
-    /// <returns></returns>
-    private static bool ParseProfilePage(IDocument? document)
-    {
-        if (document == null)
-        {
-            return false;
-        }
-
-        var errorNode = document.QuerySelector("#responsive_page_template_content > div.error_ctn");
-        return errorNode == null;
-    }
-
-    /// <summary>
-    /// 缓存中物品
+    /// 新增交易中物品的
     /// </summary>
     /// <param name="tradeResult"></param>
     internal void AddInTradeItems(ParseTradeResult tradeResult)

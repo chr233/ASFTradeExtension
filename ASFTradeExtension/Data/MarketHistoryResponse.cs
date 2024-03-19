@@ -1,83 +1,83 @@
-using Newtonsoft.Json;
 using SteamKit2;
+using System.Text.Json.Serialization;
 
 namespace ASFTradeExtension.Data;
 
 internal sealed record MarketHistoryResponse
 {
-    [JsonProperty(PropertyName = "success", Required = Required.Always)]
+    [JsonPropertyName("success")]
     public bool Success { get; set; }
 
-    [JsonProperty(PropertyName = "pagesize", Required = Required.Always)]
+    [JsonPropertyName("pagesize")]
     public int PageSize { get; set; }
 
-    [JsonProperty(PropertyName = "total_count", Required = Required.Always)]
+    [JsonPropertyName("total_count")]
     public int TotalCount { get; set; }
 
-    [JsonProperty(PropertyName = "start", Required = Required.Always)]
+    [JsonPropertyName("start")]
     public int Start { get; set; }
 
-    [JsonProperty(PropertyName = "assets", Required = Required.AllowNull)]
+    [JsonPropertyName("assets")]
     public Dictionary<string, Dictionary<string, Dictionary<string, MarketAssetData>>>? Assets { get; set; }
 
 
     public sealed record MarketAssetData
     {
-        [JsonProperty(PropertyName = "currency", Required = Required.AllowNull)]
+        [JsonPropertyName("currency")]
         public ECurrencyCode CurrencyCode { get; set; }
 
-        [JsonProperty(PropertyName = "appid", Required = Required.AllowNull)]
+        [JsonPropertyName("appid")]
         public uint AppId { get; set; }
 
-        [JsonProperty(PropertyName = "contextid", Required = Required.AllowNull)]
+        [JsonPropertyName("contextid")]
         public uint Contextid { get; set; }
 
-        [JsonProperty(PropertyName = "id", Required = Required.AllowNull)]
+        [JsonPropertyName("id")]
         public ulong Id { get; set; }
 
-        [JsonProperty(PropertyName = "classid", Required = Required.AllowNull)]
+        [JsonPropertyName("classid")]
         public ulong ClassId { get; set; }
 
-        [JsonProperty(PropertyName = "instanceid", Required = Required.AllowNull)]
+        [JsonPropertyName("instanceid")]
         public ulong InstanceId { get; set; }
 
-        [JsonProperty(PropertyName = "amount", Required = Required.AllowNull)]
+        [JsonPropertyName("amount")]
         public uint Amount { get; set; }
 
-        [JsonProperty(PropertyName = "status", Required = Required.AllowNull)]
+        [JsonPropertyName("status")]
         public byte Status { get; set; }
 
-        [JsonProperty(PropertyName = "tradable", Required = Required.AllowNull)]
+        [JsonPropertyName("tradable")]
         public bool Tradable { get; set; }
 
-        [JsonProperty(PropertyName = "name", Required = Required.AllowNull)]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = "";
 
-        [JsonProperty(PropertyName = "name_color", Required = Required.Default)]
+        [JsonPropertyName("name_color")]
         public string? NameColor { get; set; }
 
-        [JsonProperty(PropertyName = "type", Required = Required.AllowNull)]
+        [JsonPropertyName("type")]
         public string Type { get; set; } = "";
 
-        [JsonProperty(PropertyName = "market_name", Required = Required.AllowNull)]
+        [JsonPropertyName("market_name")]
         public string MarketName { get; set; } = "";
 
-        [JsonProperty(PropertyName = "market_hash_name", Required = Required.AllowNull)]
+        [JsonPropertyName("market_hash_name")]
         public string MarketHashName { get; set; } = "";
 
-        [JsonProperty(PropertyName = "marketable", Required = Required.AllowNull)]
+        [JsonPropertyName("marketable")]
         public bool Marketable { get; set; }
 
-        [JsonProperty(PropertyName = "actions", Required = Required.Default)]
+        [JsonPropertyName("actions")]
         public List<MarketAssetActionData>? Actions { get; set; }
     }
 
     public sealed record MarketAssetActionData
     {
-        [JsonProperty(PropertyName = "link", Required = Required.AllowNull)]
+        [JsonPropertyName("link")]
         public string Link { get; set; } = "";
 
-        [JsonProperty(PropertyName = "name", Required = Required.AllowNull)]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = "";
     }
 }

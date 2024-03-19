@@ -1,21 +1,22 @@
-using Newtonsoft.Json;
+
+using System.Text.Json.Serialization;
 
 namespace ASFTradeExtension.Data;
 
 internal sealed record SellItemResponse
 {
-    [JsonProperty(PropertyName = "success", Required = Required.Always)]
+    [JsonPropertyName("success")]
     public bool Success { get; set; }
 
-    [JsonProperty(PropertyName = "requires_confirmation", Required = Required.Always)]
+    [JsonPropertyName("requires_confirmation")]
     public byte RequiresConfirmation { get; set; }
 
-    [JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.Always)]
+    [JsonPropertyName("needs_mobile_confirmation")]
     public bool NeedsMobileConfirmation { get; set; }
 
-    [JsonProperty(PropertyName = "needs_email_confirmation", Required = Required.Always)]
+    [JsonPropertyName("needs_email_confirmation")]
     public bool NeedsEmailConfirmation { get; set; }
 
-    [JsonProperty(PropertyName = "email_domain", Required = Required.Always)]
+    [JsonPropertyName("email_domain")]
     public string EmailDomain { get; set; } = "";
 }

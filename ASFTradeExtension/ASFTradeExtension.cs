@@ -3,14 +3,13 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
-using ASFTradeExtension.Cache;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Composition;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace ASFTradeExtension;
 
@@ -31,20 +30,20 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
     /// </summary>
     /// <param name="additionalConfigProperties"></param>
     /// <returns></returns>
-    public Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null)
+    public Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null)
     {
 
         PluginConfig? config = null;
 
         if (additionalConfigProperties != null)
         {
-            foreach ((string configProperty, JToken configValue) in additionalConfigProperties)
+            foreach (var (configProperty, configValue) in additionalConfigProperties)
             {
-                if ((configProperty == "ASFEnhance") && configValue.Type == JTokenType.Object)
+                if ((configProperty == "ASFEnhance") && configValue.ValueKind == JsonValueKind.Object)
                 {
                     try
                     {
-                        config = configValue.ToObject<PluginConfig>();
+                        config = configValue.Deserialize<PluginConfig>();
                         if (config != null)
                         {
                             break;

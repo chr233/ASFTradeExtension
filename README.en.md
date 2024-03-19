@@ -49,20 +49,22 @@ Not compatible with the common version of ASF currently, use generic version of 
 
 ### ChangeLog
 
-| ASFTradeExtension Version                                                   | Compatible ASF version | Description                                              |
-| --------------------------------------------------------------------------- | :--------------------: | -------------------------------------------------------- |
-| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3             | ASF -> 5.4.10.3                                          |
-| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |    5.4.9.3             | ASF -> 5.4.9.3                                           |
-| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |    5.4.8.3             | Modified some code, card trading function to be tested   |
-| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5             | Bug fixes                                                |
-| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13             | First version                                            |
+| ASFTradeExtension Version                                                   | Compatible ASF version | Description                                            |
+| --------------------------------------------------------------------------- | :--------------------: | ------------------------------------------------------ |
+| [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |        6.0.0.3         | ASF -> 6.0.0.3                                         |
+| [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |        5.5.0.11        | ASF -> 5.5.0.11, 新的缓存机制                          |
+| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |        5.4.10.3        | ASF -> 5.4.10.3                                        |
+| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |        5.4.9.3         | ASF -> 5.4.9.3                                         |
+| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |        5.4.8.3         | Modified some code, card trading function to be tested |
+| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |        5.4.4.5         | Bug fixes                                              |
+| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |        5.4.2.13        | First version                                          |
 
 <details>
   <summary>History Version</summary>
 
-| ASFTradeExtension Version | Depended ASF  | 5.3.1.2 | 5.3.2.4 | 5.4.0.3 | 5.4.1.11 |
-| ------------------------- | :-----------: | :-----: | :-----: | :-----: | :------: |
-| -                         |       -       |   ❌    |   ❌    |   ✔️    |    ✔️    |
+| ASFTradeExtension Version | Depended ASF | 5.3.1.2 | 5.3.2.4 | 5.4.0.3 | 5.4.1.11 |
+| ------------------------- | :----------: | :-----: | :-----: | :-----: | :------: |
+| -                         |      -       |   ❌    |   ❌    |   ✔️    |    ✔️    |
 
 </details>
 
@@ -88,12 +90,12 @@ ASF.json
 }
 ```
 
-| Configuration     | Type   | Default | Description                                                                        |
-| ----------------- | ------ | ------- | ---------------------------------------------------------------------------------- |
-| `EULA`            | bool   | `true`  | If agree the [EULA](#EULA)\*                                                       |
-| `Statistic`       | bool   | `true`  | Allow send statistics data, it's used to count number of users, this will not send any other information |
-| `DisabledCmds`    | list   | `null`  | Optional, Cmd in the list will be disabled\*\* , **Case Insensitive**, only effects on `ASFTradeExtension` cmds    |
-| `MaxItemPerTrade` | ushort | `255`   | Maximum number of items in a single transaction, the default value of ASF is 255, if the number of items in the offer exceeds this number, it will be automatically split into more than one         |
+| Configuration     | Type   | Default | Description                                                                                                                                                                                  |
+| ----------------- | ------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EULA`            | bool   | `true`  | If agree the [EULA](#EULA)\*                                                                                                                                                                 |
+| `Statistic`       | bool   | `true`  | Allow send statistics data, it's used to count number of users, this will not send any other information                                                                                     |
+| `DisabledCmds`    | list   | `null`  | Optional, Cmd in the list will be disabled\*\* , **Case Insensitive**, only effects on `ASFTradeExtension` cmds                                                                              |
+| `MaxItemPerTrade` | ushort | `255`   | Maximum number of items in a single transaction, the default value of ASF is 255, if the number of items in the offer exceeds this number, it will be automatically split into more than one |
 
 > \* When Agree [EULA](#EULA), ASFEnhance will let all commands available
 >
@@ -108,30 +110,30 @@ ASF.json
 
 ### Update Commands
 
-| Command             | Shorthand | Access          | Description                                                  |
-| ------------------- | --------- | --------------- | ----------------------------------------------------- |
-| `ASFTradeExtension` | `ATE`     | `FamilySharing` | Get the version of the ASFTradeExtension                           |
-| `ATEVERSION`        | `ATEV`    | `Operator`      | Check ASFTradeExtension's latest version                   |
-| `ATEUPDATE`         | `ATEU`    | `Owner`         | Update ASFTradeExtension to the latest version (need restart ASF manually)   |
+| Command             | Shorthand | Access          | Description                                                                |
+| ------------------- | --------- | --------------- | -------------------------------------------------------------------------- |
+| `ASFTradeExtension` | `ATE`     | `FamilySharing` | Get the version of the ASFTradeExtension                                   |
+| `ATEVERSION`        | `ATEV`    | `Operator`      | Check ASFTradeExtension's latest version                                   |
+| `ATEUPDATE`         | `ATEU`    | `Owner`         | Update ASFTradeExtension to the latest version (need restart ASF manually) |
 
 ### Card Trading
 
-| Command                                        | Shorthand | Access        | Description                                                    |
-| ---------------------------------------------- | --------- | ---------- | ------------------------------------------------------  |
-| `FULLSETLIST [Bots] [Config]`                  | `FSL`     | `Operator` | Display CS2 inventory information, available parameters \[-page Page number\] \[-line Display line number\] |
-| `FULLSET [Bots] <appIds>`                      | `FS`      | `Operator` | Display information on the number of cards by the specified `AppId`                                |
-| `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`     | `Master`   | Sends a set of cards with the specified `SetCount` and `AppId` to the trade link             |
-| `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)      |
+| Command                                        | Shorthand | Access     | Description                                                                                                       |
+| ---------------------------------------------- | --------- | ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| `FULLSETLIST [Bots] [Config]`                  | `FSL`     | `Operator` | Display CS2 inventory information, available parameters \[-page Page number\] \[-line Display line number\]       |
+| `FULLSET [Bots] <appIds>`                      | `FS`      | `Operator` | Display information on the number of cards by the specified `AppId`                                               |
+| `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`     | `Master`   | Sends a set of cards with the specified `SetCount` and `AppId` to the trade link                                  |
+| `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF) |
 
 ### CS2 inventory trading
 
-| Command                                  | Shorthand   | Access        | Description                                                                  |
-| ---------------------------------------- | ------ | ---------- | --------------------------------------------------------------------- |
-| `CSITEMLIST [Bots] [Config]`             | `CIL`  | `Operator` | Display CS2 inventory information, available parameters \[-page Page number\] \[-line Display line number\]               |
-| `CSSENDITEM [Bots]`                      | `CSI`  | `Master`   | Send Bots' CS2 inventory to the remaining online Bot                                    |
-| `2CSSENDITEM [Bots]`                     | `2CSI` | `Master`   | Similar to `CSSENDITEM`, automatically confirms the transaction after sending it (requires 2FA configuration)                     |
-| `CSSENDITEM [Bots] ClassId CountPerBot`  | `CSI`  | `Master`   | Sends a specific CS2 item to bots on a list, specify the `ClassId` of the item and the number of items received by each bot |
-| `2CSSENDITEM [Bots] ClassId CountPerBot` | `2CSI` | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)                    |
+| Command                                  | Shorthand | Access     | Description                                                                                                                 |
+| ---------------------------------------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `CSITEMLIST [Bots] [Config]`             | `CIL`     | `Operator` | Display CS2 inventory information, available parameters \[-page Page number\] \[-line Display line number\]                 |
+| `CSSENDITEM [Bots]`                      | `CSI`     | `Master`   | Send Bots' CS2 inventory to the remaining online Bot                                                                        |
+| `2CSSENDITEM [Bots]`                     | `2CSI`    | `Master`   | Similar to `CSSENDITEM`, automatically confirms the transaction after sending it (requires 2FA configuration)               |
+| `CSSENDITEM [Bots] ClassId CountPerBot`  | `CSI`     | `Master`   | Sends a specific CS2 item to bots on a list, specify the `ClassId` of the item and the number of items received by each bot |
+| `2CSSENDITEM [Bots] ClassId CountPerBot` | `2CSI`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)           |
 
 ---
 

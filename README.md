@@ -53,6 +53,7 @@ Not compatible with the common version of ASF currently, use generic version of 
 
 | ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                             |
 | --------------------------------------------------------------------------- | :-----------: | ------------------------------------ |
+| [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |    6.0.0.3    | ASF -> 6.0.0.3                       |
 | [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |   5.5.0.11    | ASF -> 5.5.0.11, 新的缓存机制        |
 | [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                      |
 | [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |    5.4.9.3    | ASF -> 5.4.9.3                       |

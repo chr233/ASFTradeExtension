@@ -159,7 +159,7 @@ internal static partial class Command
         }
 
         var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        if (!queries.Any())
+        if (queries.Length == 0)
         {
             return bot.FormatBotResponse(Langs.ArgumentInvalidAppIds);
         }
@@ -334,7 +334,7 @@ internal static partial class Command
         {
             var offer = inventory.Skip(skip).Take(countPerBot).ToList();
             skip += countPerBot;
-            if (offer.Any())
+            if (offer.Count != 0)
             {
                 var (success, tradeOfferIDs, _) = await b.ArchiWebHandler.SendTradeOffer(bot.SteamID, null, offer, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
@@ -754,7 +754,7 @@ internal static partial class Command
             }
         }
 
-        if (offer.Any())
+        if (offer.Count != 0)
         {
             var sb = new StringBuilder();
 

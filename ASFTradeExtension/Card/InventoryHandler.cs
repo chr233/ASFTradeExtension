@@ -55,7 +55,7 @@ internal class InventoryHandler(Bot bot)
 
             foreach (var asset in inventory)
             {
-                if (asset.Type == Asset.EType.TradingCard)
+                if (asset.Type == EAssetType.TradingCard)
                 {
                     if (!InTradeItemAssetIDs.Contains(asset.AssetID))
                     {

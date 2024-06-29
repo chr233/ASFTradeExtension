@@ -1,8 +1,6 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
-using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Exchange;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data;
 using System.ComponentModel;
@@ -14,7 +12,7 @@ using System.Text.Json;
 namespace ASFTradeExtension;
 
 [Export(typeof(IPlugin))]
-internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
+internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2
 {
     public string Name => "ASF Trade Extension";
     public Version Version => MyVersion;
@@ -161,26 +159,6 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Card.Command.ResponseReloadCache(bot),
 
-                //CSGO
-                //"CSITEMLIST" or
-                //"CIL" when access >= EAccess.Operator =>
-                //    Csgo.Command.ResponseCsItemList(bot, null),
-
-                //"CSSENDITEM" or
-                //"CSI" when access >= EAccess.Master =>
-                //    Csgo.Command.ResponseSendCsItem(bot, null, null, false),
-                //"2CSSENDITEM" or
-                //"2CSI" when access >= EAccess.Master =>
-                //    Csgo.Command.ResponseSendCsItem(bot, null, null, true),
-
-                //"CSMARKETHISTORY" or
-                //"CMH" when access >= EAccess.Operator =>
-                //    Csgo.Command.ResponseGetCsMarketInfo(bot, null),
-
-                //"CSDELISTING" or
-                //"CDL" when access >= EAccess.Master =>
-                //    Csgo.Command.ResponseCsRemoveListing(bot, null),
-
                 _ => null,
             },
             _ => cmd switch //带参数
@@ -219,73 +197,6 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
 
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Card.Command.ResponseReloadCache(Utilities.GetArgsAsText(args, 1, ",")),
-
-                //CSGO
-                //"CSITEMLIST" or
-                //"CIL" when access >= EAccess.Operator && argLength == 2 =>
-                //    Csgo.Command.ResponseCsItemList(args[1], null),
-                //"CSITEMLIST" or
-                //"CIL" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                //    Csgo.Command.ResponseCsItemList(args[1], Utilities.GetArgsAsText(args, 2, ",")),
-                //"CSITEMLIST" or
-                //"CIL" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                //    Csgo.Command.ResponseCsItemList(bot, Utilities.GetArgsAsText(args, 1, ",")),
-
-
-                //"CSSENDITEM" or
-                //"CSI" when access >= EAccess.Master && argLength == 4 =>
-                //    Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], false),
-                //"CSSENDITEM" or
-                //"CSI" when access >= EAccess.Master && argLength == 3 =>
-                //    Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], false),
-                //"CSSENDITEM" or
-                //"CSI" when access >= EAccess.Master && argLength == 2 =>
-                //    Csgo.Command.ResponseSendCsItem(args[1], null, null, false),
-
-
-                //"2CSSENDITEM" or
-                //"2CSI" when access >= EAccess.Master && argLength == 4 =>
-                //    Csgo.Command.ResponseSendCsItem(args[1], args[2], args[3], true),
-                //"2CSSENDITEM" or
-                //"2CSI" when access >= EAccess.Master && argLength == 3 =>
-                //    Csgo.Command.ResponseSendCsItem(bot, args[1], args[2], true),
-                //"2CSSENDITEM" or
-                //"2CSI" when access >= EAccess.Master && argLength == 2 =>
-                //    Csgo.Command.ResponseSendCsItem(args[1], null, null, true),
-
-
-                //"CSSELLITEM" or
-                //"CEI" when access >= EAccess.Master && argLength == 5 =>
-                //    Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], false),
-                //"CSSELLITEM" or
-                //"CEI" when access >= EAccess.Master && argLength == 4 =>
-                //    Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], false),
-
-                //"2CSSELLITEM" or
-                //"2CEI" when access >= EAccess.Master && argLength == 5 =>
-                //    Csgo.Command.ResponseSellCsItem(args[1], args[2], args[3], args[4], true),
-                //"2CSSELLITEM" or
-                //"2CEI" when access >= EAccess.Master && argLength == 4 =>
-                //    Csgo.Command.ResponseSellCsItem(bot, args[1], args[2], args[3], true),
-
-                //"CSMARKETHISTORY" or
-                //"CMH" when access >= EAccess.Operator =>
-                //    Csgo.Command.ResponseGetCsMarketInfo(SkipBotNames(args, 1, 1), args.Last()),
-
-
-                //"CSDELISTING" or
-                //"CDL" when access >= EAccess.Master && argLength >= 3 =>
-                //    Csgo.Command.ResponseCsRemoveListing(SkipBotNames(args, 1, 1), args.Last()),
-                //"CSDELISTING" or
-                //  "CDL" when access >= EAccess.Master =>
-                //    Csgo.Command.ResponseCsRemoveListing(bot, args[1]),
-
-                //"TRANSFERCSGO" or
-                //"TRC" when argLength == 3 && access >= EAccess.Master =>
-                //    Csgo.Command.ResponseBotStatus(args[1], args[2], null),
-                //"TRANSFERCSGO" or
-                //"TRC" when argLength == 4 && access >= EAccess.Master =>
-                //    Csgo.Command.ResponseBotStatus(args[1], args[2], args[3]),
 
                 _ => null,
             }
@@ -344,28 +255,6 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IBotTradeOff
 
             return ex.StackTrace;
         }
-    }
-
-    public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
-    {
-        bool accept = Csgo.Handler.IsMyTrade(tradeOffer.TradeOfferID, tradeOffer.OtherSteamID64);
-        ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeOffer.TradeOfferID, accept));
-        return Task.FromResult(accept);
-    }
-
-    public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults)
-    {
-        foreach (var tradeResult in tradeResults)
-        {
-            Csgo.Handler.RemoveMyTrade(tradeResult.TradeOfferID);
-            ASFLogger.LogGenericWarning(string.Format("交易Id: {0}, {1}", tradeResult.TradeOfferID, tradeResult.Result));
-
-            if (Card.Command.Handlers.TryGetValue(bot, out var cardHandler))
-            {
-                cardHandler.AddInTradeItems(tradeResult);
-            }
-        }
-        return Task.CompletedTask;
     }
 
     public Task OnBotDestroy(Bot bot)

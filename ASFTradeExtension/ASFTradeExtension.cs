@@ -156,6 +156,14 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2
                 "FSL" when access >= EAccess.Operator =>
                     Card.Command.ResponseFullSetList(bot, null),
 
+                "FULLSETLISTFOIL" or
+                "FSLF" when access >= EAccess.Operator =>
+                    Card.Command.ResponseFullSetListFoil(bot, null),
+
+                "FULLSETLISTSALE" or
+                "FSLS" when access >= EAccess.Operator =>
+                    Card.Command.ResponseFullSetListSaleEvent(bot, null),
+
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Card.Command.ResponseReloadCache(bot),
 
@@ -173,6 +181,26 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2
                 "FULLSETLIST" or
                 "FSL" when access >= EAccess.Operator && argLength % 2 != 0 =>
                     Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ",")),
+
+                "FULLSETLISTFOIL" or
+                "FSLF" when access >= EAccess.Operator && argLength == 2 =>
+                    Card.Command.ResponseFullSetListFoil(args[1], null),
+                "FULLSETLISTFOIL" or
+                "FSLF" when access >= EAccess.Operator && argLength % 2 == 0 =>
+                    Card.Command.ResponseFullSetListFoil(args[1], Utilities.GetArgsAsText(args, 2, ",")),
+                "FULLSETLISTFOIL" or
+                "FSLF" when access >= EAccess.Operator && argLength % 2 != 0 =>
+                    Card.Command.ResponseFullSetListFoil(bot, Utilities.GetArgsAsText(args, 1, ",")),
+
+                "FULLSETLISTSALE" or
+                "FSLS" when access >= EAccess.Operator && argLength == 2 =>
+                    Card.Command.ResponseFullSetListSaleEvent(args[1], null),
+                "FULLSETLISTSALE" or
+                "FSLS" when access >= EAccess.Operator && argLength % 2 == 0 =>
+                    Card.Command.ResponseFullSetListSaleEvent(args[1], Utilities.GetArgsAsText(args, 2, ",")),
+                "FULLSETLISTSALE" or
+                "FSLS" when access >= EAccess.Operator && argLength % 2 != 0 =>
+                    Card.Command.ResponseFullSetListSaleEvent(bot, Utilities.GetArgsAsText(args, 1, ",")),
 
                 "FULLSET" or
                 "FS" when argLength >= 3 && access >= EAccess.Operator =>

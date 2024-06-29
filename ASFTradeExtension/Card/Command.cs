@@ -148,6 +148,275 @@ internal static class Command
     }
 
     /// <summary>
+    /// 获取闪卡卡牌套数
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseFullSetListFoil(Bot bot, string? query)
+    {
+        if (!Handlers.TryGetValue(bot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
+
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
+
+        int page = 0;
+        int count = 20;
+
+        if (!string.IsNullOrEmpty(query))
+        {
+            var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            if (queries.Length % 2 != 0)
+            {
+                return bot.FormatBotResponse(Langs.ArgumentInvalidFSL);
+            }
+            for (int i = 0; i < queries.Length; i += 2)
+            {
+                string option = queries[i].ToLowerInvariant();
+                string value = queries[i + 1];
+
+                switch (option)
+                {
+                    case "-p":
+                    case "-page":
+                        if (int.TryParse(value, out var p) && p > 0)
+                        {
+                            page = p;
+                        }
+                        continue;
+                    case "-l":
+                    case "-line":
+                        if (int.TryParse(value, out var l) && l > 0)
+                        {
+                            count = l;
+                        }
+                        continue;
+                }
+            }
+        }
+
+        var inventoryBundles = await handler.GetFoilCardSetCache(false).ConfigureAwait(false);
+        if (inventoryBundles == null)
+        {
+            return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
+        }
+
+        if (inventoryBundles.Count == 0)
+        {
+            return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
+        }
+
+        var bundles = inventoryBundles
+            .OrderByDescending(static kv => kv.Value.Assets.Count)
+            .Select(static kv => kv.Value)
+            .Skip(page * count)
+            .Take(count)
+            .ToList();
+
+        if (bundles.Count == 0)
+        {
+            return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
+        }
+
+        await handler.LoadAppCardGroup(bundles).ConfigureAwait(false);
+
+        var sb = new StringBuilder();
+        sb.AppendLine(Langs.MultipleLineResult);
+
+        foreach (var bundle in bundles)
+        {
+            if (bundle.Assets != null)
+            {
+                sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
+                    bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
+                    bundle.TradableSetCount, bundle.ExtraTradableCount,
+                    bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
+                );
+            }
+            else
+            {
+                if (bundle.CardCountPerSet == -1)
+                {
+                    sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NetworkError);
+                }
+                else
+                {
+                    sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NoAvilableCards);
+                }
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// 获取闪卡卡牌套数 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseFullSetListFoil(string botNames, string? query)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        var bots = Bot.GetBots(botNames);
+
+        if (bots == null || bots.Count == 0)
+        {
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetListFoil(bot, query))).ConfigureAwait(false);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+
+    /// <summary>
+    /// 获取促销卡牌套数
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseFullSetListSaleEvent(Bot bot, string? query)
+    {
+        if (!Handlers.TryGetValue(bot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
+
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
+
+        int page = 0;
+        int count = 20;
+
+        if (!string.IsNullOrEmpty(query))
+        {
+            var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            if (queries.Length % 2 != 0)
+            {
+                return bot.FormatBotResponse(Langs.ArgumentInvalidFSL);
+            }
+            for (int i = 0; i < queries.Length; i += 2)
+            {
+                string option = queries[i].ToLowerInvariant();
+                string value = queries[i + 1];
+
+                switch (option)
+                {
+                    case "-p":
+                    case "-page":
+                        if (int.TryParse(value, out var p) && p > 0)
+                        {
+                            page = p;
+                        }
+                        continue;
+                    case "-l":
+                    case "-line":
+                        if (int.TryParse(value, out var l) && l > 0)
+                        {
+                            count = l;
+                        }
+                        continue;
+                }
+            }
+        }
+
+        var inventoryBundles = await handler.GetSaleEventCardSetCache(false).ConfigureAwait(false);
+        if (inventoryBundles == null)
+        {
+            return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
+        }
+
+        if (inventoryBundles.Count == 0)
+        {
+            return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
+        }
+
+        var bundles = inventoryBundles
+            .OrderByDescending(static kv => kv.Value.Assets.Count)
+            .Select(static kv => kv.Value)
+            .Skip(page * count)
+            .Take(count)
+            .ToList();
+
+        if (bundles.Count == 0)
+        {
+            return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
+        }
+
+        await handler.LoadAppCardGroup(bundles).ConfigureAwait(false);
+
+        var sb = new StringBuilder();
+        sb.AppendLine(Langs.MultipleLineResult);
+
+        foreach (var bundle in bundles)
+        {
+            if (bundle.Assets != null)
+            {
+                sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
+                    bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
+                    bundle.TradableSetCount, bundle.ExtraTradableCount,
+                    bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
+                );
+            }
+            else
+            {
+                if (bundle.CardCountPerSet == -1)
+                {
+                    sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NetworkError);
+                }
+                else
+                {
+                    sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NoAvilableCards);
+                }
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// 获取促销卡牌套数 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseFullSetListSaleEvent(string botNames, string? query)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        var bots = Bot.GetBots(botNames);
+
+        if (bots == null || bots.Count == 0)
+        {
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetListSaleEvent(bot, query))).ConfigureAwait(false);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
     /// 获取指定游戏成套卡牌套数
     /// </summary>
     /// <param name="bot"></param>

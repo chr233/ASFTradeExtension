@@ -154,11 +154,11 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2
                 //Card
                 "FULLSETLIST" or
                 "FSL" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetList(bot, null),
+                    Card.Command.ResponseFullSetList(bot, null, false),
 
                 "FULLSETLISTFOIL" or
                 "FSLF" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetListFoil(bot, null),
+                    Card.Command.ResponseFullSetList(bot, null, true),
 
                 "FULLSETLISTSALE" or
                 "FSLS" when access >= EAccess.Operator =>
@@ -174,23 +174,23 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2
                 //Card
                 "FULLSETLIST" or
                 "FSL" when access >= EAccess.Operator && argLength == 2 =>
-                    Card.Command.ResponseFullSetList(args[1], null),
+                    Card.Command.ResponseFullSetList(args[1], null, false),
                 "FULLSETLIST" or
                 "FSL" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                    Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ",")),
+                    Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ","), false),
                 "FULLSETLIST" or
                 "FSL" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                    Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ",")),
+                    Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), false),
 
                 "FULLSETLISTFOIL" or
                 "FSLF" when access >= EAccess.Operator && argLength == 2 =>
-                    Card.Command.ResponseFullSetListFoil(args[1], null),
+                    Card.Command.ResponseFullSetList(args[1], null, true),
                 "FULLSETLISTFOIL" or
                 "FSLF" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                    Card.Command.ResponseFullSetListFoil(args[1], Utilities.GetArgsAsText(args, 2, ",")),
+                    Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ","), true),
                 "FULLSETLISTFOIL" or
                 "FSLF" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                    Card.Command.ResponseFullSetListFoil(bot, Utilities.GetArgsAsText(args, 1, ",")),
+                    Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), true),
 
                 "FULLSETLISTSALE" or
                 "FSLS" when access >= EAccess.Operator && argLength == 2 =>
@@ -211,17 +211,31 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2
 
                 "SENDCARDSET" or
                 "SCS" when access >= EAccess.Master && argLength == 5 =>
-                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false),
+                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false, false),
                 "SENDCARDSET" or
                 "SCS" when access >= EAccess.Master && argLength == 4 =>
-                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false),
+                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false, false),
 
                 "2SENDCARDSET" or
                 "2SCS" when access >= EAccess.Master && argLength == 5 =>
-                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true),
+                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true, false),
                 "2SENDCARDSET" or
                 "2SCS" when access >= EAccess.Master && argLength == 4 =>
-                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true),
+                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true, false),
+
+                "SENDCARDSETFOIL" or
+                "SCSF" when access >= EAccess.Master && argLength == 5 =>
+                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false, true),
+                "SENDCARDSETFOIL" or
+                "SCSF" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false, true),
+
+                "2SENDCARDSETFOIL" or
+                "2SCSF" when access >= EAccess.Master && argLength == 5 =>
+                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true, true),
+                "2SENDCARDSETFOIL" or
+                "2SCSF" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true, true),
 
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Card.Command.ResponseReloadCache(Utilities.GetArgsAsText(args, 1, ",")),

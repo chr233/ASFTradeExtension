@@ -21,7 +21,7 @@ internal static class Utils
     /// <summary>
     /// 促销卡牌
     /// </summary>
-    internal static int SaleEventAppId = 2861690;
+    internal static uint SaleEventAppId = 2861690;
 
     /// <summary>
     /// 格式化返回文本

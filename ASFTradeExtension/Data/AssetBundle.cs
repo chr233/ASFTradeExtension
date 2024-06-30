@@ -7,7 +7,7 @@ internal sealed record AssetBundle
     /// <summary>
     /// 卡牌列表
     /// </summary>
-    public List<Asset> Assets { get; set; } = null!;
+    public List<Asset>? Assets { get; set; }
     /// <summary>
     /// AppId
     /// </summary>

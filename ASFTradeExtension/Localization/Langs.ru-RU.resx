@@ -276,4 +276,22 @@
   <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
     <value>发送交易报价 {0} -&gt; {1} 失败, 无可用物品</value>
   </data>
+  <data name="NoInventory" xml:space="preserve">
+    <value>No inventory</value>
+  </data>
+  <data name="ReloadInventoryCacheDone" xml:space="preserve">
+    <value>Reload inventory cache successful</value>
+  </data>
+  <data name="CardInventory" xml:space="preserve">
+    <value>Normal card stock info:</value>
+  </data>
+  <data name="FoilCardInventory" xml:space="preserve">
+    <value>Foil card stock info:</value>
+  </data>
+  <data name="FoilSaleEventCardInventory" xml:space="preserve">
+    <value>Foil sale event card stock info:</value>
+  </data>
+  <data name="SaleEventCardInventory" xml:space="preserve">
+    <value>Normal sale event card stock info:</value>
+  </data>
 </root>

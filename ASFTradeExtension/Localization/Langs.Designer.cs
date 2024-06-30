@@ -124,6 +124,15 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 普通卡牌库存信息: 的本地化字符串。
+        /// </summary>
+        internal static string CardInventory {
+            get {
+                return ResourceManager.GetString("CardInventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 卡牌库存为空 的本地化字符串。
         /// </summary>
         internal static string CardInventoryIsEmpty {
@@ -259,6 +268,24 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 闪亮卡牌库存信息: 的本地化字符串。
+        /// </summary>
+        internal static string FoilCardInventory {
+            get {
+                return ResourceManager.GetString("FoilCardInventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 闪亮促销卡牌库存信息: 的本地化字符串。
+        /// </summary>
+        internal static string FoilSaleEventCardInventory {
+            get {
+                return ResourceManager.GetString("FoilSaleEventCardInventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 内部错误 的本地化字符串。
         /// </summary>
         internal static string InternalError {
@@ -376,6 +403,15 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 无库存 的本地化字符串。
+        /// </summary>
+        internal static string NoInventory {
+            get {
+                return ResourceManager.GetString("NoInventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 过滤条件下无正在出售的CSGO物品 的本地化字符串。
         /// </summary>
         internal static string NoSelingCsItemInFilter {
@@ -426,6 +462,24 @@ namespace ASFTradeExtension.Localization {
         internal static string PluginVer {
             get {
                 return ResourceManager.GetString("PluginVer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 刷新库存缓存完成 的本地化字符串。
+        /// </summary>
+        internal static string ReloadInventoryCacheDone {
+            get {
+                return ResourceManager.GetString("ReloadInventoryCacheDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 普通促销卡牌库存信息: 的本地化字符串。
+        /// </summary>
+        internal static string SaleEventCardInventory {
+            get {
+                return ResourceManager.GetString("SaleEventCardInventory", resourceCulture);
             }
         }
         

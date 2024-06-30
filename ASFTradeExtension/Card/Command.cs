@@ -291,7 +291,7 @@ internal static class Command
     /// <param name="bot"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseFullSetCountOfGame(Bot bot, string query)
+    internal static async Task<string?> ResponseFullSetCountOfGame(Bot bot, string query, bool foilCard)
     {
         if (!Handlers.TryGetValue(bot, out var handler))
         {
@@ -309,7 +309,10 @@ internal static class Command
             return bot.FormatBotResponse(Langs.ArgumentInvalidAppIds);
         }
 
-        var inventory = await handler.GetCardSetCache(false).ConfigureAwait(false);
+        var inventory = await (
+            foilCard ? handler.GetFoilCardSetCache(false) : handler.GetCardSetCache(false)
+        ).ConfigureAwait(false);
+
         if (inventory == null)
         {
             return bot.FormatBotResponse(Langs.LoadInventoryFailedNetworkError);
@@ -322,6 +325,7 @@ internal static class Command
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
+        sb.AppendLine(foilCard ? Langs.FoilCardInventory : Langs.CardInventory);
 
         int i = 0;
         foreach (var entry in entries)
@@ -373,7 +377,7 @@ internal static class Command
     /// <param name="query"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseFullSetCountOfGame(string botNames, string query)
+    internal static async Task<string?> ResponseFullSetCountOfGame(string botNames, string query, bool foilCard)
     {
         if (string.IsNullOrEmpty(botNames))
         {
@@ -387,7 +391,7 @@ internal static class Command
             return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query, foilCard))).ConfigureAwait(false);
 
         var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 

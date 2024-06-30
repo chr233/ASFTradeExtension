@@ -53,6 +53,7 @@ Not compatible with the common version of ASF, use generic version of ASF instea
 
 | ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                             |
 | --------------------------------------------------------------------------- | :-----------: | ------------------------------------ |
+| [1.1.1.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.0) |    6.0.3.4    | ASF -> 6.0.3.4, 支持闪卡             |
 | [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |    6.0.0.3    | ASF -> 6.0.0.3                       |
 | [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |   5.5.0.11    | ASF -> 5.5.0.11, 新的缓存机制        |
 | [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                      |
@@ -112,20 +113,12 @@ ASF.json
 | ---------------------------------------------- | ------ | ---------- | ------------------------------------------------------------ |
 | `FULLSETLIST [Bots] [Config]`                  | `FSL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
 | `FULLSET [Bots] <appIds>`                      | `FS`   | `Operator` | 显示指定 App 的卡牌套数信息                                  |
+| `FULLSETLISTFOIL [Bots] [Config]`                  | `FSL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
+| `FULLSET [Bots] <appIds>`                      | `FS`   | `Operator` | 显示指定 App 的卡牌套数信息                                  |
+| `FULLSETLIST [Bots] [Config]`                  | `FSL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
+| `FULLSET [Bots] <appIds>`                      | `FS`   | `Operator` | 显示指定 App 的卡牌套数信息                                  |
 | `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的卡牌          |
 | `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)      |
-
-### ~~CSGO 库存交易~~
-
-> WIP, 暂不可用
-
-| 命令                                         | 缩写   | 权限       | 说明                                                                         |
-| -------------------------------------------- | ------ | ---------- | ---------------------------------------------------------------------------- |
-| ~~`CSITEMLIST [Bots] [Config]`~~             | `CIL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]                 |
-| ~~`CSSENDITEM [Bots]`~~                      | `CSI`  | `Master`   | 发送 Bots 的 CSGO 库存到其余在线 Bot                                         |
-| ~~`2CSSENDITEM [Bots]`~~                     | `2CSI` | `Master`   | 同 `CSSENDITEM`, 发送交易后自动确认交易 (需要配置 2FA)                       |
-| ~~`CSSENDITEM [Bots] ClassId CountPerBot`~~  | `CSI`  | `Master`   | 发送 Bots 的 CSGO 库存到其余在线 Bot, 指定物品 ClassId 和每个 Bot 接收的数量 |
-| ~~`2CSSENDITEM [Bots] ClassId CountPerBot`~~ | `2CSI` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)                      |
 
 ---
 

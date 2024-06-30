@@ -129,7 +129,7 @@ internal static class Command
             }
         }
 
-        return sb.ToString();
+        return bot.FormatBotResponse(sb.ToString());
     }
 
     /// <summary>
@@ -255,7 +255,7 @@ internal static class Command
             sb.AppendLine(Langs.NoInventory);
         }
 
-        return sb.ToString();
+        return bot.FormatBotResponse(sb.ToString());
     }
 
     /// <summary>
@@ -367,7 +367,7 @@ internal static class Command
             }
         }
 
-        return sb.ToString();
+        return bot.FormatBotResponse(sb.ToString());
     }
 
     /// <summary>
@@ -521,7 +521,7 @@ internal static class Command
             sb.AppendLine(Langs.SendTradeFailedAppIdInvalid);
         }
 
-        return sb.ToString();
+        return bot.FormatBotResponse(sb.ToString());
     }
 
     /// <summary>
@@ -574,7 +574,7 @@ internal static class Command
         handler.ExpiredCache();
         await handler.GetBotInventory(true).ConfigureAwait(false);
 
-        return Langs.ReloadInventoryCacheDone;
+        return bot.FormatBotResponse(Langs.ReloadInventoryCacheDone);
     }
 
     /// <summary>

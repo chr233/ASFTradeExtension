@@ -43,17 +43,14 @@ Not compatible with the common version of ASF, use generic version of ASF instea
 
 ### 使用命令升级插件
 
-> 可以使用插件自带的命令自带更新插件
-> ASF 版本升级有可能出现不兼容情况, 如果发现插件无法加载请尝试更新 ASF
-
-- `ATEVERSION` / `ATEV` 检查插件更新
-- `ATEUPDATE` / `ATEU` 自动更新插件到最新版本 (需要手动重启 ASF)
+> 支持 ASF 自带的插件更新机制
+> 使用 `UPDATEPLUGINS stable ASFTradeExtension` 更新插件
 
 ### 更新日志
 
 | ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                             |
 | --------------------------------------------------------------------------- | :-----------: | ------------------------------------ |
-| [1.1.1.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.0) |    6.0.3.4    | ASF -> 6.0.3.4, 支持闪卡             |
+| [1.1.1.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.1) |    6.0.3.4    | ASF -> 6.0.3.4, 支持闪卡             |
 | [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |    6.0.0.3    | ASF -> 6.0.0.3                       |
 | [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |   5.5.0.11    | ASF -> 5.5.0.11, 新的缓存机制        |
 | [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                      |

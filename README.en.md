@@ -27,11 +27,11 @@
 
 ## Installation
 
-Not compatible with generic version of ASF, please use generic version of ASF (not generic-nf).
-Not compatible with generic version of ASF, please use generic version of ASF (not generic-nf).
+Not compatible with generic version of ASF, please use generic version of ASF.
+Not compatible with generic version of ASF, please use generic version of ASF.
 
-Not compatible with the common version of ASF currently, use generic version of ASF instead (not generic-nf version)
-Not compatible with the common version of ASF currently, use generic version of ASF instead (not generic-nf version)
+Not compatible with the common version of ASF, use generic version of ASF instead.
+Not compatible with the common version of ASF, use generic version of ASF instead.
 
 ### First-Time Install / Manually Update
 
@@ -41,16 +41,14 @@ Not compatible with the common version of ASF currently, use generic version of 
 
 ### Use Command to Update
 
-> You can update the plugin by using the command that comes with the plugin.
-> ASF version upgrade may be incompatible, if you find that the plugin can not be loaded, please try to update ASF
-
-- `ATEVERSION` / `ATEV` check the latest version of ASFTradeExtension
-- `ATEUPDATE` / `ATEU` auto update ASFTradeExtension (Maybe need to update ASF manually)
+> 支持 ASF 自带的插件更新机制
+> 使用 `UPDATEPLUGINS stable ASFTradeExtension` 更新插件
 
 ### ChangeLog
 
 | ASFTradeExtension Version                                                   | Compatible ASF version | Description                                            |
 | --------------------------------------------------------------------------- | :--------------------: | ------------------------------------------------------ |
+| [1.1.1.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.1) |        6.0.3.4         | ASF -> 6.0.3.4, 支持闪卡                               |
 | [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |        6.0.0.3         | ASF -> 6.0.0.3                                         |
 | [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |        5.5.0.11        | ASF -> 5.5.0.11, 新的缓存机制                          |
 | [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |        5.4.10.3        | ASF -> 5.4.10.3                                        |
@@ -97,43 +95,27 @@ ASF.json
 | `DisabledCmds`    | list   | `null`  | Optional, Cmd in the list will be disabled\*\* , **Case Insensitive**, only effects on `ASFTradeExtension` cmds                                                                              |
 | `MaxItemPerTrade` | ushort | `255`   | Maximum number of items in a single transaction, the default value of ASF is 255, if the number of items in the offer exceeds this number, it will be automatically split into more than one |
 
-> \* When Agree [EULA](#EULA), ASFEnhance will let all commands available
->
-> \* When Disagree [EULA](#EULA), ASFTradeExtension will not be able to use most commands.
->
-> \*\* `DisabledCmds` description: every item in this configuration is **Case Insensitive**, and this only effects on `ASFTradeExtension` cmds
-> For example, configure as `["foo","BAR"]` , it means `FOO` and `BAR` will be disabled
-> If don't want to disable any cmds, please configure as `null` or `[]`
-> If Some cmd is disabled, it's still available to call the command in the form of `ATE.xxx`, for example `ATE.FULLSETLIST`
-
 ## Commands Usage
 
 ### Update Commands
 
-| Command             | Shorthand | Access          | Description                                                                |
-| ------------------- | --------- | --------------- | -------------------------------------------------------------------------- |
-| `ASFTradeExtension` | `ATE`     | `FamilySharing` | Get the version of the ASFTradeExtension                                   |
-| `ATEVERSION`        | `ATEV`    | `Operator`      | Check ASFTradeExtension's latest version                                   |
-| `ATEUPDATE`         | `ATEU`    | `Owner`         | Update ASFTradeExtension to the latest version (need restart ASF manually) |
+| Command             | Shorthand | Access          | Description                              |
+| ------------------- | --------- | --------------- | ---------------------------------------- |
+| `ASFTradeExtension` | `ATE`     | `FamilySharing` | Get the version of the ASFTradeExtension |
 
 ### Card Trading
 
-| Command                                        | Shorthand | Access     | Description                                                                                                       |
-| ---------------------------------------------- | --------- | ---------- | ----------------------------------------------------------------------------------------------------------------- |
-| `FULLSETLIST [Bots] [Config]`                  | `FSL`     | `Operator` | Display CS2 inventory information, available parameters \[-page Page number\] \[-line Display line number\]       |
-| `FULLSET [Bots] <appIds>`                      | `FS`      | `Operator` | Display information on the number of cards by the specified `AppId`                                               |
-| `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`     | `Master`   | Sends a set of cards with the specified `SetCount` and `AppId` to the trade link                                  |
-| `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF) |
-
-### CS2 inventory trading
-
-| Command                                  | Shorthand | Access     | Description                                                                                                                 |
-| ---------------------------------------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `CSITEMLIST [Bots] [Config]`             | `CIL`     | `Operator` | Display CS2 inventory information, available parameters \[-page Page number\] \[-line Display line number\]                 |
-| `CSSENDITEM [Bots]`                      | `CSI`     | `Master`   | Send Bots' CS2 inventory to the remaining online Bot                                                                        |
-| `2CSSENDITEM [Bots]`                     | `2CSI`    | `Master`   | Similar to `CSSENDITEM`, automatically confirms the transaction after sending it (requires 2FA configuration)               |
-| `CSSENDITEM [Bots] ClassId CountPerBot`  | `CSI`     | `Master`   | Sends a specific CS2 item to bots on a list, specify the `ClassId` of the item and the number of items received by each bot |
-| `2CSSENDITEM [Bots] ClassId CountPerBot` | `2CSI`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)           |
+| Command                                            | Shorthand | Access     | Description                                                                                                           |
+| -------------------------------------------------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| `FULLSETLIST [Bots] [Config]`                      | `FSL`     | `Operator` | Display normal card inventory information, available parameters \[-page Page number\] \[-line Display line number\]   |
+| `FULLSETLISTFOIL [Bots] [Config]`                  | `FSLF`    | `Operator` | Display foil card inventory information, available parameters \[-page Page number\] \[-line Display line number\]     |
+| `FULLSETLISTSALE [Bots]`                           | `FSLS`    | `Operator` | Display sale event card inventory information                                                                         |
+| `FULLSET [Bots] <appIds>`                          | `FS`      | `Operator` | Display normal card information on the number of cards by the specified `AppId`                                       |
+| `FULLSETFOIL [Bots] <appIds>`                      | `FSF`     | `Operator` | Display foil card information on the number of cards by the specified `AppId`                                         |
+| `SENDCARDSET [Bots] AppId SetCount TradeLink`      | `SCS`     | `Master`   | Sends a set of normal cards with the specified `SetCount` and `AppId` to the trade link                               |
+| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`  | `SCSF`    | `Master`   | Sends a set of foil cards with the specified `SetCount` and `AppId` to the trade link                                 |
+| `2SENDCARDSET [Bots] AppId SetCount TradeLink`     | `2SCS`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)     |
+| `2SENDCARDSETFOIL [Bots] AppId SetCount TradeLink` | `2SCSF`   | `Master`   | Similar to `SENDCARDSETFOIL`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF) |
 
 ---
 

@@ -48,7 +48,7 @@ Not compatible with the common version of ASF, use generic version of ASF instea
 
 | ASFTradeExtension Version                                                   | Compatible ASF version | Description                                            |
 | --------------------------------------------------------------------------- | :--------------------: | ------------------------------------------------------ |
-| [1.1.1.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.1) |        6.0.3.4         | ASF -> 6.0.3.4, 支持闪卡                               |
+| [1.1.1.2](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.2) |        6.0.3.4         | ASF -> 6.0.3.4, 支持闪卡                               |
 | [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |        6.0.0.3         | ASF -> 6.0.0.3                                         |
 | [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |        5.5.0.11        | ASF -> 5.5.0.11, 新的缓存机制                          |
 | [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |        5.4.10.3        | ASF -> 5.4.10.3                                        |

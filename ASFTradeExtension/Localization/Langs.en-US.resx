@@ -294,4 +294,40 @@
   <data name="SaleEventCardInventory" xml:space="preserve">
     <value>Normal sale event card stock info:</value>
   </data>
+  <data name="UpdatePluginUpdateInfo" xml:space="preserve">
+    <value>插件更新信息:</value>
+  </data>
+  <data name="UpdatePluginListItemVersion" xml:space="preserve">
+    <value>当前版本: {0} 在线版本: {1}</value>
+  </data>
+  <data name="UpdatePluginListItemUpdateTips" xml:space="preserve">
+    <value>更新插件完成, 重启 ASF 后生效, 如果不兼容请更新 ASF 版本</value>
+  </data>
+  <data name="UpdatePluginListItemStatus" xml:space="preserve">
+    <value>更新状态: {0}</value>
+  </data>
+  <data name="UpdatePluginListItemReleaseNote" xml:space="preserve">
+    <value>Release note:</value>
+  </data>
+  <data name="UpdatePluginListItemName" xml:space="preserve">
+    <value>插件名称: {0} {1}</value>
+  </data>
+  <data name="UpdateFiledWithZip" xml:space="preserve">
+    <value>Plugin update failed, unzip failed</value>
+  </data>
+  <data name="UpdateFailedPluginNotFound" xml:space="preserve">
+    <value>获取版本信息失败, 未找到插件 {0}</value>
+  </data>
+  <data name="UpdateConfigContentSuccess" xml:space="preserve">
+    <value>Update config success</value>
+  </data>
+  <data name="AlreadyLatest" xml:space="preserve">
+    <value>The plugin is up to date, no need to update</value>
+  </data>
+  <data name="NoAssetFoundInReleaseInfo" xml:space="preserve">
+    <value>No asset found in the release</value>
+  </data>
+  <data name="CanUpdate" xml:space="preserve">
+    <value>*可更新*</value>
+  </data>
 </root>

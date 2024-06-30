@@ -294,4 +294,40 @@
   <data name="CardInventory" xml:space="preserve">
     <value>普通卡牌库存信息:</value>
   </data>
+  <data name="UpdatePluginUpdateInfo" xml:space="preserve">
+    <value>插件更新信息:</value>
+  </data>
+  <data name="UpdatePluginListItemVersion" xml:space="preserve">
+    <value>当前版本: {0} 在线版本: {1}</value>
+  </data>
+  <data name="UpdatePluginListItemUpdateTips" xml:space="preserve">
+    <value>更新插件完成, 重启 ASF 后生效, 如果不兼容请更新 ASF 版本</value>
+  </data>
+  <data name="UpdatePluginListItemStatus" xml:space="preserve">
+    <value>更新状态: {0}</value>
+  </data>
+  <data name="UpdatePluginListItemReleaseNote" xml:space="preserve">
+    <value>版本说明:</value>
+  </data>
+  <data name="UpdatePluginListItemName" xml:space="preserve">
+    <value>插件名称: {0} {1}</value>
+  </data>
+  <data name="UpdateFiledWithZip" xml:space="preserve">
+    <value>插件更新失败, 压缩包内容解析失败</value>
+  </data>
+  <data name="UpdateFailedPluginNotFound" xml:space="preserve">
+    <value>获取版本信息失败, 未找到插件 {0}</value>
+  </data>
+  <data name="UpdateConfigContentSuccess" xml:space="preserve">
+    <value>更新配置文件成功</value>
+  </data>
+  <data name="AlreadyLatest" xml:space="preserve">
+    <value>插件已经是最新版本, 无需更新</value>
+  </data>
+  <data name="NoAssetFoundInReleaseInfo" xml:space="preserve">
+    <value>该发行版没有可下载的文件</value>
+  </data>
+  <data name="CanUpdate" xml:space="preserve">
+    <value>*可更新*</value>
+  </data>
 </root>

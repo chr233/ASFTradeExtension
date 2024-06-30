@@ -61,6 +61,15 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 插件已经是最新版本, 无需更新 的本地化字符串。
+        /// </summary>
+        internal static string AlreadyLatest {
+            get {
+                return ResourceManager.GetString("AlreadyLatest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 无效 AppId 的本地化字符串。
         /// </summary>
         internal static string AppIdInvalid {
@@ -120,6 +129,15 @@ namespace ASFTradeExtension.Localization {
         internal static string ASFEnhanceRegisterSuccess {
             get {
                 return ResourceManager.GetString("ASFEnhanceRegisterSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 *可更新* 的本地化字符串。
+        /// </summary>
+        internal static string CanUpdate {
+            get {
+                return ResourceManager.GetString("CanUpdate", resourceCulture);
             }
         }
         
@@ -367,6 +385,15 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 该发行版没有可下载的文件 的本地化字符串。
+        /// </summary>
+        internal static string NoAssetFoundInReleaseInfo {
+            get {
+                return ResourceManager.GetString("NoAssetFoundInReleaseInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 无卡牌 的本地化字符串。
         /// </summary>
         internal static string NoAvilableCards {
@@ -588,6 +615,87 @@ namespace ASFTradeExtension.Localization {
         internal static string TwoItem {
             get {
                 return ResourceManager.GetString("TwoItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 更新配置文件成功 的本地化字符串。
+        /// </summary>
+        internal static string UpdateConfigContentSuccess {
+            get {
+                return ResourceManager.GetString("UpdateConfigContentSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 获取版本信息失败, 未找到插件 {0} 的本地化字符串。
+        /// </summary>
+        internal static string UpdateFailedPluginNotFound {
+            get {
+                return ResourceManager.GetString("UpdateFailedPluginNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 插件更新失败, 压缩包内容解析失败 的本地化字符串。
+        /// </summary>
+        internal static string UpdateFiledWithZip {
+            get {
+                return ResourceManager.GetString("UpdateFiledWithZip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 插件名称: {0} {1} 的本地化字符串。
+        /// </summary>
+        internal static string UpdatePluginListItemName {
+            get {
+                return ResourceManager.GetString("UpdatePluginListItemName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 版本说明: 的本地化字符串。
+        /// </summary>
+        internal static string UpdatePluginListItemReleaseNote {
+            get {
+                return ResourceManager.GetString("UpdatePluginListItemReleaseNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 更新状态: {0} 的本地化字符串。
+        /// </summary>
+        internal static string UpdatePluginListItemStatus {
+            get {
+                return ResourceManager.GetString("UpdatePluginListItemStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 更新插件完成, 重启 ASF 后生效, 如果不兼容请更新 ASF 版本 的本地化字符串。
+        /// </summary>
+        internal static string UpdatePluginListItemUpdateTips {
+            get {
+                return ResourceManager.GetString("UpdatePluginListItemUpdateTips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 当前版本: {0} 在线版本: {1} 的本地化字符串。
+        /// </summary>
+        internal static string UpdatePluginListItemVersion {
+            get {
+                return ResourceManager.GetString("UpdatePluginListItemVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 插件更新信息: 的本地化字符串。
+        /// </summary>
+        internal static string UpdatePluginUpdateInfo {
+            get {
+                return ResourceManager.GetString("UpdatePluginUpdateInfo", resourceCulture);
             }
         }
     }

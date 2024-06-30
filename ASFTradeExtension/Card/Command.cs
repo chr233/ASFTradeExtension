@@ -104,7 +104,7 @@ internal static class Command
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
-        sb.AppendLine(foilCard ? "闪亮卡牌库存信息:" : "普通卡牌库存信息:");
+        sb.AppendLine(foilCard ? Langs.FoilCardInventory : Langs.CardInventory);
 
         foreach (var bundle in bundles)
         {
@@ -197,7 +197,7 @@ internal static class Command
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
-        sb.AppendLine("普通促销卡牌库存信息:");
+        sb.AppendLine(Langs.SaleEventCardInventory);
 
         if (bundle != null)
         {
@@ -223,10 +223,10 @@ internal static class Command
         }
         else
         {
-            sb.AppendLine("无库存");
+            sb.AppendLine(Langs.NoInventory);
         }
 
-        sb.AppendLine("闪亮促销卡牌库存信息:");
+        sb.AppendLine(Langs.FoilSaleEventCardInventory);
 
         if (foilBundle != null)
         {
@@ -252,7 +252,7 @@ internal static class Command
         }
         else
         {
-            sb.AppendLine("无库存");
+            sb.AppendLine(Langs.NoInventory);
         }
 
         return sb.ToString();
@@ -570,7 +570,7 @@ internal static class Command
         handler.ExpiredCache();
         await handler.GetBotInventory(true).ConfigureAwait(false);
 
-        return "刷新库存缓存完成";
+        return Langs.ReloadInventoryCacheDone;
     }
 
     /// <summary>

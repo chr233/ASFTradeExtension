@@ -29,11 +29,11 @@ ASFTradeExtension 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https:
 
 ## 安装方式
 
-暂不兼容普通版本的 ASF, 请使用 generic 版本的 ASF (注意不是 generic-nf)
-暂不兼容普通版本的 ASF, 请使用 generic 版本的 ASF (注意不是 generic-nf)
+不兼容普通版本的 ASF, 请使用 generic 版本的 ASF
+不兼容普通版本的 ASF, 请使用 generic 版本的 ASF
 
-Not compatible with the common version of ASF currently, use generic version of ASF instead (not generic-nf version)
-Not compatible with the common version of ASF currently, use generic version of ASF instead (not generic-nf version)
+Not compatible with the common version of ASF, use generic version of ASF instead
+Not compatible with the common version of ASF, use generic version of ASF instead
 
 ### 初次安装 / 手动更新
 

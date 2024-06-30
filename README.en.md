@@ -82,8 +82,8 @@ ASF.json
   "ASFTradeExtension": {
     "EULA": true,
     "Statistic": true,
-    "DisabledCmds": ["foo", "bar"],
-    "MaxItemPerTrade": 255
+    "MaxItemPerTrade": 255,
+    "CacheTTL": 600
   }
 }
 ```
@@ -92,8 +92,8 @@ ASF.json
 | ----------------- | ------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `EULA`            | bool   | `true`  | If agree the [EULA](#EULA)\*                                                                                                                                                                 |
 | `Statistic`       | bool   | `true`  | Allow send statistics data, it's used to count number of users, this will not send any other information                                                                                     |
-| `DisabledCmds`    | list   | `null`  | Optional, Cmd in the list will be disabled\*\* , **Case Insensitive**, only effects on `ASFTradeExtension` cmds                                                                              |
 | `MaxItemPerTrade` | ushort | `255`   | Maximum number of items in a single transaction, the default value of ASF is 255, if the number of items in the offer exceeds this number, it will be automatically split into more than one |
+| `CacheTTL`        | ushort | `600`   | 库存缓存过期时间, 单位秒, 缓存未过期也可使用命令 `RELOADCACHE` 强制刷新缓存                                                                                                                  |
 
 ## Commands Usage
 

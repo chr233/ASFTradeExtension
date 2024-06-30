@@ -84,7 +84,8 @@ ASF.json
   "ASFEnhance": {
     "EULA": true,
     "Statistic": true,
-    "MaxItemPerTrade": 255
+    "MaxItemPerTrade": 255,
+    "CacheTTL": 600
   }
 }
 ```

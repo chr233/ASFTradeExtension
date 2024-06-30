@@ -37,16 +37,14 @@
 
 ### Команды для обновления
 
-> Для обновления плагина можно использовать собственную команду плагина.
-> Обновление версии ASF может быть несовместимым, если вы обнаружили, что плагин не может быть загружен, попробуйте обновить ASF.
-
-- `ATEVERSION` / `ATE` проверить последнюю версию ASFTradeExtension
-- `ATEUPDATE` / `ATEU` автоматическое обновление ASFTradeExtension (возможно, потребуется обновить ASF вручную)
+> 支持 ASF 自带的插件更新机制
+> 使用 `UPDATEPLUGINS stable ASFTradeExtension` 更新插件
 
 ### Журнал изменений
 
 | Версия ASFTradeExtension                                                    | Совместимая версия ASF | Описание                                                                         |
 | --------------------------------------------------------------------------- | :--------------------: | -------------------------------------------------------------------------------- |
+| [1.1.1.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.1) |        6.0.3.4         | ASF -> 6.0.3.4, 支持闪卡                                                         |
 | [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |        6.0.0.3         | ASF -> 6.0.0.3                                                                   |
 | [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |        5.5.0.11        | ASF -> 5.5.0.11, 新的缓存机制                                                    |
 | [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |        5.4.10.3        | ASF -> 5.4.10.3                                                                  |
@@ -81,8 +79,8 @@ ASF.json
   "ASFTradeExtension": {
     "EULA": true,
     "Statistic": true,
-    "DisabledCmds": ["foo", "bar"],
-    "MaxItemPerTrade": 255
+    "MaxItemPerTrade": 255,
+    "CacheTTL": 600
   }
 }
 ```
@@ -91,46 +89,30 @@ ASF.json
 | ----------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `EULA`            | bool   | `true`       | Если согласны с [лицензионным соглашением](#лицензионное-соглашение)\*                                                                                                                                   |
 | `Statistic`       | bool   | `true`       | Разрешить отправку данных для статистики. Она используется для подсчета количества пользователей, при этом никакой другой информации отправляться не будет                                               |
-| `DisabledCmds`    | list   | `null`       | Команды в списке будут отключены , **`DisabledCmds` нечувствительна к командам ASF**, данная конфигурация влияет только на команды `ASFTradeExtension`                                                   |
 | `MaxItemPerTrade` | ushort | `255`        | Максимальное количество товаров в одной сделке, по умолчанию значение ASF равно 255, если количество товаров в предложении превысит это число, оно будет автоматически разбито на несколько предложений. |
-
-> \* Если Вы согласны с [лицензионным соглашением](#лицензионное-соглашение), то все команды ASFTradeExtension будут открыты
->
-> \* Если Вы не согласны с [лицензионным соглашением](#лицензионное-соглашение), то большинство команд ASFTradeExtension будет недоступно
->
-> \*\* Описание `DisabledCmds`: каждый элемент в этой конфигурации является **нечувствительным к командам ASF**, и это влияет только на команды `ASFTradeExtension`.
-> Например, если настроить `["foo", "BAR"]`, то это означает, что `FOO` и `BAR` будут отключены,
-> если вы не хотите отключать какие-либо команды, настройте их как `null` или `[]`.
-> Если некоторые команды отключены, то все равно можно вызвать команду в виде `ATE.xxx`, например `ATE.FULLSETLIST`
+| `CacheTTL`        | ushort | `600`        | 库存缓存过期时间, 单位秒, 缓存未过期也可使用命令 `RELOADCACHE` 强制刷新缓存                                                                                                                              |
 
 ## Использование Команд
 
 ### Команды Обновления
 
-| Команда             | Сокращение | Доступ          | Описание                                                                        |
-| ------------------- | ---------- | --------------- | ------------------------------------------------------------------------------- |
-| `ASFTradeExtension` | `ATE`      | `FamilySharing` | Получить версию ASFTradeExtension                                               |
-| `ATEVERSION`        | `ATEV`     | `Operator`      | Проверить последнюю версию ASFTradeExtension                                    |
-| `ATEUPDATE`         | `ATEU`     | `Owner`         | Обновить ASFTradeExtensionдо последней версии (необходим ручной перезапуск ASF) |
+| Команда             | Сокращение | Доступ          | Описание                          |
+| ------------------- | ---------- | --------------- | --------------------------------- |
+| `ASFTradeExtension` | `ATE`      | `FamilySharing` | Получить версию ASFTradeExtension |
 
 ### Торговля картами
 
-| Команда                                        | Сокращение | Доступ     | Описание                                                                                                               |
-| ---------------------------------------------- | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `FULLSETLIST [Bots] [Config]`                  | `FSL`      | `Operator` | Отображение информации о наборе карт, доступны параметры: \[-page Номер страницы\] \[-line Отображение номера строки\] |
-| `FULLSET [Bots] <appIds>`                      | `FS`       | `Operator` | Отображение информации о количестве карточек по указанному `AppId`                                                     |
-| `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`      | `Master`   | Отправляет набор карточек с указанным `SetCount` и `AppId` по трейд ссылке                                             |
-| `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS`     | `Master`   | Аналогично `SENDCARDSET`, автоматически подтверждает трейд после его отправки (требуется настройка 2FA)                |
-
-### Торговля инвентарем CS2
-
-| Команда                                  | Сокращение | Доступ     | Описание                                                                                                                        |
-| ---------------------------------------- | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `CSITEMLIST [Bots] [Config]`             | `CIL`      | `Operator` | Отображение информации о наборе карт, доступных параметрах \[-page Номер страницы\] \[-line Отображение номера строки\]         |
-| `CSSENDITEM [Bots]`                      | `CSI`      | `Master`   | Отправляет весь инвентарь CS2 ботам по списку                                                                                   |
-| `2CSSENDITEM [Bots]`                     | `2CSI`     | `Master`   | Аналогично `CSSENDITEM`, автоматически подтверждает трейд после его отправки (требует добавления 2FA в ASF)                     |
-| `CSSENDITEM [Bots] ClassId CountPerBot`  | `CSI`      | `Master`   | Отправляет определенный предмет CS2 ботам по списку, укажите `ClassId` предмета и количество предметов, полученных каждым ботом |
-| `2CSSENDITEM [Bots] ClassId CountPerBot` | `2CSI`     | `Master`   | Аналогично `SENDCARDSET`, автоматически подтверждает трейд после его отправки (требует добавления 2FA в ASF)                    |
+| Command                                            | Shorthand | Access     | Description                                                                                                           |
+| -------------------------------------------------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| `FULLSETLIST [Bots] [Config]`                      | `FSL`     | `Operator` | Display normal card inventory information, available parameters \[-page Page number\] \[-line Display line number\]   |
+| `FULLSETLISTFOIL [Bots] [Config]`                  | `FSLF`    | `Operator` | Display foil card inventory information, available parameters \[-page Page number\] \[-line Display line number\]     |
+| `FULLSETLISTSALE [Bots]`                           | `FSLS`    | `Operator` | Display sale event card inventory information                                                                         |
+| `FULLSET [Bots] <appIds>`                          | `FS`      | `Operator` | Display normal card information on the number of cards by the specified `AppId`                                       |
+| `FULLSETFOIL [Bots] <appIds>`                      | `FSF`     | `Operator` | Display foil card information on the number of cards by the specified `AppId`                                         |
+| `SENDCARDSET [Bots] AppId SetCount TradeLink`      | `SCS`     | `Master`   | Sends a set of normal cards with the specified `SetCount` and `AppId` to the trade link                               |
+| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`  | `SCSF`    | `Master`   | Sends a set of foil cards with the specified `SetCount` and `AppId` to the trade link                                 |
+| `2SENDCARDSET [Bots] AppId SetCount TradeLink`     | `2SCS`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)     |
+| `2SENDCARDSETFOIL [Bots] AppId SetCount TradeLink` | `2SCSF`   | `Master`   | Similar to `SENDCARDSETFOIL`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF) |
 
 ---
 

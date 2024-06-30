@@ -165,7 +165,7 @@ internal static class Command
     /// <param name="bot"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseFullSetListSaleEvent(Bot bot, string? query)
+    internal static async Task<string?> ResponseFullSetListSaleEvent(Bot bot)
     {
         if (!Handlers.TryGetValue(bot, out var handler))
         {
@@ -265,7 +265,7 @@ internal static class Command
     /// <param name="query"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseFullSetListSaleEvent(string botNames, string? query)
+    internal static async Task<string?> ResponseFullSetListSaleEvent(string botNames)
     {
         if (string.IsNullOrEmpty(botNames))
         {
@@ -279,7 +279,7 @@ internal static class Command
             return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetListSaleEvent(bot, query))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetListSaleEvent(bot))).ConfigureAwait(false);
         var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;

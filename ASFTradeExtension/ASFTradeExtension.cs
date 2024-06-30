@@ -165,7 +165,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
 
                 "FULLSETLISTSALE" or
                 "FSLS" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetListSaleEvent(bot, null),
+                    Card.Command.ResponseFullSetListSaleEvent(bot),
 
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Card.Command.ResponseReloadCache(bot),
@@ -196,21 +196,25 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                     Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), true),
 
                 "FULLSETLISTSALE" or
-                "FSLS" when access >= EAccess.Operator && argLength == 2 =>
-                    Card.Command.ResponseFullSetListSaleEvent(args[1], null),
+                "FSLS" when access >= EAccess.Operator && argLength > 2 =>
+                    Card.Command.ResponseFullSetListSaleEvent(Utilities.GetArgsAsText(args, 1, ",")),
                 "FULLSETLISTSALE" or
-                "FSLS" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                    Card.Command.ResponseFullSetListSaleEvent(args[1], Utilities.GetArgsAsText(args, 2, ",")),
-                "FULLSETLISTSALE" or
-                "FSLS" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                    Card.Command.ResponseFullSetListSaleEvent(bot, Utilities.GetArgsAsText(args, 1, ",")),
+                "FSLS" when access >= EAccess.Operator =>
+                    Card.Command.ResponseFullSetListSaleEvent(args[1]),
 
                 "FULLSET" or
                 "FS" when argLength >= 3 && access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ",")),
+                    Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ","), false),
                 "FULLSET" or
                 "FS" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetCountOfGame(bot, args[1]),
+                    Card.Command.ResponseFullSetCountOfGame(bot, args[1], false),
+
+                "FULLSETFOIL" or
+                "FSF" when argLength >= 3 && access >= EAccess.Operator =>
+                    Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ","), true),
+                "FULLSETFOIL" or
+                "FSF" when access >= EAccess.Operator =>
+                    Card.Command.ResponseFullSetCountOfGame(bot, args[1], true),
 
                 "SENDCARDSET" or
                 "SCS" when access >= EAccess.Master && argLength == 5 =>

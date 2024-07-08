@@ -44,6 +44,7 @@
 
 | Версия ASFTradeExtension                                                    | Совместимая версия ASF | Описание                                                                         |
 | --------------------------------------------------------------------------- | :--------------------: | -------------------------------------------------------------------------------- |
+| [1.1.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.2.0) |        6.0.4.4         | ASF -> 6.0.4.4, 支持用机器人名称发送报价                                         |
 | [1.1.1.3](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.3) |        6.0.3.4         | ASF -> 6.0.3.4, 支持闪卡                                                         |
 | [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |        6.0.0.3         | ASF -> 6.0.0.3                                                                   |
 | [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |        5.5.0.11        | ASF -> 5.5.0.11, 新的缓存机制                                                    |
@@ -87,7 +88,6 @@ ASF.json
 
 | Конфигурация      | Тип    | По умолчанию | Описание                                                                                                                                                                                                 |
 | ----------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `EULA`            | bool   | `true`       | Если согласны с [лицензионным соглашением](#лицензионное-соглашение)\*                                                                                                                                   |
 | `Statistic`       | bool   | `true`       | Разрешить отправку данных для статистики. Она используется для подсчета количества пользователей, при этом никакой другой информации отправляться не будет                                               |
 | `MaxItemPerTrade` | ushort | `255`        | Максимальное количество товаров в одной сделке, по умолчанию значение ASF равно 255, если количество товаров в предложении превысит это число, оно будет автоматически разбито на несколько предложений. |
 | `CacheTTL`        | ushort | `600`        | 库存缓存过期时间, 单位秒, 缓存未过期也可使用命令 `RELOADCACHE` 强制刷新缓存                                                                                                                              |
@@ -102,17 +102,19 @@ ASF.json
 
 ### Торговля картами
 
-| Command                                            | Shorthand | Access     | Description                                                                                                           |
-| -------------------------------------------------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
-| `FULLSETLIST [Bots] [Config]`                      | `FSL`     | `Operator` | Display normal card inventory information, available parameters \[-page Page number\] \[-line Display line number\]   |
-| `FULLSETLISTFOIL [Bots] [Config]`                  | `FSLF`    | `Operator` | Display foil card inventory information, available parameters \[-page Page number\] \[-line Display line number\]     |
-| `FULLSETLISTSALE [Bots]`                           | `FSLS`    | `Operator` | Display sale event card inventory information                                                                         |
-| `FULLSET [Bots] <appIds>`                          | `FS`      | `Operator` | Display normal card information on the number of cards by the specified `AppId`                                       |
-| `FULLSETFOIL [Bots] <appIds>`                      | `FSF`     | `Operator` | Display foil card information on the number of cards by the specified `AppId`                                         |
-| `SENDCARDSET [Bots] AppId SetCount TradeLink`      | `SCS`     | `Master`   | Sends a set of normal cards with the specified `SetCount` and `AppId` to the trade link                               |
-| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`  | `SCSF`    | `Master`   | Sends a set of foil cards with the specified `SetCount` and `AppId` to the trade link                                 |
-| `2SENDCARDSET [Bots] AppId SetCount TradeLink`     | `2SCS`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)     |
-| `2SENDCARDSETFOIL [Bots] AppId SetCount TradeLink` | `2SCSF`   | `Master`   | Similar to `SENDCARDSETFOIL`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF) |
+| Command                                                  | Shorthand | Access     | Description                                                                                                           |
+| -------------------------------------------------------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| `FULLSETLIST [Bots] [Config]`                            | `FSL`     | `Operator` | Display normal card inventory information, available parameters \[-page Page number\] \[-line Display line number\]   |
+| `FULLSETLISTFOIL [Bots] [Config]`                        | `FSLF`    | `Operator` | Display foil card inventory information, available parameters \[-page Page number\] \[-line Display line number\]     |
+| `FULLSETLISTSALE [Bots]`                                 | `FSLS`    | `Operator` | Display sale event card inventory information                                                                         |
+| `FULLSET [Bots] <appIds>`                                | `FS`      | `Operator` | Display normal card information on the number of cards by the specified `AppId`                                       |
+| `FULLSETFOIL [Bots] <appIds>`                            | `FSF`     | `Operator` | Display foil card information on the number of cards by the specified `AppId`                                         |
+| `SENDCARDSET [Bots] AppId SetCount TradeLink`            | `SCS`     | `Master`   | Sends a set of normal cards with the specified `SetCount` and `AppId` to the trade link                               |
+| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`        | `SCSF`    | `Master`   | Sends a set of foil cards with the specified `SetCount` and `AppId` to the trade link                                 |
+| `2SENDCARDSET [Bots] AppId SetCount TradeLink`           | `2SCS`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)     |
+| `2SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`       | `2SCSF`   | `Master`   | Similar to `SENDCARDSETFOIL`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF) |
+| `SENDCARDSETBOT [Bots] AppId SetCount TargetBotName`     | `SCSB`    | `Master`   | Sends a set of normal cards with the specified `SetCount` and `AppId` to the target bot, automatically confirms       |
+| `SENDCARDSETBOTFOIL [Bots] AppId SetCount TargetBotName` | `SCSBF`   | `Master`   | Sends a set of foil cards with the specified `SetCount` and `AppId` to the target bot, automatically confirms         |
 
 ---
 

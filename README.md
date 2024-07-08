@@ -48,16 +48,17 @@ Not compatible with the common version of ASF, use generic version of ASF instea
 
 ### 更新日志
 
-| ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                             |
-| --------------------------------------------------------------------------- | :-----------: | ------------------------------------ |
-| [1.1.1.3](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.3) |    6.0.3.4    | ASF -> 6.0.3.4, 支持闪卡             |
-| [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |    6.0.0.3    | ASF -> 6.0.0.3                       |
-| [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |   5.5.0.11    | ASF -> 5.5.0.11, 新的缓存机制        |
-| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                      |
-| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |    5.4.9.3    | ASF -> 5.4.9.3                       |
-| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |    5.4.8.3    | 修改了一些代码, 卡牌交易功能有待测试 |
-| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复                             |
-| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本                           |
+| ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                                 |
+| --------------------------------------------------------------------------- | :-----------: | ---------------------------------------- |
+| [1.1.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.2.0) |    6.0.4.4    | ASF -> 6.0.4.4, 支持用机器人名称发送报价 |
+| [1.1.1.3](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.3) |    6.0.3.4    | ASF -> 6.0.3.4, 支持闪卡                 |
+| [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |    6.0.0.3    | ASF -> 6.0.0.3                           |
+| [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |   5.5.0.11    | ASF -> 5.5.0.11, 新的缓存机制            |
+| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                          |
+| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |    5.4.9.3    | ASF -> 5.4.9.3                           |
+| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |    5.4.8.3    | 修改了一些代码, 卡牌交易功能有待测试     |
+| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复                                 |
+| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本                               |
 
 <details>
   <summary>历史版本</summary>
@@ -92,7 +93,6 @@ ASF.json
 
 | 配置项            | 类型   | 默认值 | 说明                                                                                     |
 | ----------------- | ------ | ------ | ---------------------------------------------------------------------------------------- |
-| `EULA`            | bool   | `true` | 是否同意 [EULA](#EULA)\*                                                                 |
 | `Statistic`       | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                       |
 | `MaxItemPerTrade` | ushort | `255`  | 单个交易最多物品数量, ASF 的默认值是 255, 如果报价中的物品超过此数量会自动拆分成多个报价 |
 | `CacheTTL`        | ushort | `600`  | 库存缓存过期时间, 单位秒, 缓存未过期也可使用命令 `RELOADCACHE` 强制刷新缓存              |
@@ -107,17 +107,19 @@ ASF.json
 
 ### 卡牌交易
 
-| 命令                                               | 缩写    | 权限       | 说明                                                             |
-| -------------------------------------------------- | ------- | ---------- | ---------------------------------------------------------------- |
-| `FULLSETLIST [Bots] [Config]`                      | `FSL`   | `Operator` | 显示普通卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
-| `FULLSETLISTFOIL [Bots] [Config]`                  | `FSLF`  | `Operator` | 显示闪卡卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
-| `FULLSETLISTSALE [Bots]`                           | `FSLS`  | `Operator` | 显示促销卡牌套数信息                                             |
-| `FULLSET [Bots] <appIds>`                          | `FS`    | `Operator` | 显示指定 App 的普通卡牌套数信息                                  |
-| `FULLSETFOIL [Bots] <appIds>`                      | `FSF`   | `Operator` | 显示指定 App 的闪亮卡牌套数信息                                  |
-| `SENDCARDSET [Bots] AppId SetCount TradeLink`      | `SCS`   | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的普通卡牌          |
-| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`  | `SCSF`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的闪亮卡牌          |
-| `2SENDCARDSET [Bots] AppId SetCount TradeLink`     | `2SCS`  | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)          |
-| `2SENDCARDSETFOIL [Bots] AppId SetCount TradeLink` | `2SCSF` | `Master`   | 同 `SENDCARDSETFOIL`, 发送交易后自动确认交易 (需要配置 2FA)      |
+| 命令                                                     | 缩写    | 权限       | 说明                                                                          |
+| -------------------------------------------------------- | ------- | ---------- | ----------------------------------------------------------------------------- |
+| `FULLSETLIST [Bots] [Config]`                            | `FSL`   | `Operator` | 显示普通卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]              |
+| `FULLSETLISTFOIL [Bots] [Config]`                        | `FSLF`  | `Operator` | 显示闪卡卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]              |
+| `FULLSETLISTSALE [Bots]`                                 | `FSLS`  | `Operator` | 显示促销卡牌套数信息                                                          |
+| `FULLSET [Bots] <appIds>`                                | `FS`    | `Operator` | 显示指定 App 的普通卡牌套数信息                                               |
+| `FULLSETFOIL [Bots] <appIds>`                            | `FSF`   | `Operator` | 显示指定 App 的闪亮卡牌套数信息                                               |
+| `SENDCARDSET [Bots] AppId SetCount TradeLink`            | `SCS`   | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的普通卡牌                       |
+| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`        | `SCSF`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的闪亮卡牌                       |
+| `2SENDCARDSET [Bots] AppId SetCount TradeLink`           | `2SCS`  | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)                       |
+| `2SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`       | `2SCSF` | `Master`   | 同 `SENDCARDSETFOIL`, 发送交易后自动确认交易 (需要配置 2FA)                   |
+| `SENDCARDSETBOT [Bots] AppId SetCount TargetBotName`     | `SCSB`  | `Master`   | 向指定机器人发送指定`SetCount`套指定`AppId`的普通卡牌, 发送交易后自动确认交易 |
+| `SENDCARDSETBOTFOIL [Bots] AppId SetCount TargetBotName` | `SCSBF` | `Master`   | 向指定机器人发送指定`SetCount`套指定`AppId`的闪亮卡牌, 发送交易后自动确认交易 |
 
 ---
 

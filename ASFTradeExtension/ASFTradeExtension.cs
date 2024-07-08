@@ -216,6 +216,20 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "FSF" when access >= EAccess.Operator =>
                     Card.Command.ResponseFullSetCountOfGame(bot, args[1], true),
 
+                "SENDCARDSETBOT" or
+                "SCSB" when access >= EAccess.Master && argLength == 5 =>
+                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true, false),
+                "SENDCARDSETBOT" or
+                "SCSB" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendCardSetBot(bot, args[1], args[2], args[3], true, false),
+
+                "SENDCARDSETBOTFOIL" or
+                "SCSBF" when access >= EAccess.Master && argLength == 5 =>
+                    Card.Command.ResponseSendCardSetBot(args[1], args[2], args[3], args[4], true, true),
+                "SENDCARDSETBOTFOIL" or
+                "SCSBF" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendCardSetBot(bot, args[1], args[2], args[3], true, true),
+
                 "SENDCARDSET" or
                 "SCS" when access >= EAccess.Master && argLength == 5 =>
                     Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], false, false),
@@ -322,7 +336,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     /// <inheritdoc/>
     public async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, EUpdateChannel updateChannel, bool forced)
     {
-        var releaseResponse = await GitHubService.GetLatestRelease("chr233/ASFTradeExtension", updateChannel == EUpdateChannel.Stable, default).ConfigureAwait(false);
+        var releaseResponse = await GitHubService.GetLatestRelease(RepositoryName, updateChannel == EUpdateChannel.Stable, default).ConfigureAwait(false);
         if (releaseResponse == null)
         {
             return null;

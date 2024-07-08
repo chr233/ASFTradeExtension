@@ -1,3 +1,4 @@
+using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
@@ -6,13 +7,8 @@ using ASFTradeExtension.Data;
 using static ArchiSteamFarm.Steam.Exchange.ParseTradeResult;
 
 namespace ASFTradeExtension.Core;
-internal class InventoryHandler(Bot bot)
+internal class InventoryHandler(Bot _bot)
 {
-    /// <summary>
-    /// 当前机器人
-    /// </summary>
-    private Bot Bot { get; init; } = bot;
-
     /// <summary>
     /// 处于交易中的物品资源ID
     /// </summary>
@@ -36,6 +32,8 @@ internal class InventoryHandler(Bot bot)
     /// </summary>
     private Dictionary<uint, AssetBundle> FoilCardSetCache { get; set; } = [];
 
+    private string? TradeLink { get; set; }
+
     /// <summary>
     /// 缓存更新时间
     /// </summary>
@@ -56,7 +54,7 @@ internal class InventoryHandler(Bot bot)
         {
             InventoryCache.Clear();
 
-            var inventory = await Bot.ArchiWebHandler.GetInventoryAsync(0, 753, 6).ToListAsync().ConfigureAwait(false);
+            var inventory = await _bot.ArchiWebHandler.GetInventoryAsync(0, 753, 6).ToListAsync().ConfigureAwait(false);
 
             var tmpInTradeList = new HashSet<ulong>();
 
@@ -177,7 +175,7 @@ internal class InventoryHandler(Bot bot)
         //卡牌套数字段
         var assetBundleDict = new Dictionary<uint, AssetBundle>();
 
-        var subPath = await Bot.GetProfileLink().ConfigureAwait(false);
+        var subPath = await _bot.GetProfileLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(subPath))
         {
             return assetBundleDict;
@@ -293,14 +291,14 @@ internal class InventoryHandler(Bot bot)
 
         var oldCacheCount = Utils.CardSetCache.CacheCount;
 
-        var subPath = await Bot.GetProfileLink().ConfigureAwait(false);
+        var subPath = await _bot.GetProfileLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(subPath))
         {
             return;
         }
 
         var semaphore = new SemaphoreSlim(5, 5);
-        var countPerSets = await Utilities.InParallel(lazyLoadBundles.Select(bundle => Utils.CardSetCache.GetCardSetCount(Bot, subPath, bundle.AppId, semaphore))).ConfigureAwait(false);
+        var countPerSets = await Utilities.InParallel(lazyLoadBundles.Select(bundle => Utils.CardSetCache.GetCardSetCount(_bot, subPath, bundle.AppId, semaphore))).ConfigureAwait(false);
 
         //缓存有更新, 写入文件
         if (oldCacheCount != Utils.CardSetCache.CacheCount)
@@ -376,14 +374,14 @@ internal class InventoryHandler(Bot bot)
 
         var oldCacheCount = Utils.CardSetCache.CacheCount;
 
-        var subPath = await Bot.GetProfileLink().ConfigureAwait(false);
+        var subPath = await _bot.GetProfileLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(subPath))
         {
             return;
         }
 
         var semaphore = new SemaphoreSlim(5, 5);
-        var setCount = await Utils.CardSetCache.GetCardSetCount(Bot, subPath, SaleEventAppId, semaphore).ConfigureAwait(false);
+        var setCount = await Utils.CardSetCache.GetCardSetCount(_bot, subPath, SaleEventAppId, semaphore).ConfigureAwait(false);
 
         //缓存有更新, 写入文件
         if (oldCacheCount != Utils.CardSetCache.CacheCount)
@@ -556,5 +554,29 @@ internal class InventoryHandler(Bot bot)
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// 读取交易链接
+    /// </summary>
+    /// <returns></returns>
+    internal async Task<string?> GetTradeLink()
+    {
+        if (!string.IsNullOrEmpty(TradeLink))
+        {
+            return TradeLink;
+        }
+
+        var request = new Uri(SteamCommunityURL, $"/profiles/{_bot.SteamID}/tradeoffers/privacy");
+        var response = await _bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, referer: SteamStoreURL).ConfigureAwait(false);
+        if (response?.Content == null)
+        {
+            return null;
+        }
+
+        var inputEle = response.Content.SelectSingleNode<IElement>("//input[@id='trade_offer_access_url']");
+
+        TradeLink = inputEle?.GetAttribute("value");
+        return TradeLink;
     }
 }

@@ -392,7 +392,68 @@ internal static class Command
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query, foilCard))).ConfigureAwait(false);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
+    /// 向机器人发送指定套数的卡牌
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="strAppId"></param>
+    /// <param name="strSetCount"></param>
+    /// <param name="botName"></param>
+    /// <param name="autoConfirm"></param>
+    /// <param name="foilCard"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseSendCardSetBot(Bot bot, string strAppId, string strSetCount, string botName, bool autoConfirm, bool foilCard)
+    {
+        var targetBot = Bot.GetBot(botName);
+        if (targetBot == null)
+        {
+            return bot.FormatBotResponse(string.Format(Strings.BotNotFound, botName));
+        }
+
+        if (!Handlers.TryGetValue(targetBot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
+
+        var tradeLink = await handler.GetTradeLink().ConfigureAwait(false);
+        if (string.IsNullOrEmpty(tradeLink))
+        {
+            return bot.FormatBotResponse(Langs.FetchTradeLinkFailed);
+        }
+
+        return await ResponseSendCardSet(bot, strAppId, strSetCount, tradeLink, autoConfirm, foilCard).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// 向机器人发送指定套数的卡牌 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <param name="strAppId"></param>
+    /// <param name="strSetCount"></param>
+    /// <param name="botName"></param>
+    /// <param name="autoConfirm"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseSendCardSetBot(string botNames, string strAppId, string strSetCount, string botName, bool autoConfirm, bool foilCard)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        var bots = Bot.GetBots(botNames);
+
+        if (bots == null || bots.Count == 0)
+        {
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseSendCardSetBot(bot, strAppId, strSetCount, botName, autoConfirm, foilCard))).ConfigureAwait(false);
         var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
@@ -472,8 +533,7 @@ internal static class Command
             else
             {
                 var offer = new List<Asset>();
-                //TODO
-                var flag = DistinctList(bundle.Assets, x => x.ClassID).ToDictionary(x => x, _ => setCount);
+                var flag = bundle.Assets.Select(x => x.ClassID).Distinct().ToDictionary(x => x, _ => setCount);
 
                 foreach (var asset in bundle.Assets)
                 {

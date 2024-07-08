@@ -120,49 +120,10 @@ internal static class Utils
     /// <summary>
     /// Steam社区链接
     /// </summary>
-    internal static Uri SteamCommunityURL = ArchiWebHandler.SteamCommunityURL;
-
-    /// <summary>
-    /// Steam API链接
-    /// </summary>
-    internal static Uri SteamApiURL => new("https://api.steampowered.com");
+    internal static Uri SteamCommunityURL => ArchiWebHandler.SteamCommunityURL;
 
     /// <summary>
     /// 日志
     /// </summary>
     internal static ArchiLogger ASFLogger => ASF.ArchiLogger;
-
-    /// <summary>
-    /// 布尔转换为char
-    /// </summary>
-    /// <param name="b"></param>
-    /// <returns></returns>
-    internal static char Bool2Str(bool b) => b ? '√' : '×';
-    internal static char ToStr(this bool b) => b ? '√' : '×';
-
-    internal static string SkipBotNames(string[] args, int skipStart, int skipEnd)
-    {
-        return string.Join(',', args[skipStart..(args.Length - skipEnd)]);
-    }
-
-    internal static HashSet<T> DistinctList<T>(IEnumerable<T> values)
-    {
-        var result = new HashSet<T>();
-        foreach (var value in values)
-        {
-            result.Add(value);
-        }
-        return result;
-    }
-
-    internal static HashSet<V> DistinctList<T, V>(IEnumerable<T> values, Func<T, V> selector)
-    {
-        var result = new HashSet<V>();
-
-        foreach (var value in values)
-        {
-            result.Add(selector(value));
-        }
-        return result;
-    }
 }

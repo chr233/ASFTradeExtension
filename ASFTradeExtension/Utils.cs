@@ -1,9 +1,11 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
 using ASFTradeExtension.Cache;
 using ASFTradeExtension.Data;
+using SteamKit2.Internal;
 using System.Reflection;
 using System.Text;
 
@@ -126,4 +128,34 @@ internal static class Utils
     /// 日志
     /// </summary>
     internal static ArchiLogger ASFLogger => ASF.ArchiLogger;
+
+    internal static CEcon_Asset CopyWithAmount(this CEcon_Asset body, ulong newAmount)
+    {
+        if (newAmount > long.MaxValue)
+        {
+            newAmount = long.MaxValue;
+        }
+
+        var newBody = new CEcon_Asset
+        {
+            amount = (long)newAmount,
+            appid = body.appid,
+            assetid = body.assetid,
+            classid = body.classid,
+            contextid = body.contextid,
+            currencyid = body.currencyid,
+            est_usd = body.est_usd,
+            instanceid = body.instanceid,
+            missing = body.missing,
+        };
+
+        return newBody;
+    }
+
+    internal static Asset CopyWithAmount(this Asset asset, ulong newAmount)
+    {
+        var newBody = asset.Body.CopyWithAmount(newAmount);
+        var newAsset = new Asset(newBody, asset.Description);
+        return newAsset;
+    }
 }

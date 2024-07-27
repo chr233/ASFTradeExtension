@@ -94,10 +94,10 @@ internal class InventoryHandler(Bot _bot)
                         break;
 
                     case EAssetType.SteamGems:
-                        gemsInfo.Assets.Add(asset);
 
                         if (asset.ClassID == 667924416)
                         {
+                            gemsInfo.GemAssets.Add(asset);
                             if (asset.Tradable)
                             {
                                 gemsInfo.TradableGems += asset.Amount;
@@ -109,6 +109,7 @@ internal class InventoryHandler(Bot _bot)
                         }
                         else if (asset.ClassID == 667933237)
                         {
+                            gemsInfo.BagAssets.Add(asset);
                             if (asset.Tradable)
                             {
                                 gemsInfo.TradableBags += asset.Amount;
@@ -116,7 +117,6 @@ internal class InventoryHandler(Bot _bot)
                             else
                             {
                                 gemsInfo.NonTradableBags += asset.Amount;
-
                             }
                         }
 
@@ -184,16 +184,6 @@ internal class InventoryHandler(Bot _bot)
         }
 
         return FoilCardSetCache;
-    }
-
-    public async Task<GemsInfo> GetGemsInfoCache(bool forceReload)
-    {
-        if (NeedUpdate || forceReload)
-        {
-            await ReloadBotCache().ConfigureAwait(false);
-        }
-
-        return GemsInfoCache;
     }
 
     /// <summary>

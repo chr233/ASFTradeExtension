@@ -246,6 +246,20 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "SCS" when access >= EAccess.Master && argLength == 4 =>
                     Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], false, false),
 
+                "SENDGEMS" or
+                "SG" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendGems(args[1], args[2], args[3], false),
+                "SENDGEMS" or
+                "SG" when access >= EAccess.Master && argLength == 3 =>
+                    Card.Command.ResponseSendGems(bot, args[1], args[2], false),
+
+                "SENDBOTCARDSET" or
+                "SBG" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendGemsBot(args[1], args[2], args[3], false),
+                "SENDBOTCARDSET" or
+                "SBG" when access >= EAccess.Master && argLength == 3 =>
+                    Card.Command.ResponseSendGemsBot(bot, args[1], args[2], false),
+
                 "2SENDCARDSET" or
                 "2SCS" when access >= EAccess.Master && argLength == 5 =>
                     Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], true, false),
@@ -266,6 +280,20 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "2SENDCARDSETFOIL" or
                 "2SCSF" when access >= EAccess.Master && argLength == 4 =>
                     Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], true, true),
+
+                "2SENDGEMS" or
+                "2SG" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendGems(args[1], args[2], args[3], true),
+                "2SENDGEMS" or
+                "2SG" when access >= EAccess.Master && argLength == 3 =>
+                    Card.Command.ResponseSendGems(bot, args[1], args[2], true),
+
+                "2SENDBOTGEMS" or
+                "2SBG" when access >= EAccess.Master && argLength == 4 =>
+                    Card.Command.ResponseSendGemsBot(args[1], args[2], args[3], true),
+                "2SENDBOTGEMS" or
+                "2SBG" when access >= EAccess.Master && argLength == 3 =>
+                    Card.Command.ResponseSendGemsBot(bot, args[1], args[2], true),
 
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Card.Command.ResponseReloadCache(Utilities.GetArgsAsText(args, 1, ",")),

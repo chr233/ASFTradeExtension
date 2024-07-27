@@ -19,6 +19,7 @@ internal static class Command
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="query"></param>
+    /// <param name="foilCard"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetList(Bot bot, string? query, bool foilCard)
     {
@@ -137,6 +138,7 @@ internal static class Command
     /// </summary>
     /// <param name="botNames"></param>
     /// <param name="query"></param>
+    /// <param name="foilCard"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     internal static async Task<string?> ResponseFullSetList(string botNames, string? query, bool foilCard)
@@ -163,7 +165,6 @@ internal static class Command
     /// 获取促销卡牌套数
     /// </summary>
     /// <param name="bot"></param>
-    /// <param name="query"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetListSaleEvent(Bot bot)
     {
@@ -262,7 +263,6 @@ internal static class Command
     /// 获取促销卡牌套数 (多个Bot)
     /// </summary>
     /// <param name="botNames"></param>
-    /// <param name="query"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     internal static async Task<string?> ResponseFullSetListSaleEvent(string botNames)
@@ -280,6 +280,58 @@ internal static class Command
         }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetListSaleEvent(bot))).ConfigureAwait(false);
+        var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
+    /// 获取宝珠信息
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseGemsInfo(Bot bot)
+    {
+        if (!Handlers.TryGetValue(bot, out var handler))
+        {
+            return bot.FormatBotResponse(Langs.InternalError);
+        }
+
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
+
+        var gemsInfo = await handler.GetGemsInfoCache(false).ConfigureAwait(false);
+        var sb = new StringBuilder();
+        sb.AppendLine(Langs.MultipleLineResult);
+        sb.AppendLineFormat("宝珠  : 可交易 {0} 不可交易 {1}", gemsInfo.TradableGems, gemsInfo.NonTradableGems);
+        sb.AppendLineFormat("宝珠袋: 可交易 {0} 不可交易 {1}", gemsInfo.TradableBags, gemsInfo.NonTradableBags);
+
+        return bot.FormatBotResponse(sb.ToString());
+    }
+
+    /// <summary>
+    /// 获取宝珠信息 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseGemsInfo(string botNames)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        var bots = Bot.GetBots(botNames);
+
+        if (bots == null || bots.Count == 0)
+        {
+            return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseGemsInfo(bot))).ConfigureAwait(false);
         var responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;

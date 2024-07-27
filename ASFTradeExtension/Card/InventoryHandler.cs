@@ -32,6 +32,13 @@ internal class InventoryHandler(Bot _bot)
     /// </summary>
     private Dictionary<uint, AssetBundle> FoilCardSetCache { get; set; } = [];
 
+    /// <summary>
+    /// 宝珠缓存信息
+    /// </summary>
+    private GemsInfo GemsInfoCache { get; set; } = new();
+    /// <summary>
+    /// 交易链接缓存
+    /// </summary>
     private string? TradeLink { get; set; }
 
     /// <summary>
@@ -58,32 +65,64 @@ internal class InventoryHandler(Bot _bot)
 
             var tmpInTradeList = new HashSet<ulong>();
 
+            var gemsInfo = new GemsInfo();
+
             foreach (var asset in inventory)
             {
-                if (asset.Type == EAssetType.TradingCard)
+                switch (asset.Type)
                 {
-                    if (!InTradeItemAssetIDs.Contains(asset.AssetID))
-                    {
+                    case EAssetType.TradingCard:
+                        if (!InTradeItemAssetIDs.Contains(asset.AssetID))
+                        {
+                            InventoryCache.Add(asset);
+                        }
+                        else
+                        {
+                            tmpInTradeList.Add(asset.AssetID);
+                        }
+                        break;
 
-                        InventoryCache.Add(asset);
-                    }
-                    else
-                    {
-                        tmpInTradeList.Add(asset.AssetID);
-                    }
-                }
-                else if (asset.Type == EAssetType.FoilTradingCard)
-                {
-                    if (!InTradeItemAssetIDs.Contains(asset.AssetID))
-                    {
-                        FoilInventoryCache.Add(asset);
-                    }
-                    else
-                    {
-                        tmpInTradeList.Add(asset.AssetID);
-                    }
+                    case EAssetType.FoilTradingCard:
+                        if (!InTradeItemAssetIDs.Contains(asset.AssetID))
+                        {
+                            FoilInventoryCache.Add(asset);
+                        }
+                        else
+                        {
+                            tmpInTradeList.Add(asset.AssetID);
+                        }
+                        break;
+
+                    case EAssetType.SteamGems:
+                        if (asset.ClassID == 667924416)
+                        {
+                            gemsInfo.GemAssets.Add(asset);
+                            if (asset.Tradable)
+                            {
+                                gemsInfo.TradableGems += asset.Amount;
+                            }
+                            else
+                            {
+                                gemsInfo.NonTradableGems += asset.Amount;
+                            }
+                        }
+                        else if (asset.ClassID == 667933237)
+                        {
+                            gemsInfo.BagAssets.Add(asset);
+                            if (asset.Tradable)
+                            {
+                                gemsInfo.TradableBags += asset.Amount;
+                            }
+                            else
+                            {
+                                gemsInfo.NonTradableBags += asset.Amount;
+                            }
+                        }
+                        break;
                 }
             }
+
+            GemsInfoCache = gemsInfo;
 
             InTradeItemAssetIDs = tmpInTradeList;
             CardSetCache = await GetAppCardGroupLazyLoad(InventoryCache).ConfigureAwait(false);
@@ -104,7 +143,7 @@ internal class InventoryHandler(Bot _bot)
     /// </summary>
     /// <param name="forceReload"></param >
     /// <returns></returns>
-    internal async Task<List<Asset>?> GetBotInventory(bool forceReload)
+    public async Task<List<Asset>?> GetBotInventory(bool forceReload)
     {
         if (NeedUpdate || forceReload)
         {
@@ -119,7 +158,7 @@ internal class InventoryHandler(Bot _bot)
     /// </summary>
     /// <param name="forceReload"></param>
     /// <returns></returns>
-    internal async Task<Dictionary<uint, AssetBundle>> GetCardSetCache(bool forceReload)
+    public async Task<Dictionary<uint, AssetBundle>> GetCardSetCache(bool forceReload)
     {
         if (NeedUpdate || forceReload)
         {
@@ -134,7 +173,7 @@ internal class InventoryHandler(Bot _bot)
     /// </summary>
     /// <param name="forceReload"></param>
     /// <returns></returns>
-    internal async Task<Dictionary<uint, AssetBundle>> GetFoilCardSetCache(bool forceReload)
+    public async Task<Dictionary<uint, AssetBundle>> GetFoilCardSetCache(bool forceReload)
     {
         if (NeedUpdate || forceReload)
         {
@@ -142,6 +181,16 @@ internal class InventoryHandler(Bot _bot)
         }
 
         return FoilCardSetCache;
+    }
+
+    public async Task<GemsInfo> GetGemsInfoCache(bool forceReload)
+    {
+        if (NeedUpdate || forceReload)
+        {
+            await ReloadBotCache().ConfigureAwait(false);
+        }
+
+        return GemsInfoCache;
     }
 
     /// <summary>
@@ -210,10 +259,7 @@ internal class InventoryHandler(Bot _bot)
                 continue;
             }
 
-            if (bundle.Assets == null)
-            {
-                bundle.Assets = [];
-            }
+            bundle.Assets ??= [];
 
             bundle.Assets.Add(asset);
             classIDs.Add(asset.ClassID);

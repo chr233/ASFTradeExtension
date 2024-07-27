@@ -32,6 +32,11 @@ internal class InventoryHandler(Bot _bot)
     /// </summary>
     private Dictionary<uint, AssetBundle> FoilCardSetCache { get; set; } = [];
 
+    /// <summary>
+    /// 宝珠信息缓存
+    /// </summary>
+    private GemsInfo GemsInfoCache { get; set; } = new();
+
     private string? TradeLink { get; set; }
 
     /// <summary>
@@ -58,32 +63,69 @@ internal class InventoryHandler(Bot _bot)
 
             var tmpInTradeList = new HashSet<ulong>();
 
+            var gemsInfo = new GemsInfo();
+
             foreach (var asset in inventory)
             {
-                if (asset.Type == EAssetType.TradingCard)
+                switch (asset.Type)
                 {
-                    if (!InTradeItemAssetIDs.Contains(asset.AssetID))
-                    {
+                    case EAssetType.TradingCard:
 
-                        InventoryCache.Add(asset);
-                    }
-                    else
-                    {
-                        tmpInTradeList.Add(asset.AssetID);
-                    }
+                        if (!InTradeItemAssetIDs.Contains(asset.AssetID))
+                        {
+
+                            InventoryCache.Add(asset);
+                        }
+                        else
+                        {
+                            tmpInTradeList.Add(asset.AssetID);
+                        }
+                        break;
+
+                    case EAssetType.FoilTradingCard:
+                        if (!InTradeItemAssetIDs.Contains(asset.AssetID))
+                        {
+                            FoilInventoryCache.Add(asset);
+                        }
+                        else
+                        {
+                            tmpInTradeList.Add(asset.AssetID);
+                        }
+                        break;
+
+                    case EAssetType.SteamGems:
+                        gemsInfo.Assets.Add(asset);
+
+                        if (asset.ClassID == 667924416)
+                        {
+                            if (asset.Tradable)
+                            {
+                                gemsInfo.TradableGems += asset.Amount;
+                            }
+                            else
+                            {
+                                gemsInfo.NonTradableGems += asset.Amount;
+                            }
+                        }
+                        else if (asset.ClassID == 667933237)
+                        {
+                            if (asset.Tradable)
+                            {
+                                gemsInfo.TradableBags += asset.Amount;
+                            }
+                            else
+                            {
+                                gemsInfo.NonTradableBags += asset.Amount;
+
+                            }
+                        }
+
+                        break;
                 }
-                else if (asset.Type == EAssetType.FoilTradingCard)
-                {
-                    if (!InTradeItemAssetIDs.Contains(asset.AssetID))
-                    {
-                        FoilInventoryCache.Add(asset);
-                    }
-                    else
-                    {
-                        tmpInTradeList.Add(asset.AssetID);
-                    }
-                }
+
             }
+
+            GemsInfoCache = gemsInfo;
 
             InTradeItemAssetIDs = tmpInTradeList;
             CardSetCache = await GetAppCardGroupLazyLoad(InventoryCache).ConfigureAwait(false);
@@ -142,6 +184,21 @@ internal class InventoryHandler(Bot _bot)
         }
 
         return FoilCardSetCache;
+    }
+
+    /// <summary>
+    /// 获取宝珠信息缓存
+    /// </summary>
+    /// <param name="forceReload"></param>
+    /// <returns></returns>
+    internal async Task<GemsInfo> GetGemsInfoCache(bool forceReload)
+    {
+        if (NeedUpdate || forceReload)
+        {
+            await ReloadBotCache().ConfigureAwait(false);
+        }
+
+        return GemsInfoCache;
     }
 
     /// <summary>

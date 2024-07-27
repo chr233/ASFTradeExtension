@@ -167,6 +167,10 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "FSLS" when access >= EAccess.Operator =>
                     Card.Command.ResponseFullSetListSaleEvent(bot),
 
+                "GEMSINFO" or
+                "GI" when access >= EAccess.Operator =>
+                    Card.Command.ResponseGemsInfo(bot),
+
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Card.Command.ResponseReloadCache(bot),
 
@@ -215,6 +219,10 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "FULLSETFOIL" or
                 "FSF" when access >= EAccess.Operator =>
                     Card.Command.ResponseFullSetCountOfGame(bot, args[1], true),
+
+                "GEMSINFO" or
+                "GI" when access >= EAccess.Operator =>
+                    Card.Command.ResponseGemsInfo(Utilities.GetArgsAsText(args, 1, ",")),
 
                 "SENDCARDSETBOT" or
                 "SCSB" when access >= EAccess.Master && argLength == 5 =>

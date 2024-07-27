@@ -146,7 +146,7 @@ internal class InventoryHandler(Bot _bot)
     /// </summary>
     /// <param name="forceReload"></param >
     /// <returns></returns>
-    internal async Task<List<Asset>?> GetBotInventory(bool forceReload)
+    public async Task<List<Asset>?> GetBotInventory(bool forceReload)
     {
         if (NeedUpdate || forceReload)
         {
@@ -161,7 +161,7 @@ internal class InventoryHandler(Bot _bot)
     /// </summary>
     /// <param name="forceReload"></param>
     /// <returns></returns>
-    internal async Task<Dictionary<uint, AssetBundle>> GetCardSetCache(bool forceReload)
+    public async Task<Dictionary<uint, AssetBundle>> GetCardSetCache(bool forceReload)
     {
         if (NeedUpdate || forceReload)
         {
@@ -176,7 +176,7 @@ internal class InventoryHandler(Bot _bot)
     /// </summary>
     /// <param name="forceReload"></param>
     /// <returns></returns>
-    internal async Task<Dictionary<uint, AssetBundle>> GetFoilCardSetCache(bool forceReload)
+    public async Task<Dictionary<uint, AssetBundle>> GetFoilCardSetCache(bool forceReload)
     {
         if (NeedUpdate || forceReload)
         {
@@ -184,6 +184,16 @@ internal class InventoryHandler(Bot _bot)
         }
 
         return FoilCardSetCache;
+    }
+
+    public async Task<GemsInfo> GetGemsInfoCache(bool forceReload)
+    {
+        if (NeedUpdate || forceReload)
+        {
+            await ReloadBotCache().ConfigureAwait(false);
+        }
+
+        return GemsInfoCache;
     }
 
     /// <summary>
@@ -267,10 +277,7 @@ internal class InventoryHandler(Bot _bot)
                 continue;
             }
 
-            if (bundle.Assets == null)
-            {
-                bundle.Assets = [];
-            }
+            bundle.Assets ??= [];
 
             bundle.Assets.Add(asset);
             classIDs.Add(asset.ClassID);

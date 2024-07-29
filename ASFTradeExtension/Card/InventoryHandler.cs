@@ -98,26 +98,10 @@ internal class InventoryHandler(Bot _bot)
                         if (asset.ClassID == 667924416)
                         {
                             gemsInfo.GemAssets.Add(asset);
-                            if (asset.Tradable)
-                            {
-                                gemsInfo.TradableGems += asset.Amount;
-                            }
-                            else
-                            {
-                                gemsInfo.NonTradableGems += asset.Amount;
-                            }
                         }
                         else if (asset.ClassID == 667933237)
                         {
                             gemsInfo.BagAssets.Add(asset);
-                            if (asset.Tradable)
-                            {
-                                gemsInfo.TradableBags += asset.Amount;
-                            }
-                            else
-                            {
-                                gemsInfo.NonTradableBags += asset.Amount;
-                            }
                         }
 
                         break;
@@ -126,7 +110,6 @@ internal class InventoryHandler(Bot _bot)
             }
 
             GemsInfoCache = gemsInfo;
-
             InTradeItemAssetIDs = tmpInTradeList;
             CardSetCache = await GetAppCardGroupLazyLoad(InventoryCache).ConfigureAwait(false);
             FoilCardSetCache = await GetAppCardGroupLazyLoad(FoilInventoryCache).ConfigureAwait(false);

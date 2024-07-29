@@ -306,15 +306,45 @@ internal static class Command
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
 
-        var totalGems = gemsInfo.TradableGems + gemsInfo.NonTradableGems;
-        var totalBags = gemsInfo.TradableBags + gemsInfo.NonTradableBags;
+        ulong tradableGems = 0;
+        ulong nonTradableGems = 0;
+        ulong tradableBags = 0;
+        ulong nonTradableBags = 0;
 
-        sb.AppendLineFormat("宝珠 : 可交易 {0} 不可交易 {1} 总计: {2}", gemsInfo.TradableGems, gemsInfo.NonTradableGems, totalGems);
-        sb.AppendLineFormat("宝珠袋 : 可交易 {0} 不可交易 {1} 总计: {2}", gemsInfo.TradableBags, gemsInfo.NonTradableBags, totalBags);
+        foreach (var asset in gemsInfo.GemAssets)
+        {
+            if (asset.Tradable)
+            {
+                tradableGems += asset.Amount;
+            }
+            else
+            {
+                nonTradableGems += asset.Amount;
+            }
+        }
 
-        var tradableGems = gemsInfo.TradableGems + gemsInfo.TradableBags * 1000;
-        var nonTradableGems = gemsInfo.NonTradableGems + gemsInfo.NonTradableBags * 1000;
-        sb.AppendLineFormat("宝珠总计: 可交易 {0} 不可交易 {1} 总计: {2}", tradableGems, nonTradableGems, tradableGems + nonTradableGems);
+        foreach (var asset in gemsInfo.BagAssets)
+        {
+            if (asset.Tradable)
+            {
+                tradableBags += asset.Amount;
+            }
+            else
+            {
+                nonTradableBags += asset.Amount;
+            }
+        }
+
+        var totalGems = tradableGems + nonTradableGems;
+        var totalBags = tradableBags + nonTradableBags;
+
+        sb.AppendLineFormat("宝珠 : 可交易 {0} 不可交易 {1} 总计: {2}", tradableGems, nonTradableGems, totalGems);
+        sb.AppendLineFormat("宝珠袋 : 可交易 {0} 不可交易 {1} 总计: {2}", tradableBags, nonTradableBags, totalBags);
+
+        var totalTradableGems = tradableGems + tradableBags * 1000;
+        var TotalNonTradableGems = nonTradableGems + nonTradableBags * 1000;
+        var GemsSum = totalTradableGems + TotalNonTradableGems;
+        sb.AppendLineFormat("宝珠总计: 可交易 {0} 不可交易 {1} 总计: {2}", totalTradableGems, TotalNonTradableGems, GemsSum);
         return bot.FormatBotResponse(sb.ToString());
     }
 
@@ -780,14 +810,14 @@ internal static class Command
         var gemsInfo = await handler.GetGemsInfoCache(false).ConfigureAwait(false);
 
         ulong offerGems = 0;
-
-        List<Asset> newAssetList = [];
         List<Asset> offers = [];
 
+        List<Asset> newBagsList = [];
+        ulong offerBagCount = 0;
         foreach (var asset in gemsInfo.BagAssets)
         {
             var needBag = (gemCount - offerGems) / 1000;
-            if (needBag < 1000)
+            if (needBag == 0)
             {
                 break;
             }
@@ -798,7 +828,7 @@ internal static class Command
                 offerAsset = asset.CopyWithAmount(needBag);
 
                 var newAsset = asset.CopyWithAmount(asset.Amount - needBag);
-                newAssetList.Add(newAsset);
+                newBagsList.Add(newAsset);
             }
             else //无剩余宝珠, 直接添加到 offer
             {
@@ -807,12 +837,13 @@ internal static class Command
 
             offers.Add(offerAsset);
             offerGems += offerAsset.Amount * 1000;
+            offerBagCount += offerAsset.Amount;
         }
 
-        var offerBagCount = offers.Count;
-        gemsInfo.BagAssets = newAssetList;
-        newAssetList.Clear();
+        gemsInfo.BagAssets = newBagsList;
 
+        List<Asset> newGemsList = [];
+        ulong offerGemsCount = 0;
         foreach (var asset in gemsInfo.GemAssets)
         {
             var needGem = gemCount - offerGems;
@@ -827,7 +858,7 @@ internal static class Command
                 offerAsset = asset.CopyWithAmount(needGem);
 
                 var newAsset = asset.CopyWithAmount(asset.Amount - needGem);
-                newAssetList.Add(newAsset);
+                newGemsList.Add(newAsset);
             }
             else //无剩余宝珠, 直接添加到 offer
             {
@@ -836,30 +867,35 @@ internal static class Command
 
             offers.Add(offerAsset);
             offerGems += offerAsset.Amount;
+            offerGemsCount += offerAsset.Amount;
         }
 
-        var offerGemsCount = offers.Count - offerBagCount;
-        gemsInfo.GemAssets = newAssetList;
-        newAssetList.Clear();
-
-        if (offerGems < gemCount && offers.Count == 0)
-        {
-            return bot.FormatBotResponse("发送报价失败, 可交易宝珠和宝珠袋数量不足");
-        }
+        gemsInfo.GemAssets = newGemsList;
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
-        sb.AppendLineFormat("预计发送 {0} 宝珠袋和 {1} 宝珠, 共计 {2} 宝珠", offerBagCount, offerGemsCount, gemCount);
-        var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offers, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
-        if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+        if (offerGems < gemCount || offers.Count == 0)
         {
-            (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
-
-            sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
+            var offerSum = offerBagCount * 1000 + offerGemsCount;
+            sb.AppendLineFormat("发送报价失败, 可交易宝珠和宝珠袋数量不足");
+            sb.AppendLineFormat("可交易 {0} 宝珠袋和 {1} 宝珠, 共计 {2} 宝珠", offerBagCount, offerGemsCount, offerSum);
+            sb.AppendLineFormat("需要发送 {0} 宝珠, 还需要 {1} 宝珠", gemCount, gemCount - offerSum);
         }
+        else
+        {
+            sb.AppendLineFormat("预计发送 {0} 宝珠袋和 {1} 宝珠, 共计 {2} 宝珠", offerBagCount, offerGemsCount, gemCount);
+            var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offers, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
-        sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
+            if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+            {
+                (bool twoFactorSuccess, _, _) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+                sb.AppendLine(string.Format(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure));
+            }
+
+            sb.AppendLine(string.Format(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure));
+        }
 
         return bot.FormatBotResponse(sb.ToString());
     }

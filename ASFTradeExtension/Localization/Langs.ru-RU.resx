@@ -294,4 +294,10 @@
   <data name="NoAssetFoundInReleaseInfo" xml:space="preserve">
     <value>No asset found in the release</value>
   </data>
+  <data name="GemsSummary" xml:space="preserve">
+    <value>Gems: tradable {0} non-tradable {1} total: {2}</value>
+  </data>
+  <data name="GemBagsSunnary" xml:space="preserve">
+    <value>GemsBag: tradable {0} non-tradable {1} total {2}</value>
+  </data>
 </root>

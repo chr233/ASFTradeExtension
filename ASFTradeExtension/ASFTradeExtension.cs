@@ -1,7 +1,7 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
-using ArchiSteamFarm.Web.GitHub;
+using ArchiSteamFarm.Web.GitHub.Data;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data;
 using System.ComponentModel;
@@ -9,7 +9,6 @@ using System.Composition;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using static ArchiSteamFarm.Storage.GlobalConfig;
 
 namespace ASFTradeExtension;
 
@@ -371,58 +370,18 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     }
 
     /// <inheritdoc/>
-    public async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, EUpdateChannel updateChannel, bool forced)
+    public Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets)
     {
-        var releaseResponse = await GitHubService.GetLatestRelease(RepositoryName, updateChannel == EUpdateChannel.Stable, default).ConfigureAwait(false);
-        if (releaseResponse == null)
+        var result = releaseAssets.Count switch
         {
-            return null;
-        }
+            0 => null,
+            1 => //如果找到一个文件，则第一个
+                releaseAssets.First(),
+            _ => //优先下载当前语言的版本
+                releaseAssets.FirstOrDefault(static x => x.Name.Contains(Langs.CurrentLanguage)) ??
+                releaseAssets.FirstOrDefault(static x => x.Name.Contains("en-US"))
+        };
 
-        Version newVersion = new(releaseResponse.Tag);
-        if (!forced && (Version >= newVersion))
-        {
-            ASFLogger.LogGenericInfo(string.Format(Langs.UpdatePluginListItemName, Name, Langs.AlreadyLatest));
-            return null;
-        }
-
-        if (releaseResponse.Assets.Count == 0)
-        {
-            ASFLogger.LogGenericWarning(Langs.NoAssetFoundInReleaseInfo);
-            return null;
-        }
-
-        ASFLogger.LogGenericInfo(string.Format(Langs.UpdatePluginListItemName, Name, Langs.CanUpdate));
-        ASFLogger.LogGenericInfo(string.Format(Langs.UpdatePluginListItemVersion, Version, newVersion));
-        if (!string.IsNullOrEmpty(releaseResponse.MarkdownBody))
-        {
-            ASFLogger.LogGenericInfo(string.Format(Langs.UpdatePluginListItemReleaseNote, releaseResponse.MarkdownBody));
-        }
-
-        if (releaseResponse.Assets.Count == 0)
-        {
-            return null;
-        }
-
-        //优先下载当前语言的版本
-        foreach (var asset in releaseResponse.Assets)
-        {
-            if (asset.Name.Contains(Langs.CurrentLanguage))
-            {
-                return asset.DownloadURL;
-            }
-        }
-
-        //优先下载英文版本
-        foreach (var asset in releaseResponse.Assets)
-        {
-            if (asset.Name.Contains("en-US"))
-            {
-                return asset.DownloadURL;
-            }
-        }
-
-        //如果没有找到当前语言的版本, 则下载第一个
-        return releaseResponse.Assets.FirstOrDefault()?.DownloadURL;
+        return Task.FromResult(result);
     }
 }

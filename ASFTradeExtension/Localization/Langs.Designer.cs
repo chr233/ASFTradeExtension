@@ -133,15 +133,6 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 *可更新* 的本地化字符串。
-        /// </summary>
-        internal static string CanUpdate {
-            get {
-                return ResourceManager.GetString("CanUpdate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 普通卡牌库存信息: 的本地化字符串。
         /// </summary>
         internal static string CardInventory {
@@ -304,6 +295,33 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 宝珠袋 : 可交易 {0} 不可交易 {1} 总计: {2} 的本地化字符串。
+        /// </summary>
+        internal static string GemBagsSunnary {
+            get {
+                return ResourceManager.GetString("GemBagsSunnary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 宝珠 : 可交易 {0} 不可交易 {1} 总计: {2} 的本地化字符串。
+        /// </summary>
+        internal static string GemsSummary {
+            get {
+                return ResourceManager.GetString("GemsSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 预计发送 {0} 宝珠袋和 {1} 宝珠, 共计 {2} 宝珠 的本地化字符串。
+        /// </summary>
+        internal static string GemTradeSummary {
+            get {
+                return ResourceManager.GetString("GemTradeSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 内部错误 的本地化字符串。
         /// </summary>
         internal static string InternalError {
@@ -345,6 +363,15 @@ namespace ASFTradeExtension.Localization {
         internal static string ItemListSuccessWaitConfirm {
             get {
                 return ResourceManager.GetString("ItemListSuccessWaitConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 需要发送 {0} 宝珠, 还需要 {1} 宝珠 的本地化字符串。
+        /// </summary>
+        internal static string LackOfGems {
+            get {
+                return ResourceManager.GetString("LackOfGems", resourceCulture);
             }
         }
         
@@ -439,24 +466,6 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
-        ///   查找类似 过滤条件下无正在出售的CSGO物品 的本地化字符串。
-        /// </summary>
-        internal static string NoSelingCsItemInFilter {
-            get {
-                return ResourceManager.GetString("NoSelingCsItemInFilter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 无正在出售的CSGO物品 的本地化字符串。
-        /// </summary>
-        internal static string NoSellingCsItem {
-            get {
-                return ResourceManager.GetString("NoSellingCsItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 插件作者: Chr_, 联系方式: chr@chrxw.com 的本地化字符串。
         /// </summary>
         internal static string PluginContact {
@@ -538,6 +547,15 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 发送报价失败, 可交易宝珠和宝珠袋数量不足 的本地化字符串。
+        /// </summary>
+        internal static string SendTradeFailedGemsNotEnough {
+            get {
+                return ResourceManager.GetString("SendTradeFailedGemsNotEnough", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 交易报价发送成功失败, 可交易卡牌数量不足 的本地化字符串。
         /// </summary>
         internal static string SendTradeFailedNoEnoughCards {
@@ -610,92 +628,29 @@ namespace ASFTradeExtension.Localization {
         }
         
         /// <summary>
+        ///   查找类似 宝珠总计: 可交易 {0} 不可交易 {1} 总计: {2} 的本地化字符串。
+        /// </summary>
+        internal static string TotalGemsSummary {
+            get {
+                return ResourceManager.GetString("TotalGemsSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 可交易 {0} 宝珠袋和 {1} 宝珠, 共计 {2} 宝珠 的本地化字符串。
+        /// </summary>
+        internal static string TradableGemsSummary {
+            get {
+                return ResourceManager.GetString("TradableGemsSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 {0}: {1} 的本地化字符串。
         /// </summary>
         internal static string TwoItem {
             get {
                 return ResourceManager.GetString("TwoItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 更新配置文件成功 的本地化字符串。
-        /// </summary>
-        internal static string UpdateConfigContentSuccess {
-            get {
-                return ResourceManager.GetString("UpdateConfigContentSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 获取版本信息失败, 未找到插件 {0} 的本地化字符串。
-        /// </summary>
-        internal static string UpdateFailedPluginNotFound {
-            get {
-                return ResourceManager.GetString("UpdateFailedPluginNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 插件更新失败, 压缩包内容解析失败 的本地化字符串。
-        /// </summary>
-        internal static string UpdateFiledWithZip {
-            get {
-                return ResourceManager.GetString("UpdateFiledWithZip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 插件名称: {0} {1} 的本地化字符串。
-        /// </summary>
-        internal static string UpdatePluginListItemName {
-            get {
-                return ResourceManager.GetString("UpdatePluginListItemName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 版本说明: 的本地化字符串。
-        /// </summary>
-        internal static string UpdatePluginListItemReleaseNote {
-            get {
-                return ResourceManager.GetString("UpdatePluginListItemReleaseNote", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 更新状态: {0} 的本地化字符串。
-        /// </summary>
-        internal static string UpdatePluginListItemStatus {
-            get {
-                return ResourceManager.GetString("UpdatePluginListItemStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 更新插件完成, 重启 ASF 后生效, 如果不兼容请更新 ASF 版本 的本地化字符串。
-        /// </summary>
-        internal static string UpdatePluginListItemUpdateTips {
-            get {
-                return ResourceManager.GetString("UpdatePluginListItemUpdateTips", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 当前版本: {0} 在线版本: {1} 的本地化字符串。
-        /// </summary>
-        internal static string UpdatePluginListItemVersion {
-            get {
-                return ResourceManager.GetString("UpdatePluginListItemVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 插件更新信息: 的本地化字符串。
-        /// </summary>
-        internal static string UpdatePluginUpdateInfo {
-            get {
-                return ResourceManager.GetString("UpdatePluginUpdateInfo", resourceCulture);
             }
         }
     }

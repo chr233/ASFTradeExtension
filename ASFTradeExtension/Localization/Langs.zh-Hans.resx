@@ -255,12 +255,6 @@
   <data name="ThreeItemWithNum" xml:space="preserve">
     <value>{0} {1} 数量 {2}</value>
   </data>
-  <data name="NoSelingCsItemInFilter" xml:space="preserve">
-    <value>过滤条件下无正在出售的CSGO物品</value>
-  </data>
-  <data name="NoSellingCsItem" xml:space="preserve">
-    <value>无正在出售的CSGO物品</value>
-  </data>
   <data name="ASFEnhanceRegisterFailed" xml:space="preserve">
     <value>ASFEBridge 注册失败</value>
   </data>

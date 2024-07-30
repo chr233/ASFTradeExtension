@@ -246,12 +246,6 @@
   <data name="ThreeItemWithNum" xml:space="preserve">
     <value>{0} {1} Количество {2}</value>
   </data>
-  <data name="NoSelingCsItemInFilter" xml:space="preserve">
-    <value>Отсутствие предметов CS2 которые доступны для продажи с текущими фильтрами</value>
-  </data>
-  <data name="NoSellingCsItem" xml:space="preserve">
-    <value>Отсутствие предметов CS2 которые доступны для продажи</value>
-  </data>
   <data name="ASFEnhanceRegisterFailed" xml:space="preserve">
     <value>Не удалось зарегистрировать ASFEBridge</value>
   </data>
@@ -294,40 +288,10 @@
   <data name="SaleEventCardInventory" xml:space="preserve">
     <value>Normal sale event card stock info:</value>
   </data>
-  <data name="UpdatePluginUpdateInfo" xml:space="preserve">
-    <value>Информация об обновлениях плагинов:</value>
-  </data>
-  <data name="UpdatePluginListItemVersion" xml:space="preserve">
-    <value>Текущая версия: {0} Последняя выпущенная версия: {1}</value>
-  </data>
-  <data name="UpdatePluginListItemUpdateTips" xml:space="preserve">
-    <value>Обновление плагина завершено, перезапустите ASF, чтобы он вступил в силу, если он не совместим, пожалуйста, обновите версию ASF</value>
-  </data>
-  <data name="UpdatePluginListItemStatus" xml:space="preserve">
-    <value>Статус обновления: {0}</value>
-  </data>
-  <data name="UpdatePluginListItemReleaseNote" xml:space="preserve">
-    <value>Что нового:</value>
-  </data>
-  <data name="UpdatePluginListItemName" xml:space="preserve">
-    <value>Название плагина: {0} {1}</value>
-  </data>
-  <data name="UpdateFiledWithZip" xml:space="preserve">
-    <value>Ошибка обновления плагина - не удалось распаковать архив</value>
-  </data>
-  <data name="UpdateFailedPluginNotFound" xml:space="preserve">
-    <value>获取版本信息失败, 未找到插件 {0}</value>
-  </data>
-  <data name="UpdateConfigContentSuccess" xml:space="preserve">
-    <value>Update config file success</value>
-  </data>
   <data name="AlreadyLatest" xml:space="preserve">
     <value>Плагин уже обновлен, нет необходимости в обновлении</value>
   </data>
   <data name="NoAssetFoundInReleaseInfo" xml:space="preserve">
     <value>No asset found in the release</value>
-  </data>
-  <data name="CanUpdate" xml:space="preserve">
-    <value>*可更新*</value>
   </data>
 </root>

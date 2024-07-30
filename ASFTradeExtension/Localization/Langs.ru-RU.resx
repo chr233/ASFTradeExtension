@@ -300,4 +300,19 @@
   <data name="GemBagsSunnary" xml:space="preserve">
     <value>GemsBag: tradable {0} non-tradable {1} total {2}</value>
   </data>
+  <data name="SendTradeFailedGemsNotEnough" xml:space="preserve">
+    <value>Send trade failed, tradable gems not enough</value>
+  </data>
+  <data name="TradableGemsSummary" xml:space="preserve">
+    <value>Tradable {0} gem bags and {1} gems, total {2} gems</value>
+  </data>
+  <data name="GemTradeSummary" xml:space="preserve">
+    <value>Prepare to send {0} gem bags and {1} gems, total {2} gems</value>
+  </data>
+  <data name="TotalGemsSummary" xml:space="preserve">
+    <value>Summary: tradable {0} non-tradable {1} total {2}</value>
+  </data>
+  <data name="LackOfGems" xml:space="preserve">
+    <value>Want to send {0} gems, still need {1} more gems</value>
+  </data>
 </root>

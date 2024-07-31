@@ -44,6 +44,7 @@
 
 | Версия ASFTradeExtension                                                    | Совместимая версия ASF | Описание                                                                         |
 | --------------------------------------------------------------------------- | :--------------------: | -------------------------------------------------------------------------------- |
+| [1.1.3.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.3.0) |        6.0.4.4         | 支持发送宝珠                                                                     |
 | [1.1.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.2.0) |        6.0.4.4         | ASF -> 6.0.4.4, 支持用机器人名称发送报价                                         |
 | [1.1.1.3](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.3) |        6.0.3.4         | ASF -> 6.0.3.4, 支持闪卡                                                         |
 | [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |        6.0.0.3         | ASF -> 6.0.0.3                                                                   |
@@ -102,19 +103,32 @@ ASF.json
 
 ### Торговля картами
 
-| Command                                                  | Shorthand | Access     | Description                                                                                                           |
-| -------------------------------------------------------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
-| `FULLSETLIST [Bots] [Config]`                            | `FSL`     | `Operator` | Display normal card inventory information, available parameters \[-page Page number\] \[-line Display line number\]   |
-| `FULLSETLISTFOIL [Bots] [Config]`                        | `FSLF`    | `Operator` | Display foil card inventory information, available parameters \[-page Page number\] \[-line Display line number\]     |
-| `FULLSETLISTSALE [Bots]`                                 | `FSLS`    | `Operator` | Display sale event card inventory information                                                                         |
-| `FULLSET [Bots] <appIds>`                                | `FS`      | `Operator` | Display normal card information on the number of cards by the specified `AppId`                                       |
-| `FULLSETFOIL [Bots] <appIds>`                            | `FSF`     | `Operator` | Display foil card information on the number of cards by the specified `AppId`                                         |
-| `SENDCARDSET [Bots] AppId SetCount TradeLink`            | `SCS`     | `Master`   | Sends a set of normal cards with the specified `SetCount` and `AppId` to the trade link                               |
-| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`        | `SCSF`    | `Master`   | Sends a set of foil cards with the specified `SetCount` and `AppId` to the trade link                                 |
-| `2SENDCARDSET [Bots] AppId SetCount TradeLink`           | `2SCS`    | `Master`   | Similar to `SENDCARDSET`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF)     |
-| `2SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`       | `2SCSF`   | `Master`   | Similar to `SENDCARDSETFOIL`, automatically confirms a trade after it has been sent (requires 2FA to be added to ASF) |
-| `SENDCARDSETBOT [Bots] AppId SetCount TargetBotName`     | `SCSB`    | `Master`   | Sends a set of normal cards with the specified `SetCount` and `AppId` to the target bot, automatically confirms       |
-| `SENDCARDSETBOTFOIL [Bots] AppId SetCount TargetBotName` | `SCSBF`   | `Master`   | Sends a set of foil cards with the specified `SetCount` and `AppId` to the target bot, automatically confirms         |
+#### Query Command
+
+| Command                           | Shorthand | Access     | Description                                                                                                         |
+| --------------------------------- | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| `FULLSETLIST [Bots] [Config]`     | `FSL`     | `Operator` | Display normal card inventory information, available parameters \[-page Page number\] \[-line Display line number\] |
+| `FULLSETLISTFOIL [Bots] [Config]` | `FSLF`    | `Operator` | Display foil card inventory information, available parameters \[-page Page number\] \[-line Display line number\]   |
+| `FULLSETLISTSALE [Bots]`          | `FSLS`    | `Operator` | Display sale event card inventory information                                                                       |
+| `FULLSET [Bots] <appIds>`         | `FS`      | `Operator` | Display normal card information on the number of cards by the specified `AppId`                                     |
+| `FULLSETFOIL [Bots] <appIds>`     | `FSF`     | `Operator` | Display foil card information on the number of cards by the specified `AppId`                                       |
+| `GEMSINFO [Bots]`                 | `GI`      | `Operator` | Display gems inventory information, includes gems and gem bags                                                      |
+| `RELOADCACHE [Bots]`              |           | `Operator` | Reload the inventory cache                                                                                          |
+
+#### Trade Command
+
+| Command                                              | Shorthand | Access   | Description                                                                             |
+| ---------------------------------------------------- | --------- | -------- | --------------------------------------------------------------------------------------- |
+| `SENDCARDSET [Bots] AppId SetCount TradeLink`        | `SCS`     | `Master` | Sends a set of normal cards with the specified `SetCount` and `AppId` to the trade link |
+| `SENDCARDSETBOT [Bots] AppId SetCount TargetBot`     | `SCSB`    | `Master` | Sends a set of normal cards with the specified `SetCount` and `AppId` to the target bot |
+| -                                                    | -         | -        | -                                                                                       |
+| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`    | `SCSF`    | `Master` | Sends a set of foil cards with the specified `SetCount` and `AppId` to the trade link   |
+| `SENDCARDSETBOTFOIL [Bots] AppId SetCount TargetBot` | `SCSBF`   | `Master` | Sends a set of foil cards with the specified `SetCount` and `AppId` to the target bot   |
+| -                                                    | -         | -        | -                                                                                       |
+| `SENDGEMS [Bots] GemCount TradeLink`                 | `SG`      | `Master` | Sends `GemCount` of gems to the trade link, prefer use gem bag(1000 gems)               |
+| `SENDGEMSBOT [Bots] GemCount TargetBot`              | `SGB`     | `Master` | Sends `GemCount` of gems to the target bot, prefer use gem bag(1000 gems)               |
+
+> This set of command can use `2` prefix, to confirm the trade automaticly, for example `2SCS`, `2SCSF`, `2SCSB`, `2SCSBF`
 
 ---
 

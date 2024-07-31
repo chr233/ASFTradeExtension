@@ -50,6 +50,7 @@ Not compatible with the common version of ASF, use generic version of ASF instea
 
 | ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                                 |
 | --------------------------------------------------------------------------- | :-----------: | ---------------------------------------- |
+| [1.1.3.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.3.0) |    6.0.4.4    | 支持发送宝珠                             |
 | [1.1.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.2.0) |    6.0.4.4    | ASF -> 6.0.4.4, 支持用机器人名称发送报价 |
 | [1.1.1.3](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.3) |    6.0.3.4    | ASF -> 6.0.3.4, 支持闪卡                 |
 | [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |    6.0.0.3    | ASF -> 6.0.0.3                           |
@@ -105,21 +106,34 @@ ASF.json
 | ------------------- | ----- | --------------- | ----------------------------- |
 | `ASFTradeExtension` | `ATE` | `FamilySharing` | 查看 ASFTradeExtension 的版本 |
 
-### 卡牌交易
+### 插件命令
 
-| 命令                                                     | 缩写    | 权限       | 说明                                                                          |
-| -------------------------------------------------------- | ------- | ---------- | ----------------------------------------------------------------------------- |
-| `FULLSETLIST [Bots] [Config]`                            | `FSL`   | `Operator` | 显示普通卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]              |
-| `FULLSETLISTFOIL [Bots] [Config]`                        | `FSLF`  | `Operator` | 显示闪卡卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]              |
-| `FULLSETLISTSALE [Bots]`                                 | `FSLS`  | `Operator` | 显示促销卡牌套数信息                                                          |
-| `FULLSET [Bots] <appIds>`                                | `FS`    | `Operator` | 显示指定 App 的普通卡牌套数信息                                               |
-| `FULLSETFOIL [Bots] <appIds>`                            | `FSF`   | `Operator` | 显示指定 App 的闪亮卡牌套数信息                                               |
-| `SENDCARDSET [Bots] AppId SetCount TradeLink`            | `SCS`   | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的普通卡牌                       |
-| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`        | `SCSF`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的闪亮卡牌                       |
-| `2SENDCARDSET [Bots] AppId SetCount TradeLink`           | `2SCS`  | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)                       |
-| `2SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`       | `2SCSF` | `Master`   | 同 `SENDCARDSETFOIL`, 发送交易后自动确认交易 (需要配置 2FA)                   |
-| `SENDCARDSETBOT [Bots] AppId SetCount TargetBotName`     | `SCSB`  | `Master`   | 向指定机器人发送指定`SetCount`套指定`AppId`的普通卡牌, 发送交易后自动确认交易 |
-| `SENDCARDSETBOTFOIL [Bots] AppId SetCount TargetBotName` | `SCSBF` | `Master`   | 向指定机器人发送指定`SetCount`套指定`AppId`的闪亮卡牌, 发送交易后自动确认交易 |
+#### 查询命令
+
+| 命令                              | 缩写   | 权限       | 说明                                                             |
+| --------------------------------- | ------ | ---------- | ---------------------------------------------------------------- |
+| `FULLSETLIST [Bots] [Config]`     | `FSL`  | `Operator` | 显示普通卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
+| `FULLSETLISTFOIL [Bots] [Config]` | `FSLF` | `Operator` | 显示闪卡卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
+| `FULLSETLISTSALE [Bots]`          | `FSLS` | `Operator` | 显示促销卡牌套数信息                                             |
+| `FULLSET [Bots] <appIds>`         | `FS`   | `Operator` | 显示指定 App 的普通卡牌套数信息                                  |
+| `FULLSETFOIL [Bots] <appIds>`     | `FSF`  | `Operator` | 显示指定 App 的闪亮卡牌套数信息                                  |
+| `GEMSINFO [Bots]`                 | `GI`   | `Operator` | 显示指定机器人的宝珠库存数量                                     |
+| `RELOADCACHE [Bots]`              |        | `Operator` | 刷新库存缓存                                                     |
+
+#### 交易命令
+
+| 命令                                                 | 缩写    | 权限     | 说明                                                                       |
+| ---------------------------------------------------- | ------- | -------- | -------------------------------------------------------------------------- |
+| `SENDCARDSET [Bots] AppId SetCount TradeLink`        | `SCS`   | `Master` | 向指定交易链接发送指定`SetCount`套指定`AppId`的普通卡牌                    |
+| `SENDCARDSETBOT [Bots] AppId SetCount TargetBot`     | `SCSB`  | `Master` | 向指定机器人发送指定`SetCount`套指定`AppId`的普通卡牌                      |
+| -                                                    | -       | -        | -                                                                          |
+| `SENDCARDSETFOIL [Bots] AppId SetCount TradeLink`    | `SCSF`  | `Master` | 向指定交易链接发送指定`SetCount`套指定`AppId`的闪亮卡牌                    |
+| `SENDCARDSETBOTFOIL [Bots] AppId SetCount TargetBot` | `SCSBF` | `Master` | 向指定机器人发送指定`SetCount`套指定`AppId`的闪亮卡牌                      |
+| -                                                    | -       | -        | -                                                                          |
+| `SENDGEMS [Bots] GemCount TradeLink`                 | `SG`    | `Master` | 向指定交易链接发送指定数量的宝珠, 宝珠袋按照 1000 宝珠计算, 优先使用宝珠袋 |
+| `SENDGEMSBOT [Bots] GemCount TargetBot`              | `SGB`   | `Master` | 向指定机器人发送指定数量的宝珠, 宝珠袋按照 1000 宝珠计算, 优先使用宝珠袋   |
+
+> 本组命令添加 `2` 前缀可以自动确认报价, 例如 `2SCS`, `2SCSF`, `2SCSB`, `2SCSBF` 等
 
 ---
 

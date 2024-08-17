@@ -1,7 +1,6 @@
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Steam;
 using System.Collections.Concurrent;
-using System.Text.Json;
 
 namespace ASFTradeExtension.Cache;
 
@@ -121,7 +120,7 @@ internal class CardSetManager
                 var raw = await sr.ReadToEndAsync().ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(raw))
                 {
-                    var dict = JsonSerializer.Deserialize<ConcurrentDictionary<uint, int>>(raw, JsonUtilities.DefaultJsonSerialierOptions);
+                    var dict = raw.ToJsonObject<ConcurrentDictionary<uint, int>>();
                     if (dict != null)
                     {
                         FullSetCountCache = dict;
@@ -149,7 +148,7 @@ internal class CardSetManager
             var filePath = GetFilePath();
             using var fs = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            var json = JsonSerializer.Serialize(FullSetCountCache, JsonUtilities.DefaultJsonSerialierOptions);
+            var json = FullSetCountCache.ToJsonText();
             await sw.WriteAsync(json).ConfigureAwait(false);
         }
         catch (Exception ex)

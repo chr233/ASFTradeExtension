@@ -44,6 +44,7 @@
 
 | Версия ASFTradeExtension                                                    | Совместимая версия ASF | Описание                                                                         |
 | --------------------------------------------------------------------------- | :--------------------: | -------------------------------------------------------------------------------- |
+| [1.1.5.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.5.0) |        6.0.6.4         | ASF -> 6.0.6.4                                                                   |
 | [1.1.4.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.4.0) |        6.0.5.2         | ASF -> 6.0.5.2                                                                   |
 | [1.1.3.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.3.0) |        6.0.4.4         | 支持发送宝珠                                                                     |
 | [1.1.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.2.0) |        6.0.4.4         | ASF -> 6.0.4.4, 支持用机器人名称发送报价                                         |

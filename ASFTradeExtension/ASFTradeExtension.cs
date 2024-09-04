@@ -62,6 +62,15 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
 
         var sb = new StringBuilder();
 
+        //使用协议
+        if (!Config.EULA)
+        {
+            sb.AppendLine();
+            sb.AppendLine(Langs.Line);
+            sb.AppendLineFormat(Langs.EulaWarning, Name);
+            sb.AppendLine(Langs.Line);
+        }
+
         if (Config.MaxItemPerTrade < byte.MaxValue)
         {
             Config.MaxItemPerTrade = byte.MaxValue;

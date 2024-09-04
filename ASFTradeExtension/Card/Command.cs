@@ -643,7 +643,7 @@ internal static class Command
                     await handler.AddInTradeItems(offer).ConfigureAwait(false);
 
                     sb.AppendLineFormat(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet);
-                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
+                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offer, null, tradeToken, null, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
                     if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
                     {
@@ -885,7 +885,7 @@ internal static class Command
         else
         {
             sb.AppendLineFormat(Langs.GemTradeSummary, offerBagCount, offerGemsCount, gemCount);
-            var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offers, null, tradeToken, false, Config.MaxItemPerTrade).ConfigureAwait(false);
+            var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, offers, null, tradeToken, null, false, Config.MaxItemPerTrade).ConfigureAwait(false);
 
             if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
             {

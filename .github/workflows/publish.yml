@@ -90,7 +90,7 @@ jobs:
       - name: Download ${{ env.PROJECT_NAME }} artifact from windows-latest
         uses: actions/download-artifact@v4.1.8
         with:
-          name: ${{ env.PROJECT_NAME }}-zh-Hans.zip
+          name: ${{ env.PROJECT_NAME }}.zip
           path: out
 
       - name: Create ${{ env.PROJECT_NAME }} GitHub release

@@ -1,13 +1,15 @@
 using ArchiSteamFarm.Steam.Data;
+using System.Text.Json.Serialization;
 
 namespace ASFTradeExtension.Data;
 
-internal sealed record AssetBundle
+public sealed record AssetBundle
 {
     /// <summary>
     /// 卡牌列表
     /// </summary>
-    public List<Asset>? Assets { get; set; }
+    [JsonIgnore]
+    internal List<Asset>? Assets { get; set; }
     /// <summary>
     /// AppId
     /// </summary>

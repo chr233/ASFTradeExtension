@@ -21,5 +21,5 @@ public sealed record PluginConfig
     /// <summary>
     /// 缓存生存时间(秒)
     /// </summary>
-    public ushort CacheTTL { get; set; } = 600;
+    public ushort CacheTTL { get; set; } = 1800;
 }

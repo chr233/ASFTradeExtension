@@ -3,6 +3,7 @@ using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Web.GitHub.Data;
+using ASFTradeExtension.Card;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data;
 using System.ComponentModel;
@@ -16,31 +17,33 @@ namespace ASFTradeExtension;
 [Export(typeof(IPlugin))]
 internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPluginUpdates
 {
-    public string Name => "ASF Trade Extension";
-    public Version Version => MyVersion;
-    public bool CanUpdate => true;
-    public string RepositoryName => "chr233/ASFEnhance";
-
     private bool ASFEBridge;
-    public static PluginConfig Config => Utils.Config;
 
     private Timer? StatisticTimer;
+    public static PluginConfig Config => Utils.Config;
 
     /// <summary>
-    /// ASF启动事件
+    ///     获取插件信息
+    /// </summary>
+    private static string? PluginInfo => $"{nameof(ASFTradeExtension)} {MyVersion}";
+
+    public string Name => "ASF Trade Extension";
+    public Version Version => MyVersion;
+
+    /// <summary>
+    ///     ASF启动事件
     /// </summary>
     /// <param name="additionalConfigProperties"></param>
     /// <returns></returns>
     public Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null)
     {
-
         PluginConfig? config = null;
 
         if (additionalConfigProperties != null)
         {
             foreach (var (configProperty, configValue) in additionalConfigProperties)
             {
-                if ((configProperty == "ASFEnhance") && configValue.ValueKind == JsonValueKind.Object)
+                if (configProperty == "ASFEnhance" && configValue.ValueKind == JsonValueKind.Object)
                 {
                     try
                     {
@@ -58,7 +61,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
             }
         }
 
-        Utils.Config = config ?? new();
+        Utils.Config = config ?? new PluginConfig();
 
         var sb = new StringBuilder();
 
@@ -91,7 +94,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
         {
             var request = new Uri("https://asfe.chrxw.com/asftradeextension");
             StatisticTimer = new Timer(
-                async (_) =>
+                async _ =>
                 {
                     await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
                 },
@@ -101,15 +104,14 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
             );
         }
 
-
         return Task.CompletedTask;
     }
 
     /// <summary>
-    /// 插件加载事件
+    ///     插件加载事件
     /// </summary>
     /// <returns></returns>
-    public Task OnLoaded()
+    public async Task OnLoaded()
     {
         ASFLogger.LogGenericInfo(Langs.PluginContact);
         ASFLogger.LogGenericInfo(Langs.PluginInfo);
@@ -133,174 +135,25 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
             ASFLogger.LogGenericWarning(Langs.PluginStandalongMode);
         }
 
-        return Utils.CardSetCache.LoadCacheFile();
+        await CardSetCache.LoadCacheFile().ConfigureAwait(false);
+        await CardSetCache.SaveCacheFile().ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// 获取插件信息
-    /// </summary>
-    private static string? PluginInfo => string.Format("{0} {1}", nameof(ASFTradeExtension), MyVersion);
-
-    /// <summary>
-    /// 处理命令
-    /// </summary>
-    /// <param name="bot"></param>
-    /// <param name="access"></param>
-    /// <param name="cmd"></param>
-    /// <param name="args"></param>
-    /// <returns></returns>
-    /// <exception cref="InvalidOperationException"></exception>
-    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string[] args)
+    public Task OnBotDestroy(Bot bot)
     {
-        int argLength = args.Length;
+        Command.Handlers.TryRemove(bot, out _);
+        return Task.CompletedTask;
+    }
 
-        bool autoConfirm = false;
-        if (cmd.StartsWith('2'))
-        {
-            autoConfirm = true;
-            cmd = cmd[1..];
-        }
-
-        return argLength switch
-        {
-            0 => throw new InvalidOperationException(nameof(args)),
-            1 => cmd switch //不带参数
-            {
-                //插件信息
-                "ASFTradeExtension" or
-                "ATE" when access >= EAccess.FamilySharing =>
-                    Task.FromResult(PluginInfo),
-
-                //获取卡牌信息
-                "FULLSETLIST" or
-                "FSL" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetList(bot, null, false),
-
-                "FULLSETLISTFOIL" or
-                "FSLF" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetList(bot, null, true),
-
-                "FULLSETLISTSALE" or
-                "FSLS" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetListSaleEvent(bot),
-
-                //获取宝珠信息
-                "GEMSINFO" or
-                "GI" when access >= EAccess.Operator =>
-                    Card.Command.ResponseGemsInfo(bot),
-
-                //重新加载库存
-                "RELOADCACHE" when access >= EAccess.Operator =>
-                    Card.Command.ResponseReloadCache(bot),
-
-                _ => null,
-            },
-            _ => cmd switch //带参数
-            {
-                //获取卡牌信息
-                "FULLSETLIST" or
-                "FSL" when access >= EAccess.Operator && argLength == 2 =>
-                    Card.Command.ResponseFullSetList(args[1], null, false),
-                "FULLSETLIST" or
-                "FSL" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                    Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ","), false),
-                "FULLSETLIST" or
-                "FSL" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                    Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), false),
-
-                "FULLSETLISTFOIL" or
-                "FSLF" when access >= EAccess.Operator && argLength == 2 =>
-                    Card.Command.ResponseFullSetList(args[1], null, true),
-                "FULLSETLISTFOIL" or
-                "FSLF" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                    Card.Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ","), true),
-                "FULLSETLISTFOIL" or
-                "FSLF" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                    Card.Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), true),
-
-                "FULLSETLISTSALE" or
-                "FSLS" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetListSaleEvent(Utilities.GetArgsAsText(args, 1, ",")),
-
-                //获取指定游戏卡牌套数
-                "FULLSET" or
-                "FS" when argLength >= 3 && access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ","), false),
-                "FULLSET" or
-                "FS" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetCountOfGame(bot, args[1], false),
-
-                "FULLSETFOIL" or
-                "FSF" when argLength >= 3 && access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ","), true),
-                "FULLSETFOIL" or
-                "FSF" when access >= EAccess.Operator =>
-                    Card.Command.ResponseFullSetCountOfGame(bot, args[1], true),
-
-                //获取宝珠信息
-                "GEMSINFO" or
-                "GI" when access >= EAccess.Operator =>
-                    Card.Command.ResponseGemsInfo(Utilities.GetArgsAsText(args, 1, ",")),
-
-                //发送套卡给机器人
-                "SENDCARDSETBOT" or
-                "SCSB" when access >= EAccess.Master && argLength == 5 =>
-                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, false),
-                "SENDCARDSETBOT" or
-                "SCSB" when access >= EAccess.Master && argLength == 4 =>
-                    Card.Command.ResponseSendCardSetBot(bot, args[1], args[2], args[3], autoConfirm, false),
-
-                //发送套卡给交易链接
-                "SENDCARDSET" or
-                "SCS" when access >= EAccess.Master && argLength == 5 =>
-                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, false),
-                "SENDCARDSET" or
-                "SCS" when access >= EAccess.Master && argLength == 4 =>
-                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], autoConfirm, false),
-
-                //发送闪卡套卡给机器人
-                "SENDCARDSETBOTFOIL" or
-                "SCSBF" when access >= EAccess.Master && argLength == 5 =>
-                    Card.Command.ResponseSendCardSetBot(args[1], args[2], args[3], args[4], autoConfirm, true),
-                "SENDCARDSETBOTFOIL" or
-                "SCSBF" when access >= EAccess.Master && argLength == 4 =>
-                    Card.Command.ResponseSendCardSetBot(bot, args[1], args[2], args[3], autoConfirm, true),
-
-                //发送闪卡套卡给交易链接
-                "SENDCARDSETFOIL" or
-                "SCSF" when access >= EAccess.Master && argLength == 5 =>
-                    Card.Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, true),
-                "SENDCARDSETFOIL" or
-                "SCSF" when access >= EAccess.Master && argLength == 4 =>
-                    Card.Command.ResponseSendCardSet(bot, args[1], args[2], args[3], autoConfirm, true),
-
-                //发送宝珠给机器人
-                "SENDGEMSBOT" or
-                "SGB" when access >= EAccess.Master && argLength == 4 =>
-                    Card.Command.ResponseSendGemsBot(args[1], args[2], args[3], autoConfirm),
-                "SENDGEMSBOT" or
-                "SGB" when access >= EAccess.Master && argLength == 3 =>
-                    Card.Command.ResponseSendGemsBot(bot, args[1], args[2], autoConfirm),
-
-                //发送宝珠给交易链接
-                "SENDGEMS" or
-                "SG" when access >= EAccess.Master && argLength == 4 =>
-                    Card.Command.ResponseSendGems(args[1], args[2], args[3], autoConfirm),
-                "SENDGEMS" or
-                "SG" when access >= EAccess.Master && argLength == 3 =>
-                    Card.Command.ResponseSendGems(bot, args[1], args[2], autoConfirm),
-
-                //重新加载库存
-                "RELOADCACHE" when access >= EAccess.Operator =>
-                    Card.Command.ResponseReloadCache(Utilities.GetArgsAsText(args, 1, ",")),
-
-                _ => null,
-            }
-        };
+    public Task OnBotInit(Bot bot)
+    {
+        var botHandler = new InventoryHandler(bot);
+        Command.Handlers.TryAdd(bot, botHandler);
+        return Task.CompletedTask;
     }
 
     /// <summary>
-    /// 处理命令事件
+    ///     处理命令事件
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="access"></param>
@@ -336,10 +189,8 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
             {
                 return await task.ConfigureAwait(false);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
         catch (Exception ex)
         {
@@ -353,21 +204,12 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
         }
     }
 
-    public Task OnBotDestroy(Bot bot)
-    {
-        Card.Command.Handlers.TryRemove(bot, out var _);
-        return Task.CompletedTask;
-    }
+    public bool CanUpdate => true;
+    public string RepositoryName => "chr233/ASFEnhance";
 
-    public Task OnBotInit(Bot bot)
-    {
-        var botHandler = new InventoryHandler(bot);
-        Card.Command.Handlers.TryAdd(bot, botHandler);
-        return Task.CompletedTask;
-    }
-
-    /// <inheritdoc/>
-    public Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets)
+    /// <inheritdoc />
+    public Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion,
+        IReadOnlyCollection<ReleaseAsset> releaseAssets)
     {
         var result = releaseAssets.Count switch
         {
@@ -380,5 +222,163 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
         };
 
         return Task.FromResult(result);
+    }
+
+    /// <summary>
+    ///     处理命令
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="access"></param>
+    /// <param name="cmd"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string[] args)
+    {
+        var argLength = args.Length;
+
+        var autoConfirm = false;
+        if (cmd.StartsWith('2'))
+        {
+            autoConfirm = true;
+            cmd = cmd[1..];
+        }
+
+        return argLength switch
+        {
+            0 => throw new InvalidOperationException(nameof(args)),
+            1 => cmd switch //不带参数
+            {
+                //插件信息
+                "ASFTradeExtension" or
+                    "ATE" when access >= EAccess.FamilySharing =>
+                    Task.FromResult(PluginInfo),
+
+                //获取卡牌信息
+                "FULLSETLIST" or
+                    "FSL" when access >= EAccess.Operator =>
+                    Command.ResponseFullSetList(bot, null, false),
+
+                "FULLSETLISTFOIL" or
+                    "FSLF" when access >= EAccess.Operator =>
+                    Command.ResponseFullSetList(bot, null, true),
+
+                "FULLSETLISTSALE" or
+                    "FSLS" when access >= EAccess.Operator =>
+                    Command.ResponseFullSetListSaleEvent(bot),
+
+                //获取宝珠信息
+                "GEMSINFO" or
+                    "GI" when access >= EAccess.Operator =>
+                    Command.ResponseGemsInfo(bot),
+
+                //重新加载库存
+                "RELOADCACHE" when access >= EAccess.Operator =>
+                    Command.ResponseReloadCache(bot),
+
+                _ => null
+            },
+            _ => cmd switch //带参数
+            {
+                //获取卡牌信息
+                "FULLSETLIST" or
+                    "FSL" when access >= EAccess.Operator && argLength == 2 =>
+                    Command.ResponseFullSetList(args[1], null, false),
+                "FULLSETLIST" or
+                    "FSL" when access >= EAccess.Operator && argLength % 2 == 0 =>
+                    Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ","), false),
+                "FULLSETLIST" or
+                    "FSL" when access >= EAccess.Operator && argLength % 2 != 0 =>
+                    Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), false),
+
+                "FULLSETLISTFOIL" or
+                    "FSLF" when access >= EAccess.Operator && argLength == 2 =>
+                    Command.ResponseFullSetList(args[1], null, true),
+                "FULLSETLISTFOIL" or
+                    "FSLF" when access >= EAccess.Operator && argLength % 2 == 0 =>
+                    Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ","), true),
+                "FULLSETLISTFOIL" or
+                    "FSLF" when access >= EAccess.Operator && argLength % 2 != 0 =>
+                    Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), true),
+
+                "FULLSETLISTSALE" or
+                    "FSLS" when access >= EAccess.Operator =>
+                    Command.ResponseFullSetListSaleEvent(Utilities.GetArgsAsText(args, 1, ",")),
+
+                //获取指定游戏卡牌套数
+                "FULLSET" or
+                    "FS" when argLength >= 3 && access >= EAccess.Operator =>
+                    Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ","), false),
+                "FULLSET" or
+                    "FS" when access >= EAccess.Operator =>
+                    Command.ResponseFullSetCountOfGame(bot, args[1], false),
+
+                "FULLSETFOIL" or
+                    "FSF" when argLength >= 3 && access >= EAccess.Operator =>
+                    Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ","), true),
+                "FULLSETFOIL" or
+                    "FSF" when access >= EAccess.Operator =>
+                    Command.ResponseFullSetCountOfGame(bot, args[1], true),
+
+                //获取宝珠信息
+                "GEMSINFO" or
+                    "GI" when access >= EAccess.Operator =>
+                    Command.ResponseGemsInfo(Utilities.GetArgsAsText(args, 1, ",")),
+
+                //发送套卡给机器人
+                "SENDCARDSETBOT" or
+                    "SCSB" when access >= EAccess.Master && argLength == 5 =>
+                    Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, false),
+                "SENDCARDSETBOT" or
+                    "SCSB" when access >= EAccess.Master && argLength == 4 =>
+                    Command.ResponseSendCardSetBot(bot, args[1], args[2], args[3], autoConfirm, false),
+
+                //发送套卡给交易链接
+                "SENDCARDSET" or
+                    "SCS" when access >= EAccess.Master && argLength == 5 =>
+                    Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, false),
+                "SENDCARDSET" or
+                    "SCS" when access >= EAccess.Master && argLength == 4 =>
+                    Command.ResponseSendCardSet(bot, args[1], args[2], args[3], autoConfirm, false),
+
+                //发送闪卡套卡给机器人
+                "SENDCARDSETBOTFOIL" or
+                    "SCSBF" when access >= EAccess.Master && argLength == 5 =>
+                    Command.ResponseSendCardSetBot(args[1], args[2], args[3], args[4], autoConfirm, true),
+                "SENDCARDSETBOTFOIL" or
+                    "SCSBF" when access >= EAccess.Master && argLength == 4 =>
+                    Command.ResponseSendCardSetBot(bot, args[1], args[2], args[3], autoConfirm, true),
+
+                //发送闪卡套卡给交易链接
+                "SENDCARDSETFOIL" or
+                    "SCSF" when access >= EAccess.Master && argLength == 5 =>
+                    Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, true),
+                "SENDCARDSETFOIL" or
+                    "SCSF" when access >= EAccess.Master && argLength == 4 =>
+                    Command.ResponseSendCardSet(bot, args[1], args[2], args[3], autoConfirm, true),
+
+                //发送宝珠给机器人
+                "SENDGEMSBOT" or
+                    "SGB" when access >= EAccess.Master && argLength == 4 =>
+                    Command.ResponseSendGemsBot(args[1], args[2], args[3], autoConfirm),
+                "SENDGEMSBOT" or
+                    "SGB" when access >= EAccess.Master && argLength == 3 =>
+                    Command.ResponseSendGemsBot(bot, args[1], args[2], autoConfirm),
+
+                //发送宝珠给交易链接
+                "SENDGEMS" or
+                    "SG" when access >= EAccess.Master && argLength == 4 =>
+                    Command.ResponseSendGems(args[1], args[2], args[3], autoConfirm),
+                "SENDGEMS" or
+                    "SG" when access >= EAccess.Master && argLength == 3 =>
+                    Command.ResponseSendGems(bot, args[1], args[2], autoConfirm),
+
+                //重新加载库存
+                "RELOADCACHE" when access >= EAccess.Operator =>
+                    Command.ResponseReloadCache(Utilities.GetArgsAsText(args, 1, ",")),
+
+                _ => null
+            }
+        };
     }
 }

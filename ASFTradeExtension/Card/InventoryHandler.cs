@@ -59,6 +59,11 @@ internal class InventoryHandler(Bot _bot)
         {
             InventoryCache.Clear();
 
+            if (!_bot.IsConnectedAndLoggedOn)
+            {
+                return false;
+            }
+            
             var inventory = await _bot.ArchiWebHandler.GetInventoryAsync(0, 753, 6).ToListAsync().ConfigureAwait(false);
 
             var tmpInTradeList = new HashSet<ulong>();

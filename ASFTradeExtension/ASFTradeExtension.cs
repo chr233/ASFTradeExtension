@@ -25,7 +25,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     /// <summary>
     ///     获取插件信息
     /// </summary>
-    private static string? PluginInfo => $"{nameof(ASFTradeExtension)} {MyVersion}";
+    private string? PluginInfo => $"{Name} {Version}";
 
     public string Name => "ASF Trade Extension";
     public Version Version => MyVersion;
@@ -233,7 +233,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     /// <param name="args"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string[] args)
+    private  Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string[] args)
     {
         var argLength = args.Length;
 
@@ -250,7 +250,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
             1 => cmd switch //不带参数
             {
                 //插件信息
-                "ASFTradeExtension" or
+                "ASFTRADEEXTENSION" or
                     "ATE" when access >= EAccess.FamilySharing =>
                     Task.FromResult(PluginInfo),
 

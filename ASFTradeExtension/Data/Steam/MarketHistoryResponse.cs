@@ -1,7 +1,7 @@
 using SteamKit2;
 using System.Text.Json.Serialization;
 
-namespace ASFTradeExtension.Data;
+namespace ASFTradeExtension.Data.Steam;
 
 internal sealed record MarketHistoryResponse
 {

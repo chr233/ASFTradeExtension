@@ -2,8 +2,8 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ASFAwardTool.IPC.Responses;
-using ASFTradeExtension.Card;
-using ASFTradeExtension.Data;
+using ASFTradeExtension.Core;
+using ASFTradeExtension.Data.Core;
 using ASFTradeExtension.IPC.Requests;
 using ASFTradeExtension.IPC.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -15,18 +15,16 @@ using System.Net;
 namespace ASFTradeExtension.IPC.Controllers;
 
 /// <summary>
-///     用户接口
+/// 用户接口
 /// </summary>
-public sealed class TradeExtensionController : AbstractController
+[Route("/Api/[controller]/[action]")]
+public sealed class CardTradeController : AbstractController
 {
     /// <summary>
-    ///     获取机器人点数信息
+    /// 获取机器人点数信息
     /// </summary>
     /// <returns></returns>
     [HttpGet("{botName:required}")]
-    [SwaggerOperation(Summary = "获取机器人库存", Description = "获取机器人可用库存信息")]
-    [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult<BaseResponse<Dictionary<uint, AssetBundle>>>> GetBotStock(
         string botName, bool forceReload)
     {
@@ -55,13 +53,10 @@ public sealed class TradeExtensionController : AbstractController
     }
 
     /// <summary>
-    ///     获取机器人点数信息
+    /// 获取机器人点数信息
     /// </summary>
     /// <returns></returns>
     [HttpGet("{botNames:required}")]
-    [SwaggerOperation(Summary = "获取机器人库存", Description = "获取机器人可用库存信息")]
-    [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(BaseResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult<BaseResponse<Dictionary<string, Dictionary<uint, AssetBundle>>>>> GetBotsStock(
         string botNames, bool forceReload)
     {

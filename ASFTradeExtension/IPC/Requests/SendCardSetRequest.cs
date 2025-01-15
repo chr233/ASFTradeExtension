@@ -1,17 +1,17 @@
 namespace ASFTradeExtension.IPC.Requests;
 
 /// <summary>
-///     发送卡牌请求
+/// 发送卡牌请求
 /// </summary>
 public sealed record SendCardSetRequest
 {
     /// <summary>
-    ///     套数信息
+    /// 套数信息
     /// </summary>
     public Dictionary<uint, uint>? CardSets { get; set; }
 
     /// <summary>
-    ///     交易链接列表
+    /// 交易链接列表
     /// </summary>
     public string? TradeLink { get; set; }
 

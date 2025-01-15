@@ -4,7 +4,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
 using ASFTradeExtension.Cache;
-using ASFTradeExtension.Data;
+using ASFTradeExtension.Data.Plugin;
 using SteamKit2.Internal;
 using System.Reflection;
 using System.Text;
@@ -14,6 +14,11 @@ namespace ASFTradeExtension;
 internal static class Utils
 {
     /// <summary>
+    /// 促销卡牌
+    /// </summary>
+    internal static uint SaleEventAppId = 2861690;
+
+    /// <summary>
     /// 插件配置
     /// </summary>
     internal static PluginConfig Config { get; set; } = new();
@@ -21,9 +26,29 @@ internal static class Utils
     internal static CardSetManager CardSetCache { get; } = new();
 
     /// <summary>
-    /// 促销卡牌
+    /// 获取版本号
     /// </summary>
-    internal static uint SaleEventAppId = 2861690;
+    internal static Version MyVersion => Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0");
+
+    /// <summary>
+    /// 获取插件所在路径
+    /// </summary>
+    internal static string MyLocation => Assembly.GetExecutingAssembly().Location;
+
+    /// <summary>
+    /// Steam商店链接
+    /// </summary>
+    internal static Uri SteamStoreURL => ArchiWebHandler.SteamStoreURL;
+
+    /// <summary>
+    /// Steam社区链接
+    /// </summary>
+    internal static Uri SteamCommunityURL => ArchiWebHandler.SteamCommunityURL;
+
+    /// <summary>
+    /// 日志
+    /// </summary>
+    internal static ArchiLogger ASFLogger => ASF.ArchiLogger;
 
     /// <summary>
     /// 格式化返回文本
@@ -81,7 +106,7 @@ internal static class Utils
     /// <returns></returns>
     internal static async Task<string?> GetProfileLink(this Bot bot)
     {
-        return await bot.ArchiWebHandler.GetAbsoluteProfileURL(true).ConfigureAwait(false);
+        return await bot.ArchiWebHandler.GetAbsoluteProfileURL().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -104,31 +129,6 @@ internal static class Utils
         return steamId | 0x110000100000000;
     }
 
-    /// <summary>
-    /// 获取版本号
-    /// </summary>
-    internal static Version MyVersion => Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0");
-
-    /// <summary>
-    /// 获取插件所在路径
-    /// </summary>
-    internal static string MyLocation => Assembly.GetExecutingAssembly().Location;
-
-    /// <summary>
-    /// Steam商店链接
-    /// </summary>
-    internal static Uri SteamStoreURL => ArchiWebHandler.SteamStoreURL;
-
-    /// <summary>
-    /// Steam社区链接
-    /// </summary>
-    internal static Uri SteamCommunityURL => ArchiWebHandler.SteamCommunityURL;
-
-    /// <summary>
-    /// 日志
-    /// </summary>
-    internal static ArchiLogger ASFLogger => ASF.ArchiLogger;
-
     internal static CEcon_Asset CopyWithAmount(this CEcon_Asset body, ulong newAmount)
     {
         if (newAmount > long.MaxValue)
@@ -146,7 +146,7 @@ internal static class Utils
             currencyid = body.currencyid,
             est_usd = body.est_usd,
             instanceid = body.instanceid,
-            missing = body.missing,
+            missing = body.missing
         };
 
         return newBody;

@@ -3,9 +3,8 @@ using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Web.GitHub.Data;
-using ASFTradeExtension.Card;
 using ASFTradeExtension.Core;
-using ASFTradeExtension.Data;
+using ASFTradeExtension.Data.Plugin;
 using System.ComponentModel;
 using System.Composition;
 using System.Reflection;
@@ -23,7 +22,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     public static PluginConfig Config => Utils.Config;
 
     /// <summary>
-    ///     获取插件信息
+    /// 获取插件信息
     /// </summary>
     private string? PluginInfo => $"{Name} {Version}";
 
@@ -31,7 +30,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     public Version Version => MyVersion;
 
     /// <summary>
-    ///     ASF启动事件
+    /// ASF启动事件
     /// </summary>
     /// <param name="additionalConfigProperties"></param>
     /// <returns></returns>
@@ -108,7 +107,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     }
 
     /// <summary>
-    ///     插件加载事件
+    /// 插件加载事件
     /// </summary>
     /// <returns></returns>
     public async Task OnLoaded()
@@ -153,7 +152,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     }
 
     /// <summary>
-    ///     处理命令事件
+    /// 处理命令事件
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="access"></param>
@@ -225,7 +224,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     }
 
     /// <summary>
-    ///     处理命令
+    /// 处理命令
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="access"></param>
@@ -233,7 +232,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     /// <param name="args"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private  Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string[] args)
+    private Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string[] args)
     {
         var argLength = args.Length;
 

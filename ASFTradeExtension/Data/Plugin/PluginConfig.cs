@@ -1,4 +1,4 @@
-namespace ASFTradeExtension.Data;
+namespace ASFTradeExtension.Data.Plugin;
 
 /// <summary>
 /// 插件配置
@@ -9,6 +9,7 @@ public sealed record PluginConfig
     /// 是否同意使用协议
     /// </summary>
     public bool EULA { get; set; }
+
     /// <summary>
     /// 启用统计信息
     /// </summary>
@@ -18,8 +19,9 @@ public sealed record PluginConfig
     /// 单次交易最大物品数量
     /// </summary>
     public ushort MaxItemPerTrade { get; set; } = byte.MaxValue;
+
     /// <summary>
-    /// 缓存生存时间(秒)
+    /// 机器人缓存生存时间(秒)
     /// </summary>
     public ushort CacheTTL { get; set; } = 1800;
 }

@@ -3,10 +3,11 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
-using ASFTradeExtension.Data;
+using ASFTradeExtension.Data.Core;
 using static ArchiSteamFarm.Steam.Exchange.ParseTradeResult;
 
 namespace ASFTradeExtension.Core;
+
 internal class InventoryHandler(Bot _bot)
 {
     /// <summary>
@@ -18,15 +19,17 @@ internal class InventoryHandler(Bot _bot)
     /// 机器人库存缓存
     /// </summary>
     private List<Asset> InventoryCache { get; set; } = [];
+
     /// <summary>
     /// 机器人闪卡库存缓存
     /// </summary>
-    private List<Asset> FoilInventoryCache { get; set; } = [];
+    private List<Asset> FoilInventoryCache { get; } = [];
 
     /// <summary>
     /// 卡牌套数信息缓存
     /// </summary>
     private Dictionary<uint, AssetBundle> CardSetCache { get; set; } = [];
+
     /// <summary>
     /// 闪卡套数信息缓存
     /// </summary>
@@ -63,8 +66,8 @@ internal class InventoryHandler(Bot _bot)
             {
                 return false;
             }
-            
-            var inventory = await _bot.ArchiWebHandler.GetInventoryAsync(0, 753, 6).ToListAsync().ConfigureAwait(false);
+
+            var inventory = await _bot.ArchiWebHandler.GetInventoryAsync().ToListAsync().ConfigureAwait(false);
 
             var tmpInTradeList = new HashSet<ulong>();
 
@@ -78,13 +81,13 @@ internal class InventoryHandler(Bot _bot)
 
                         if (!InTradeItemAssetIDs.Contains(asset.AssetID))
                         {
-
                             InventoryCache.Add(asset);
                         }
                         else
                         {
                             tmpInTradeList.Add(asset.AssetID);
                         }
+
                         break;
 
                     case EAssetType.FoilTradingCard:
@@ -96,6 +99,7 @@ internal class InventoryHandler(Bot _bot)
                         {
                             tmpInTradeList.Add(asset.AssetID);
                         }
+
                         break;
 
                     case EAssetType.SteamGems:
@@ -111,7 +115,6 @@ internal class InventoryHandler(Bot _bot)
 
                         break;
                 }
-
             }
 
             GemsInfoCache = gemsInfo;
@@ -132,7 +135,7 @@ internal class InventoryHandler(Bot _bot)
     /// <summary>
     /// 获取机器人库存
     /// </summary>
-    /// <param name="forceReload"></param >
+    /// <param name="forceReload"></param>
     /// <returns></returns>
     public async Task<List<Asset>?> GetBotInventory(bool forceReload)
     {
@@ -207,6 +210,7 @@ internal class InventoryHandler(Bot _bot)
                 lastAppId = inv.RealAppID;
             }
         }
+
         return appIds;
     }
 
@@ -242,7 +246,7 @@ internal class InventoryHandler(Bot _bot)
                 TradableSetCount = 0,
                 NonTradableSetCount = 0,
                 ExtraTradableCount = 0,
-                ExtraNonTradableCount = 0,
+                ExtraNonTradableCount = 0
             };
 
             appClassIDsDict[appId] = [];
@@ -250,7 +254,8 @@ internal class InventoryHandler(Bot _bot)
 
         foreach (var asset in inventory)
         {
-            if (!assetBundleDict.TryGetValue(asset.RealAppID, out var bundle) || !appClassIDsDict.TryGetValue(asset.RealAppID, out var classIDs))
+            if (!assetBundleDict.TryGetValue(asset.RealAppID, out var bundle) ||
+                !appClassIDsDict.TryGetValue(asset.RealAppID, out var classIDs))
             {
                 continue;
             }
@@ -297,8 +302,8 @@ internal class InventoryHandler(Bot _bot)
             var tradableCount = tradableSet.Count == bundle.CardCountPerSet ? tradableSet.Values.Min() : 0;
             var nonTradableCount = nonTradableSet.Count == bundle.CardCountPerSet ? nonTradableSet.Values.Min() : 0;
 
-            var extraTradableCount = tradableSet.Values.Sum() - bundle.CardCountPerSet * tradableCount;
-            var extraNonTradableCount = nonTradableSet.Values.Sum() - bundle.CardCountPerSet * nonTradableCount;
+            var extraTradableCount = tradableSet.Values.Sum() - (bundle.CardCountPerSet * tradableCount);
+            var extraNonTradableCount = nonTradableSet.Values.Sum() - (bundle.CardCountPerSet * nonTradableCount);
 
             bundle.TradableSetCount = tradableCount;
             bundle.NonTradableSetCount = nonTradableCount;
@@ -340,7 +345,9 @@ internal class InventoryHandler(Bot _bot)
         }
 
         var semaphore = new SemaphoreSlim(5, 5);
-        var countPerSets = await Utilities.InParallel(lazyLoadBundles.Select(bundle => Utils.CardSetCache.GetCardSetCount(_bot, subPath, bundle.AppId, semaphore))).ConfigureAwait(false);
+        var countPerSets = await Utilities
+            .InParallel(lazyLoadBundles.Select(bundle =>
+                Utils.CardSetCache.GetCardSetCount(_bot, subPath, bundle.AppId, semaphore))).ConfigureAwait(false);
 
         //缓存有更新, 写入文件
         if (oldCacheCount != Utils.CardSetCache.CacheCount)
@@ -354,7 +361,7 @@ internal class InventoryHandler(Bot _bot)
             return;
         }
 
-        int i = 0;
+        var i = 0;
         foreach (var bundle in lazyLoadBundles)
         {
             var setCount = countPerSets[i++];
@@ -390,8 +397,8 @@ internal class InventoryHandler(Bot _bot)
                 var tradableCount = tradableSet.Count == bundle.CardCountPerSet ? tradableSet.Values.Min() : 0;
                 var nonTradableCount = nonTradableSet.Count == bundle.CardCountPerSet ? nonTradableSet.Values.Min() : 0;
 
-                var extraTradableCount = tradableSet.Values.Sum() - bundle.CardCountPerSet * tradableCount;
-                var extraNonTradableCount = nonTradableSet.Values.Sum() - bundle.CardCountPerSet * nonTradableCount;
+                var extraTradableCount = tradableSet.Values.Sum() - (bundle.CardCountPerSet * tradableCount);
+                var extraNonTradableCount = nonTradableSet.Values.Sum() - (bundle.CardCountPerSet * nonTradableCount);
 
                 bundle.TradableSetCount = tradableCount;
                 bundle.NonTradableSetCount = nonTradableCount;
@@ -423,7 +430,8 @@ internal class InventoryHandler(Bot _bot)
         }
 
         var semaphore = new SemaphoreSlim(5, 5);
-        var setCount = await Utils.CardSetCache.GetCardSetCount(_bot, subPath, SaleEventAppId, semaphore).ConfigureAwait(false);
+        var setCount = await Utils.CardSetCache.GetCardSetCount(_bot, subPath, SaleEventAppId, semaphore)
+            .ConfigureAwait(false);
 
         //缓存有更新, 写入文件
         if (oldCacheCount != Utils.CardSetCache.CacheCount)
@@ -464,8 +472,8 @@ internal class InventoryHandler(Bot _bot)
                 var tradableCount = tradableSet.Count == bundle.CardCountPerSet ? tradableSet.Values.Min() : 0;
                 var nonTradableCount = nonTradableSet.Count == bundle.CardCountPerSet ? nonTradableSet.Values.Min() : 0;
 
-                var extraTradableCount = tradableSet.Values.Sum() - bundle.CardCountPerSet * tradableCount;
-                var extraNonTradableCount = nonTradableSet.Values.Sum() - bundle.CardCountPerSet * nonTradableCount;
+                var extraTradableCount = tradableSet.Values.Sum() - (bundle.CardCountPerSet * tradableCount);
+                var extraNonTradableCount = nonTradableSet.Values.Sum() - (bundle.CardCountPerSet * nonTradableCount);
 
                 bundle.TradableSetCount = tradableCount;
                 bundle.NonTradableSetCount = nonTradableCount;
@@ -502,10 +510,12 @@ internal class InventoryHandler(Bot _bot)
 
                 //统计套数信息
                 var tradableCount = tradableSet.Count == foilBundle.CardCountPerSet ? tradableSet.Values.Min() : 0;
-                var nonTradableCount = nonTradableSet.Count == foilBundle.CardCountPerSet ? nonTradableSet.Values.Min() : 0;
+                var nonTradableCount =
+                    nonTradableSet.Count == foilBundle.CardCountPerSet ? nonTradableSet.Values.Min() : 0;
 
-                var extraTradableCount = tradableSet.Values.Sum() - foilBundle.CardCountPerSet * tradableCount;
-                var extraNonTradableCount = nonTradableSet.Values.Sum() - foilBundle.CardCountPerSet * nonTradableCount;
+                var extraTradableCount = tradableSet.Values.Sum() - (foilBundle.CardCountPerSet * tradableCount);
+                var extraNonTradableCount =
+                    nonTradableSet.Values.Sum() - (foilBundle.CardCountPerSet * nonTradableCount);
 
                 foilBundle.TradableSetCount = tradableCount;
                 foilBundle.NonTradableSetCount = nonTradableCount;
@@ -526,6 +536,7 @@ internal class InventoryHandler(Bot _bot)
         {
             value = 0;
         }
+
         dict[key] = value + 1;
     }
 
@@ -610,7 +621,8 @@ internal class InventoryHandler(Bot _bot)
         }
 
         var request = new Uri(SteamCommunityURL, $"/profiles/{_bot.SteamID}/tradeoffers/privacy");
-        var response = await _bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, referer: SteamStoreURL).ConfigureAwait(false);
+        var response = await _bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, referer: SteamStoreURL)
+            .ConfigureAwait(false);
         if (response?.Content == null)
         {
             return null;

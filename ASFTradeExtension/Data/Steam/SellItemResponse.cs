@@ -1,7 +1,6 @@
-
 using System.Text.Json.Serialization;
 
-namespace ASFTradeExtension.Data;
+namespace ASFTradeExtension.Data.Steam;
 
 internal sealed record SellItemResponse
 {

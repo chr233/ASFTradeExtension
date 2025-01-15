@@ -1,6 +1,7 @@
 using System.Reflection;
 
 namespace ASFTradeExtension;
+
 internal static class AdapterBridge
 {
     /// <summary>
@@ -12,17 +13,20 @@ internal static class AdapterBridge
     /// <param name="repoName">自动更新仓库</param>
     /// <param name="cmdHandler">命令处理函数</param>
     /// <returns></returns>
-    public static bool InitAdapter(string pluginName, string pluginIdentity, string? cmdPrefix, string? repoName, MethodInfo? cmdHandler)
+    public static bool InitAdapter(string pluginName, string pluginIdentity, string? cmdPrefix, string? repoName,
+        MethodInfo? cmdHandler)
     {
         try
         {
             var adapterEndpoint = Assembly.Load("ASFEnhance").GetType("ASFEnhance._Adapter_.Endpoint");
-            var registerModule = adapterEndpoint?.GetMethod("RegisterModule", BindingFlags.Static | BindingFlags.Public);
+            var registerModule =
+                adapterEndpoint?.GetMethod("RegisterModule", BindingFlags.Static | BindingFlags.Public);
             var pluinVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
             if (registerModule != null && adapterEndpoint != null)
             {
-                var result = registerModule?.Invoke(null, [pluginName, pluginIdentity, cmdPrefix, repoName, pluinVersion, cmdHandler]);
+                var result = registerModule?.Invoke(null,
+                    [pluginName, pluginIdentity, cmdPrefix, repoName, pluinVersion, cmdHandler]);
 
                 if (result is string str)
                 {
@@ -30,10 +34,8 @@ internal static class AdapterBridge
                     {
                         return true;
                     }
-                    else
-                    {
-                        ASFLogger.LogGenericWarning(str);
-                    }
+
+                    ASFLogger.LogGenericWarning(str);
                 }
             }
         }

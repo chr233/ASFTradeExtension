@@ -1,6 +1,7 @@
 using ArchiSteamFarm.Steam.Data;
 
-namespace ASFTradeExtension.Data;
+namespace ASFTradeExtension.Data.Core;
+
 internal sealed record GemsInfo
 {
     public List<Asset> GemAssets { get; set; } = [];

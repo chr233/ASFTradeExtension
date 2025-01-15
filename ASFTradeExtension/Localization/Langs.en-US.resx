@@ -1,318 +1,323 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="CartEmptyResponse" xml:space="preserve">
+	<!-- 
+	  Microsoft ResX Schema 
+	  
+	  Version 2.0
+	  
+	  The primary goals of this format is to allow a simple XML format 
+	  that is mostly human readable. The generation and parsing of the 
+	  various data types are done through the TypeConverter classes 
+	  associated with the data types.
+	  
+	  Example:
+	  
+	  ... ado.net/XML headers & schema ...
+	  <resheader name="resmimetype">text/microsoft-resx</resheader>
+	  <resheader name="version">2.0</resheader>
+	  <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+	  <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+	  <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+	  <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+	  <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+		  <value>[base64 mime encoded serialized .NET Framework object]</value>
+	  </data>
+	  <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+		  <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+		  <comment>This is a comment</comment>
+	  </data>
+				  
+	  There are any number of "resheader" rows that contain simple 
+	  name/value pairs.
+	  
+	  Each data row contains a name, and value. The row also contains a 
+	  type or mimetype. Type corresponds to a .NET class that support 
+	  text/value conversion through the TypeConverter architecture. 
+	  Classes that don't support this are serialized and stored with the 
+	  mimetype set.
+	  
+	  The mimetype is used for serialized objects, and tells the 
+	  ResXResourceReader how to depersist the object. This is currently not 
+	  extensible. For a given mimetype the value must be set accordingly:
+	  
+	  Note - application/x-microsoft.net.object.binary.base64 is the format 
+	  that the ResXResourceWriter will generate, however the reader can 
+	  read any of the formats listed below.
+	  
+	  mimetype: application/x-microsoft.net.object.binary.base64
+	  value   : The object must be serialized with 
+			  : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+			  : and then encoded with base64 encoding.
+	  
+	  mimetype: application/x-microsoft.net.object.soap.base64
+	  value   : The object must be serialized with 
+			  : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			  : and then encoded with base64 encoding.
+  
+	  mimetype: application/x-microsoft.net.object.bytearray.base64
+	  value   : The object must be serialized into a byte array 
+			  : using a System.ComponentModel.TypeConverter
+			  : and then encoded with base64 encoding.
+	  -->
+	<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root"
+				xmlns="">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<data name="CartEmptyResponse" xml:space="preserve">
     <value>Response is empty</value>
   </data>
-  <data name="NetworkError" xml:space="preserve">
+	<data name="NetworkError" xml:space="preserve">
     <value>Network Error</value>
   </data>
-  <data name="Error" xml:space="preserve">
+	<data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
-  <data name="PluginContact" xml:space="preserve">
+	<data name="PluginContact" xml:space="preserve">
     <value>Developed by Chr_, email chr@chrxw.com</value>
   </data>
-  <data name="Success" xml:space="preserve">
+	<data name="Success" xml:space="preserve">
     <value>Success</value>
   </data>
-  <data name="Done" xml:space="preserve">
+	<data name="Done" xml:space="preserve">
     <value>Done</value>
   </data>
-  <data name="MultipleLineResult" xml:space="preserve">
+	<data name="MultipleLineResult" xml:space="preserve">
     <value>Multiple line result:</value>
   </data>
-  <data name="PluginInfo" xml:space="preserve">
+	<data name="PluginInfo" xml:space="preserve">
     <value>Donate: https://afdian.net/@chr233</value>
   </data>
-  <data name="CurrentLanguage" xml:space="preserve">
+	<data name="CurrentLanguage" xml:space="preserve">
     <value>en-US</value>
   </data>
-  <data name="CleanUpOldBackup" xml:space="preserve">
+	<data name="CleanUpOldBackup" xml:space="preserve">
     <value>Clear the old plugin's backup file success</value>
   </data>
-  <data name="CleanUpOldBackupFailed" xml:space="preserve">
+	<data name="CleanUpOldBackupFailed" xml:space="preserve">
     <value>Clear the old plugin's backup file failed</value>
   </data>
-  <data name="PluginVer" xml:space="preserve">
+	<data name="PluginVer" xml:space="preserve">
     <value>{0} Version {1}</value>
   </data>
-  <data name="EulaWarning" xml:space="preserve">
+	<data name="EulaWarning" xml:space="preserve">
     <value>{0}: ASFEnhance.EULA not agreed, some features is disabled</value>
   </data>
-  <data name="TwoItem" xml:space="preserve">
+	<data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
-  <data name="Line" xml:space="preserve">
+	<data name="Line" xml:space="preserve">
     <value>==========================================</value>
   </data>
-  <data name="DeListingSuccess" xml:space="preserve">
+	<data name="DeListingSuccess" xml:space="preserve">
     <value>Successfully cancelled {0} items</value>
   </data>
-  <data name="CurrentCardInventoryShow" xml:space="preserve">
+	<data name="CurrentCardInventoryShow" xml:space="preserve">
     <value>{0}: 总计 {1}张, 每套 {2}张, 可交易 {3}套 +{4}张, 不可交易 {5}套 +{6}张</value>
   </data>
-  <data name="CsMarketHistoryArgsTips" xml:space="preserve">
+	<data name="CsMarketHistoryArgsTips" xml:space="preserve">
     <value>Arguments are invalid SENDCSITEM [BotNames] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent</value>
   </data>
-  <data name="CsDeListingItemArgsTips" xml:space="preserve">
+	<data name="CsDeListingItemArgsTips" xml:space="preserve">
     <value>Arguments are invalid CSDELISTING [BotNames] [ClassId], if no ClassId is specified, all items will be removed from the market</value>
   </data>
-  <data name="FetchTradeLinkFailed" xml:space="preserve">
+	<data name="FetchTradeLinkFailed" xml:space="preserve">
     <value>Failure to automatically fetch trading links</value>
   </data>
-  <data name="InvalidClassId" xml:space="preserve">
+	<data name="InvalidClassId" xml:space="preserve">
     <value>Invalid ClassId</value>
   </data>
-  <data name="ItemListingSuccess" xml:space="preserve">
+	<data name="ItemListingSuccess" xml:space="preserve">
     <value>Total {0} items listed {1}</value>
   </data>
-  <data name="ItemListSuccessWaitConfirm" xml:space="preserve">
+	<data name="ItemListSuccessWaitConfirm" xml:space="preserve">
     <value>Total {0} items listed, awaiting manual confirmation</value>
   </data>
-  <data name="NoBotsAvilable" xml:space="preserve">
+	<data name="NoBotsAvilable" xml:space="preserve">
     <value>No available bots</value>
   </data>
-  <data name="InventoryStatusBeforeTrade" xml:space="preserve">
+	<data name="InventoryStatusBeforeTrade" xml:space="preserve">
     <value>Pre-trade inventory status:</value>
   </data>
-  <data name="ExpectToSendCardInfo" xml:space="preserve">
+	<data name="ExpectToSendCardInfo" xml:space="preserve">
     <value>Expected to send {0} sets, total {1} cards</value>
   </data>
-  <data name="Failure" xml:space="preserve">
+	<data name="Failure" xml:space="preserve">
     <value>Failure</value>
   </data>
-  <data name="LoadInventoryFailedNetworkError" xml:space="preserve">
+	<data name="LoadInventoryFailedNetworkError" xml:space="preserve">
     <value>Failed to read inventory information due to network error</value>
   </data>
-  <data name="NoAvilableCards" xml:space="preserve">
+	<data name="NoAvilableCards" xml:space="preserve">
     <value>No available cards</value>
   </data>
-  <data name="NoAvilableItemToShow" xml:space="preserve">
+	<data name="NoAvilableItemToShow" xml:space="preserve">
     <value>Nothing to display under current settings</value>
   </data>
-  <data name="TFAConfirmResult" xml:space="preserve">
+	<data name="TFAConfirmResult" xml:space="preserve">
     <value>2FA auto-confirmation {0}</value>
   </data>
-  <data name="ThreeItemWithNum" xml:space="preserve">
+	<data name="ThreeItemWithNum" xml:space="preserve">
     <value>{0} {1} Quantity {2}</value>
   </data>
-  <data name="CardInventoryIsEmpty" xml:space="preserve">
+	<data name="CardInventoryIsEmpty" xml:space="preserve">
     <value>Card inventory is empty</value>
   </data>
-  <data name="NoInformation" xml:space="preserve">
+	<data name="NoInformation" xml:space="preserve">
     <value>No information</value>
   </data>
-  <data name="SellCsItemArgsTips" xml:space="preserve">
+	<data name="SellCsItemArgsTips" xml:space="preserve">
     <value>Arguments are invalid SELLCSITEM ClassId Quantity Price, Sell All if Quantity is -1</value>
   </data>
-  <data name="SendTradeFailedAppIdInvalid" xml:space="preserve">
+	<data name="SendTradeFailedAppIdInvalid" xml:space="preserve">
     <value>Failed to send trade, AppId may not be valid</value>
   </data>
-  <data name="SendCsItemArgsTips" xml:space="preserve">
+	<data name="SendCsItemArgsTips" xml:space="preserve">
     <value>Arguments are invalid SENDCSITEM [Bots] [ClassId] Number of items to be sent to each Bot, if ClassId is not specified, all tradable items will be sent, otherwise only the specified items will be sent</value>
   </data>
-  <data name="SendTradeResult" xml:space="preserve">
+	<data name="SendTradeResult" xml:space="preserve">
     <value>Trade offer sent {0}</value>
   </data>
-  <data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
+	<data name="SendTradeFailedNoItemAvilable" xml:space="preserve">
     <value>Send trade offer {0} -&gt; {1} Failed, no items available</value>
   </data>
-  <data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
+	<data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
     <value>Failed to send trade offer, not enough cards available for trade</value>
   </data>
-  <data name="SteamIdInvalid" xml:space="preserve">
+	<data name="SteamIdInvalid" xml:space="preserve">
     <value>SteamId Invalid</value>
   </data>
-  <data name="ArgumentInvalidAppIds" xml:space="preserve">
+	<data name="ArgumentInvalidAppIds" xml:space="preserve">
     <value>Input argument AppIds Invalid</value>
   </data>
-  <data name="AppIdInvalid" xml:space="preserve">
+	<data name="AppIdInvalid" xml:space="preserve">
     <value>Invalid AppId</value>
   </data>
-  <data name="ArgumentInvalidSCS2" xml:space="preserve">
+	<data name="ArgumentInvalidSCS2" xml:space="preserve">
     <value>AppId and SetCount must be above 0</value>
   </data>
-  <data name="ArgumentInvalidSCS" xml:space="preserve">
+	<data name="ArgumentInvalidSCS" xml:space="preserve">
     <value>Invalid argument, Example: 730 2 Trade link</value>
   </data>
-  <data name="ArgumentInvalidFSL" xml:space="preserve">
+	<data name="ArgumentInvalidFSL" xml:space="preserve">
     <value>Invalid argument, Example: -p 2 -l 20 (second page, 20 entries per page)</value>
   </data>
-  <data name="ASFEnhanceRegisterFailed" xml:space="preserve">
+	<data name="ASFEnhanceRegisterFailed" xml:space="preserve">
     <value>ASFEBridge registration failed</value>
   </data>
-  <data name="ASFEnhanceRegisterSuccess" xml:space="preserve">
+	<data name="ASFEnhanceRegisterSuccess" xml:space="preserve">
     <value>ASFEBridge registration successful</value>
   </data>
-  <data name="PluginStandalongMode" xml:space="preserve">
+	<data name="PluginStandalongMode" xml:space="preserve">
     <value>Recommended to install ASFEnhance, support for automatic update plug-ins.</value>
   </data>
-  <data name="InternalError" xml:space="preserve">
+	<data name="InternalError" xml:space="preserve">
     <value>Internal Error</value>
   </data>
-  <data name="SendTradeSuccess" xml:space="preserve">
+	<data name="SendTradeSuccess" xml:space="preserve">
     <value>Send trade offer {0} -&gt; {1}, item quantity {2}, {3}</value>
   </data>
-  <data name="NoInventory" xml:space="preserve">
+	<data name="NoInventory" xml:space="preserve">
     <value>No inventory</value>
   </data>
-  <data name="ReloadInventoryCacheDone" xml:space="preserve">
+	<data name="ReloadInventoryCacheDone" xml:space="preserve">
     <value>Reload inventory cache successful</value>
   </data>
-  <data name="CardInventory" xml:space="preserve">
+	<data name="CardInventory" xml:space="preserve">
     <value>Normal card stock info:</value>
   </data>
-  <data name="FoilCardInventory" xml:space="preserve">
+	<data name="FoilCardInventory" xml:space="preserve">
     <value>Foil card stock info:</value>
   </data>
-  <data name="FoilSaleEventCardInventory" xml:space="preserve">
+	<data name="FoilSaleEventCardInventory" xml:space="preserve">
     <value>Foil sale event card stock info:</value>
   </data>
-  <data name="SaleEventCardInventory" xml:space="preserve">
+	<data name="SaleEventCardInventory" xml:space="preserve">
     <value>Normal sale event card stock info:</value>
   </data>
-  <data name="AlreadyLatest" xml:space="preserve">
+	<data name="AlreadyLatest" xml:space="preserve">
     <value>The plugin is up to date, no need to update</value>
   </data>
-  <data name="NoAssetFoundInReleaseInfo" xml:space="preserve">
+	<data name="NoAssetFoundInReleaseInfo" xml:space="preserve">
     <value>No asset found in the release</value>
   </data>
-  <data name="GemBagsSunnary" xml:space="preserve">
+	<data name="GemBagsSunnary" xml:space="preserve">
     <value>GemsBag: tradable {0} non-tradable {1} total {2}</value>
   </data>
-  <data name="GemsSummary" xml:space="preserve">
+	<data name="GemsSummary" xml:space="preserve">
     <value>Gems: tradable {0} non-tradable {1} total: {2}</value>
   </data>
-  <data name="SendTradeFailedGemsNotEnough" xml:space="preserve">
+	<data name="SendTradeFailedGemsNotEnough" xml:space="preserve">
     <value>Send trade failed, tradable gems not enough</value>
   </data>
-  <data name="GemTradeSummary" xml:space="preserve">
+	<data name="GemTradeSummary" xml:space="preserve">
     <value>Prepare to send {0} gem bags and {1} gems, total {2} gems</value>
   </data>
-  <data name="TradableGemsSummary" xml:space="preserve">
+	<data name="TradableGemsSummary" xml:space="preserve">
     <value>Tradable {0} gem bags and {1} gems, total {2} gems</value>
   </data>
-  <data name="TotalGemsSummary" xml:space="preserve">
+	<data name="TotalGemsSummary" xml:space="preserve">
     <value>Summary: tradable {0} non-tradable {1} total {2}</value>
   </data>
-  <data name="LackOfGems" xml:space="preserve">
+	<data name="LackOfGems" xml:space="preserve">
     <value>Want to send {0} gems, still need {1} more gems</value>
   </data>
 </root>

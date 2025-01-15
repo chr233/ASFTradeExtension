@@ -4,38 +4,38 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="False" />
+		<ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="False"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AngleSharp.XPath" />
+		<PackageReference Include="AngleSharp.XPath"/>
 		<PackageReference Include="ConfigureAwaitChecker.Analyzer">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="SteamKit2" IncludeAssets="compile" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
-		<PackageReference Include="System.Composition.AttributedModel" />
-		<PackageReference Include="System.Linq.Async" IncludeAssets="compile" />
-		<PackageReference Include="Microsoft.CodeAnalysis.ResxSourceGenerator" PrivateAssets="all" />
+		<PackageReference Include="SteamKit2" IncludeAssets="compile"/>
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations"/>
+		<PackageReference Include="System.Composition.AttributedModel"/>
+		<PackageReference Include="System.Linq.Async" IncludeAssets="compile"/>
+		<PackageReference Include="Microsoft.CodeAnalysis.ResxSourceGenerator" PrivateAssets="all"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\.editorconfig" Link=".editorconfig" />
+		<None Include="..\.editorconfig" Link=".editorconfig"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Localization\Langs.resx" EmitFormatMethods="true" Public="true" />
+		<EmbeddedResource Update="Localization\Langs.resx" EmitFormatMethods="true" Public="true"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Include="ASFTradeExtension.Localization" />
+		<Using Include="ASFTradeExtension.Localization"/>
 		<Using Include="ASFTradeExtension.Utils">
 			<Static>True</Static>
 		</Using>
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Copy SourceFiles="$(TargetPath)" DestinationFolder="..\ArchiSteamFarm\ArchiSteamFarm\bin\$(Configuration)\$(TargetFramework)\plugins\" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="..\ArchiSteamFarm\ArchiSteamFarm\bin\$(Configuration)\$(TargetFramework)\plugins\" SkipUnchangedFiles="true"/>
 	</Target>
 </Project>

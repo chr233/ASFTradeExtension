@@ -123,7 +123,7 @@ csharp_preferred_modifier_order = public, private, protected, internal, static, 
 
 # 代码块首选项
 csharp_style_namespace_declarations = file_scoped:suggestion
-csharp_prefer_braces = false
+csharp_prefer_braces = true
 csharp_prefer_simple_using_statement = true
 
 # 表达式级首选项

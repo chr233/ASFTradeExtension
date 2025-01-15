@@ -1,5 +1,6 @@
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Steam;
+using ASFTradeExtension.Data.Plugin;
 using System.Collections.Concurrent;
 
 namespace ASFTradeExtension.Cache;
@@ -9,10 +10,19 @@ namespace ASFTradeExtension.Cache;
 /// </summary>
 internal class CardSetManager
 {
+    public CardSetManager()
+    {
+        const string fileName = "ATE_Cache.json";
+        var pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
+        FilePath = Path.Combine(pluginFolder, fileName);
+    }
+
+    private string FilePath { get; }
+
     /// <summary>
     /// 发货机器人名称
     /// </summary>
-    public string? MasterBotName { get; set; }
+    public string? MasterBotName { get; private set; }
 
     /// <summary>
     /// 卡牌套数信息缓存
@@ -28,6 +38,12 @@ internal class CardSetManager
     /// 写缓存锁
     /// </summary>
     private SemaphoreSlim CacheLock { get; } = new(1, 1);
+
+    public Task SetMasterBotName(string botName)
+    {
+        MasterBotName = botName;
+        return SaveCacheFile();
+    }
 
     /// <summary>
     /// 获取卡牌套数
@@ -113,17 +129,6 @@ internal class CardSetManager
     }
 
     /// <summary>
-    /// 获取库存缓存文件路径
-    /// </summary>
-    /// <returns></returns>
-    private static string GetFilePath()
-    {
-        var pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
-        var filePath = Path.Combine(pluginFolder, "ATE_Cache.json");
-        return filePath;
-    }
-
-    /// <summary>
     /// 加载缓存文件
     /// </summary>
     /// <returns></returns>
@@ -133,18 +138,19 @@ internal class CardSetManager
         {
             await CacheLock.WaitAsync().ConfigureAwait(false);
 
-            var filePath = GetFilePath();
-            if (File.Exists(filePath))
+            if (File.Exists(FilePath))
             {
-                using var fs = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                await using var fs = File.Open(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite,
+                    FileShare.ReadWrite);
                 using var sr = new StreamReader(fs);
                 var raw = await sr.ReadToEndAsync().ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(raw))
                 {
-                    var dict = raw.ToJsonObject<ConcurrentDictionary<uint, int>>();
-                    if (dict != null)
+                    var data = raw.ToJsonObject<StorageData>();
+                    if (data != null)
                     {
-                        FullSetCountCache = dict;
+                        MasterBotName = data.MasterBotName;
+                        FullSetCountCache = data.FullSetCount ?? [];
                     }
                 }
             }
@@ -170,10 +176,10 @@ internal class CardSetManager
         {
             await CacheLock.WaitAsync().ConfigureAwait(false);
 
-            var filePath = GetFilePath();
-            using var fs = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-            using var sw = new StreamWriter(fs);
-            var json = FullSetCountCache.ToJsonText();
+            await using var fs = File.Open(FilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+            await using var sw = new StreamWriter(fs);
+            var data = new StorageData(MasterBotName, FullSetCountCache);
+            var json = data.ToJsonText();
             await sw.WriteAsync(json).ConfigureAwait(false);
         }
         catch (Exception ex)

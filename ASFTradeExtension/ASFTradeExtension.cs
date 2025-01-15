@@ -16,6 +16,8 @@ namespace ASFTradeExtension;
 [Export(typeof(IPlugin))]
 internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPluginUpdates
 {
+    private const string ShortName = "ATE";
+
     private bool ASFEBridge;
 
     private Timer? StatisticTimer;
@@ -24,7 +26,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     /// <summary>
     /// 获取插件信息
     /// </summary>
-    private string? PluginInfo => $"{Name} {Version}";
+    private string? PluginInfo => $"{Name} ({ShortName}) {Version}";
 
     public string Name => "ASF Trade Extension";
     public Version Version => MyVersion;
@@ -93,24 +95,31 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
         {
             var request = new Uri("https://asfe.chrxw.com/asftradeextension");
             StatisticTimer = new Timer(
-                async _ =>
+                async void (_) =>
                 {
-                    await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
+                    try
+                    {
+                        await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        ASFLogger.LogGenericException(ex);
+                    }
                 },
                 null,
-                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(180),
                 TimeSpan.FromHours(24)
             );
         }
 
-        return Task.CompletedTask;
+        return CardSetCache.SaveCacheFile();
     }
 
     /// <summary>
     /// 插件加载事件
     /// </summary>
     /// <returns></returns>
-    public async Task OnLoaded()
+    public Task OnLoaded()
     {
         ASFLogger.LogGenericInfo(Langs.PluginContact);
         ASFLogger.LogGenericInfo(Langs.PluginInfo);
@@ -134,20 +143,19 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
             ASFLogger.LogGenericWarning(Langs.PluginStandalongMode);
         }
 
-        await CardSetCache.LoadCacheFile().ConfigureAwait(false);
-        await CardSetCache.SaveCacheFile().ConfigureAwait(false);
+        return CardSetCache.LoadCacheFile();
     }
 
     public Task OnBotDestroy(Bot bot)
     {
-        Command.Handlers.TryRemove(bot, out _);
+        Command.CoreHandlers.TryRemove(bot, out _);
         return Task.CompletedTask;
     }
 
     public Task OnBotInit(Bot bot)
     {
         var botHandler = new InventoryHandler(bot);
-        Command.Handlers.TryAdd(bot, botHandler);
+        Command.CoreHandlers.TryAdd(bot, botHandler);
         return Task.CompletedTask;
     }
 
@@ -178,7 +186,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
         {
             var cmd = args[0].ToUpperInvariant();
 
-            if (cmd.StartsWith("ATE."))
+            if (cmd.StartsWith($"{ShortName}."))
             {
                 cmd = cmd[4..];
             }

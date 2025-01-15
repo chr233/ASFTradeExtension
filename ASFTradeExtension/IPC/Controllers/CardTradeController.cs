@@ -42,7 +42,7 @@ public sealed class CardTradeController : AbstractController
 
         Dictionary<uint, AssetBundle>? result = null;
 
-        var handler = Command.Handlers.GetValueOrDefault(bot);
+        var handler = Command.CoreHandlers.GetValueOrDefault(bot);
         if (handler != null)
         {
             result = await handler.GetCardSetCache(forceReload).ConfigureAwait(false);
@@ -77,7 +77,7 @@ public sealed class CardTradeController : AbstractController
         {
             var botname = bot.BotName;
 
-            var handler = Command.Handlers.GetValueOrDefault(bot);
+            var handler = Command.CoreHandlers.GetValueOrDefault(bot);
             if (handler == null)
             {
                 result[botname] = null;
@@ -116,7 +116,7 @@ public sealed class CardTradeController : AbstractController
             return Ok(new BaseResponse(false, "机器人离线, 无法发送报价"));
         }
 
-        var handler = Command.Handlers.GetValueOrDefault(bot);
+        var handler = Command.CoreHandlers.GetValueOrDefault(bot);
         if (handler == null)
         {
             return Ok(new BaseResponse(false, "内部异常, 无法发送报价"));
@@ -127,7 +127,7 @@ public sealed class CardTradeController : AbstractController
             return Ok(new BaseResponse(false, "请指定交易链接和卡牌套数信息"));
         }
 
-        var match = RegexUtils.MatchTradeLink().Match(payload.TradeLink);
+        var match = RegexUtils.MatchTradeLink.Match(payload.TradeLink);
 
         if (!match.Success || !ulong.TryParse(match.Groups[1].Value, out var targetSteamId))
         {

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ASFTradeExtension.Data.Steam;
 
-internal sealed record MarketHistoryResponse
+public sealed record MarketHistoryResponse
 {
     [JsonPropertyName("success")]
     public bool Success { get; set; }

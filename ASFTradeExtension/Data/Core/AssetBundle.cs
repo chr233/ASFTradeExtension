@@ -5,11 +5,22 @@ namespace ASFTradeExtension.Data.Core;
 
 public sealed record AssetBundle
 {
+    public AssetBundle(uint appId, int cardCountPerSet)
+    {
+        Assets = [];
+        AppId = appId;
+        CardCountPerSet = cardCountPerSet;
+        TradableSetCount = 0;
+        NonTradableSetCount = 0;
+        ExtraTradableCount = 0;
+        ExtraNonTradableCount = 0;
+    }
+
     /// <summary>
     /// 卡牌列表
     /// </summary>
     [JsonIgnore]
-    internal List<Asset>? Assets { get; set; }
+    internal List<Asset> Assets { get; set; }
 
     /// <summary>
     /// AppId

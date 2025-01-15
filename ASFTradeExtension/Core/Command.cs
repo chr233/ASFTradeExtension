@@ -11,7 +11,7 @@ namespace ASFTradeExtension.Core;
 
 internal static class Command
 {
-    internal static ConcurrentDictionary<Bot, InventoryHandler> Handlers { get; } = new();
+    internal static ConcurrentDictionary<Bot, InventoryHandler> CoreHandlers { get; } = new();
 
     /// <summary>
     /// 获取成套卡牌套数列表
@@ -22,11 +22,15 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetList(Bot bot, string? query, bool foilCard)
     {
-        if (!Handlers.TryGetValue(bot, out var handler))
+        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         if (!bot.IsConnectedAndLoggedOn)
+        {
             return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
 
         var page = 0;
         var count = 20;
@@ -35,7 +39,9 @@ internal static class Command
         {
             var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
             if (queries.Length % 2 != 0)
+            {
                 return bot.FormatBotResponse(Langs.ArgumentInvalidFSL);
+            }
 
             for (var i = 0; i < queries.Length; i += 2)
             {
@@ -47,13 +53,17 @@ internal static class Command
                     case "-p":
                     case "-page":
                         if (int.TryParse(value, out var p) && p > 0)
+                        {
                             page = p;
+                        }
 
                         continue;
                     case "-l":
                     case "-line":
                         if (int.TryParse(value, out var l) && l > 0)
+                        {
                             count = l;
+                        }
 
                         continue;
                 }
@@ -65,39 +75,54 @@ internal static class Command
         ).ConfigureAwait(false);
 
         if (inventoryBundles.Count == 0)
+        {
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
+        }
 
         var invBundles = inventoryBundles
-            .OrderByDescending(static kv => kv.Value.Assets?.Count ?? 0)
+            .OrderByDescending(static kv => kv.Value.Assets.Count)
             .Skip(page * count)
             .Take(count);
 
         List<AssetBundle> bundles = [];
         foreach (var (appId, bundle) in invBundles)
+        {
             if (appId != SaleEventAppId)
+            {
                 bundles.Add(bundle);
+            }
+        }
 
         if (bundles.Count == 0)
+        {
             return bot.FormatBotResponse(Langs.NoAvilableItemToShow);
+        }
 
-        await handler.LoadAppCardGroup(bundles).ConfigureAwait(false);
+        await handler.FullLoadAppCardGroup(bundles).ConfigureAwait(false);
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
         sb.AppendLine(foilCard ? Langs.FoilCardInventory : Langs.CardInventory);
 
         foreach (var bundle in bundles)
+        {
             if (bundle.Assets != null)
+            {
                 sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                     bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
                     bundle.TradableSetCount, bundle.ExtraTradableCount,
                     bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
                 );
-            else
-                if (bundle.CardCountPerSet == -1)
+            }
+            else if (bundle.CardCountPerSet == -1)
+            {
                 sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NetworkError);
+            }
             else
+            {
                 sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NoAvilableCards);
+            }
+        }
 
         return bot.FormatBotResponse(sb.ToString());
     }
@@ -113,12 +138,16 @@ internal static class Command
     internal static async Task<string?> ResponseFullSetList(string botNames, string? query, bool foilCard)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetList(bot, query, foilCard)))
             .ConfigureAwait(false);
@@ -134,11 +163,15 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetListSaleEvent(Bot bot)
     {
-        if (!Handlers.TryGetValue(bot, out var handler))
+        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         if (!bot.IsConnectedAndLoggedOn)
+        {
             return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
 
         var inventoryBundles = await handler.GetCardSetCache(false).ConfigureAwait(false);
         var foilInventoryBundles = await handler.GetFoilCardSetCache(false).ConfigureAwait(false);
@@ -154,36 +187,54 @@ internal static class Command
         sb.AppendLine(Langs.SaleEventCardInventory);
 
         if (bundle != null)
+        {
             if (bundle.Assets != null)
+            {
                 sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                     bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
                     bundle.TradableSetCount, bundle.ExtraTradableCount,
                     bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
                 );
-            else
-                if (bundle.CardCountPerSet == -1)
+            }
+            else if (bundle.CardCountPerSet == -1)
+            {
                 sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NetworkError);
+            }
             else
+            {
                 sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NoAvilableCards);
+            }
+        }
         else
+        {
             sb.AppendLine(Langs.NoInventory);
+        }
 
         sb.AppendLine(Langs.FoilSaleEventCardInventory);
 
         if (foilBundle != null)
+        {
             if (foilBundle.Assets != null)
+            {
                 sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                     foilBundle.AppId, foilBundle.Assets.Count, foilBundle.CardCountPerSet,
                     foilBundle.TradableSetCount, foilBundle.ExtraTradableCount,
                     foilBundle.NonTradableSetCount, foilBundle.ExtraNonTradableCount
                 );
-            else
-                if (foilBundle.CardCountPerSet == -1)
+            }
+            else if (foilBundle.CardCountPerSet == -1)
+            {
                 sb.AppendLineFormat(Langs.TwoItem, foilBundle.AppId, Langs.NetworkError);
+            }
             else
+            {
                 sb.AppendLineFormat(Langs.TwoItem, foilBundle.AppId, Langs.NoAvilableCards);
+            }
+        }
         else
+        {
             sb.AppendLine(Langs.NoInventory);
+        }
 
         return bot.FormatBotResponse(sb.ToString());
     }
@@ -197,12 +248,16 @@ internal static class Command
     internal static async Task<string?> ResponseFullSetListSaleEvent(string botNames)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities.InParallel(bots.Select(static bot => ResponseFullSetListSaleEvent(bot)))
             .ConfigureAwait(false);
@@ -218,11 +273,15 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseGemsInfo(Bot bot)
     {
-        if (!Handlers.TryGetValue(bot, out var handler))
+        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         if (!bot.IsConnectedAndLoggedOn)
+        {
             return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
 
         var gemsInfo = await handler.GetGemsInfoCache(false).ConfigureAwait(false);
 
@@ -232,16 +291,28 @@ internal static class Command
         ulong nonTradableBags = 0;
 
         foreach (var asset in gemsInfo.GemAssets)
+        {
             if (asset.Tradable)
+            {
                 tradableGems += asset.Amount;
+            }
             else
+            {
                 nonTradableGems += asset.Amount;
+            }
+        }
 
         foreach (var asset in gemsInfo.BagAssets)
+        {
             if (asset.Tradable)
+            {
                 tradableBags += asset.Amount;
+            }
             else
+            {
                 nonTradableBags += asset.Amount;
+            }
+        }
 
         var totalGems = tradableGems + nonTradableGems;
         var totalBags = tradableBags + nonTradableBags;
@@ -251,8 +322,8 @@ internal static class Command
         sb.AppendLineFormat(Langs.GemsSummary, tradableGems, nonTradableGems, totalGems);
         sb.AppendLineFormat(Langs.GemBagsSunnary, tradableBags, nonTradableBags, totalBags);
 
-        var totalTradableGems = tradableGems + tradableBags * 1000;
-        var TotalNonTradableGems = nonTradableGems + nonTradableBags * 1000;
+        var totalTradableGems = tradableGems + (tradableBags * 1000);
+        var TotalNonTradableGems = nonTradableGems + (nonTradableBags * 1000);
         var GemsSum = totalTradableGems + TotalNonTradableGems;
         sb.AppendLineFormat(Langs.TotalGemsSummary, totalTradableGems, TotalNonTradableGems, GemsSum);
         return bot.FormatBotResponse(sb.ToString());
@@ -267,12 +338,16 @@ internal static class Command
     internal static async Task<string?> ResponseGemsInfo(string botNames)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities.InParallel(bots.Select(static bot => ResponseGemsInfo(bot)))
             .ConfigureAwait(false);
@@ -290,22 +365,30 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseFullSetCountOfGame(Bot bot, string query, bool foilCard)
     {
-        if (!Handlers.TryGetValue(bot, out var handler))
+        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         if (!bot.IsConnectedAndLoggedOn)
+        {
             return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
 
         var entries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
         if (entries.Length == 0)
+        {
             return bot.FormatBotResponse(Langs.ArgumentInvalidAppIds);
+        }
 
         var inventory = await (
             foilCard ? handler.GetFoilCardSetCache(false) : handler.GetCardSetCache(false)
         ).ConfigureAwait(false);
 
         if (inventory.Count == 0)
+        {
             return bot.FormatBotResponse(Langs.CardInventoryIsEmpty);
+        }
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
@@ -313,28 +396,41 @@ internal static class Command
 
         var i = 0;
         foreach (var entry in entries)
+        {
             if (!uint.TryParse(entry, out var appId) || appId == 0)
+            {
                 sb.AppendLineFormat(Langs.TwoItem, entries[i], Langs.AppIdInvalid);
+            }
             else
             {
                 if (inventory.TryGetValue(appId, out var bundle))
+                {
                     if (bundle.Assets != null)
+                    {
                         sb.AppendLineFormat(
                             Langs.CurrentCardInventoryShow,
                             appId, bundle.Assets.Count, bundle.CardCountPerSet,
                             bundle.TradableSetCount, bundle.ExtraTradableCount,
                             bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
                         );
-                    else
-                        if (bundle.CardCountPerSet == -1)
+                    }
+                    else if (bundle.CardCountPerSet == -1)
+                    {
                         sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NetworkError);
+                    }
                     else
+                    {
                         sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoAvilableCards);
+                    }
+                }
                 else
+                {
                     sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoInformation);
+                }
 
                 i++;
             }
+        }
 
         return bot.FormatBotResponse(sb.ToString());
     }
@@ -350,12 +446,16 @@ internal static class Command
     internal static async Task<string?> ResponseFullSetCountOfGame(string botNames, string query, bool foilCard)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query, foilCard)))
             .ConfigureAwait(false);
@@ -379,14 +479,20 @@ internal static class Command
     {
         var targetBot = Bot.GetBot(botName);
         if (targetBot == null)
+        {
             return bot.FormatBotResponse(Strings.BotNotFound, botName);
+        }
 
-        if (!Handlers.TryGetValue(targetBot, out var handler))
+        if (!CoreHandlers.TryGetValue(targetBot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         var tradeLink = await handler.GetTradeLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(tradeLink))
+        {
             return bot.FormatBotResponse(Langs.FetchTradeLinkFailed);
+        }
 
         return await ResponseSendCardSet(bot, strAppId, strSetCount, tradeLink, autoConfirm, foilCard)
             .ConfigureAwait(false);
@@ -407,12 +513,16 @@ internal static class Command
         string botName, bool autoConfirm, bool foilCard)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities
             .InParallel(bots.Select(bot =>
@@ -436,32 +546,44 @@ internal static class Command
     internal static async Task<string?> ResponseSendCardSet(Bot bot, string strAppId, string strSetCount,
         string tradeLink, bool autoConfirm, bool foilCard)
     {
-        if (!Handlers.TryGetValue(bot, out var handler))
+        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         if (!bot.IsConnectedAndLoggedOn)
+        {
             return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
 
-        var match = RegexUtils.MatchTradeLink().Match(tradeLink);
+        var match = RegexUtils.MatchTradeLink.Match(tradeLink);
 
         if (!uint.TryParse(strAppId, out var appId) || !uint.TryParse(strSetCount, out var setCount) || !match.Success)
+        {
             return bot.FormatBotResponse(Langs.ArgumentInvalidSCS);
+        }
 
         if (appId == 0 || setCount == 0)
+        {
             return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
+        }
 
         var targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
         var tradeToken = match.Groups[2].Value;
 
         if (!new SteamID(targetSteamId).IsIndividualAccount)
+        {
             return bot.FormatBotResponse(Langs.SteamIdInvalid);
+        }
 
         var inventory = await (
             foilCard ? handler.GetFoilCardSetCache(false) : handler.GetCardSetCache(false)
         ).ConfigureAwait(false);
 
         if (!inventory.TryGetValue(appId, out var bundle))
+        {
             return bot.FormatBotResponse(Langs.TwoItem, appId, Langs.NoAvilableCards);
+        }
 
         var sb = new StringBuilder();
         sb.AppendLine(Langs.MultipleLineResult);
@@ -476,7 +598,9 @@ internal static class Command
             );
 
             if (bundle.TradableSetCount < setCount)
+            {
                 sb.AppendLine(Langs.SendTradeFailedNoEnoughCards);
+            }
             else
             {
                 var offer = new List<Asset>();
@@ -514,15 +638,21 @@ internal static class Command
                     sb.AppendLineFormat(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure);
                 }
                 else
+                {
                     sb.AppendLine(Langs.SendTradeFailedNoEnoughCards);
+                }
             }
         }
         else
         {
             if (bundle.CardCountPerSet == -1)
+            {
                 sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NetworkError);
+            }
             else
+            {
                 sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoAvilableCards);
+            }
 
             sb.AppendLine(Langs.SendTradeFailedAppIdInvalid);
         }
@@ -545,12 +675,16 @@ internal static class Command
         string tradeLink, bool autoConfirm, bool foilCard)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities
             .InParallel(bots.Select(bot =>
@@ -574,14 +708,20 @@ internal static class Command
     {
         var targetBot = Bot.GetBot(botName);
         if (targetBot == null)
+        {
             return bot.FormatBotResponse(Strings.BotNotFound, botName);
+        }
 
-        if (!Handlers.TryGetValue(targetBot, out var handler))
+        if (!CoreHandlers.TryGetValue(targetBot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         var tradeLink = await handler.GetTradeLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(tradeLink))
+        {
             return bot.FormatBotResponse(Langs.FetchTradeLinkFailed);
+        }
 
         return await ResponseSendGems(bot, strGemCount, tradeLink, autoConfirm).ConfigureAwait(false);
     }
@@ -599,12 +739,16 @@ internal static class Command
         bool autoConfirm)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities
             .InParallel(bots.Select(bot => ResponseSendGemsBot(bot, strGemCount, botName, autoConfirm)))
@@ -625,25 +769,35 @@ internal static class Command
     internal static async Task<string?> ResponseSendGems(Bot bot, string? strGemCount, string tradeLink,
         bool autoConfirm)
     {
-        if (!Handlers.TryGetValue(bot, out var handler))
+        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         if (!bot.IsConnectedAndLoggedOn)
+        {
             return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
 
-        var match = RegexUtils.MatchTradeLink().Match(tradeLink);
+        var match = RegexUtils.MatchTradeLink.Match(tradeLink);
 
         if (!ulong.TryParse(strGemCount, out var gemCount))
+        {
             gemCount = 0;
+        }
 
         if (gemCount == 0 || !match.Success)
+        {
             return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
+        }
 
         var targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
         var tradeToken = match.Groups[2].Value;
 
         if (!new SteamID(targetSteamId).IsIndividualAccount)
+        {
             return bot.FormatBotResponse(Langs.SteamIdInvalid);
+        }
 
         var gemsInfo = await handler.GetGemsInfoCache(false).ConfigureAwait(false);
 
@@ -656,7 +810,9 @@ internal static class Command
         {
             var needBag = (gemCount - offerGems) / 1000;
             if (needBag == 0)
+            {
                 break;
+            }
 
             Asset offerAsset;
             if (asset.Amount > needBag) //有剩余宝珠, 拆分以后记录新Asset
@@ -667,7 +823,9 @@ internal static class Command
                 newBagsList.Add(newAsset);
             }
             else //无剩余宝珠, 直接添加到 offer
+            {
                 offerAsset = asset;
+            }
 
             offers.Add(offerAsset);
             offerGems += offerAsset.Amount * 1000;
@@ -682,7 +840,9 @@ internal static class Command
         {
             var needGem = gemCount - offerGems;
             if (needGem == 0)
+            {
                 break;
+            }
 
             Asset offerAsset;
             if (asset.Amount > needGem) //有剩余宝珠, 拆分以后记录新Asset
@@ -693,7 +853,9 @@ internal static class Command
                 newGemsList.Add(newAsset);
             }
             else //无剩余宝珠, 直接添加到 offer
+            {
                 offerAsset = asset;
+            }
 
             offers.Add(offerAsset);
             offerGems += offerAsset.Amount;
@@ -707,7 +869,7 @@ internal static class Command
 
         if (offerGems < gemCount || offers.Count == 0)
         {
-            var offerSum = offerBagCount * 1000 + offerGemsCount;
+            var offerSum = (offerBagCount * 1000) + offerGemsCount;
             sb.AppendLineFormat(Langs.SendTradeFailedGemsNotEnough);
             sb.AppendLineFormat(Langs.TradableGemsSummary, offerBagCount, offerGemsCount, offerSum);
             sb.AppendLineFormat(Langs.LackOfGems, gemCount, gemCount - offerSum);
@@ -747,12 +909,16 @@ internal static class Command
         bool autoConfirm)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities
             .InParallel(bots.Select(bot => ResponseSendGems(bot, strGemCount, tradeLink, autoConfirm)))
@@ -769,11 +935,15 @@ internal static class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseReloadCache(Bot bot)
     {
-        if (!Handlers.TryGetValue(bot, out var handler))
+        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        {
             return bot.FormatBotResponse(Langs.InternalError);
+        }
 
         if (!bot.IsConnectedAndLoggedOn)
+        {
             return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
 
         handler.ExpiredCache();
         await handler.GetBotInventory(true).ConfigureAwait(false);
@@ -790,12 +960,16 @@ internal static class Command
     internal static async Task<string?> ResponseReloadCache(string botNames)
     {
         if (string.IsNullOrEmpty(botNames))
+        {
             throw new ArgumentNullException(nameof(botNames));
+        }
 
         var bots = Bot.GetBots(botNames);
 
         if (bots == null || bots.Count == 0)
+        {
             return FormatStaticResponse(Strings.BotNotFound, botNames);
+        }
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseReloadCache(bot))).ConfigureAwait(false);
         var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);

@@ -4,6 +4,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
 using ASFTradeExtension.Cache;
+using ASFTradeExtension.Core;
 using ASFTradeExtension.Data.Plugin;
 using SteamKit2.Internal;
 using System.Reflection;
@@ -157,5 +158,110 @@ internal static class Utils
         var newBody = asset.Body.CopyWithAmount(newAmount);
         var newAsset = new Asset(newBody, asset.Description);
         return newAsset;
+    }
+
+    /// <summary>
+    /// 获取随机从Bot
+    /// </summary>
+    /// <returns></returns>
+    internal static (Bot? bot, InventoryHandler? handler) GetRandomBot()
+    {
+        var botHandlers = Command.CoreHandlers
+            .Where(kv => kv.Key.BotName != CardSetCache.MasterBotName)
+            .ToList();
+
+        if (botHandlers.Count > 0)
+        {
+            var kv = botHandlers[Random.Shared.Next(botHandlers.Count)];
+            return (kv.Key, kv.Value);
+        }
+
+        return GetMasterBot();
+    }
+
+    /// <summary>
+    /// 获取主Bot
+    /// </summary>
+    /// <returns></returns>
+    internal static (Bot? bot, InventoryHandler? handler) GetMasterBot()
+    {
+        if (!string.IsNullOrEmpty(CardSetCache.MasterBotName))
+        {
+            var bot = Bot.GetBot(CardSetCache.MasterBotName);
+            if (bot != null && Command.CoreHandlers.TryGetValue(bot, out var handler))
+            {
+                if (!bot.HasMobileAuthenticator)
+                {
+                    ASFLogger.LogGenericWarning("MasterBot 未启用令牌, 无法用于自动发货");
+                }
+                else
+                {
+                    return (bot, handler);
+                }
+            }
+        }
+
+        return (null, null);
+    }
+
+    /// <summary>
+    /// 解析交易链接
+    /// </summary>
+    /// <param name="tradeLink"></param>
+    /// <returns></returns>
+    public static (bool valid, ulong steamId64, string? tradeToken) ParseTradeLink(string tradeLink)
+    {
+        var match = RegexUtils.MatchTradeLink.Match(tradeLink);
+
+        if (!match.Success)
+        {
+            return (false, 0, null);
+        }
+
+        var tradeToken = match.Groups[2].Value;
+        if (!ulong.TryParse(match.Groups[1].Value, out var stramId32) || string.IsNullOrEmpty(tradeToken))
+        {
+            return (false, 0, null);
+        }
+
+        var steamId64 = Steam322SteamId(stramId32);
+
+        return (true, steamId64, tradeToken);
+    }
+
+    /// <summary>
+    /// 计算等级所需要的经验
+    /// </summary>
+    /// <param name="playerLevel"></param>
+    /// <returns></returns>
+    private static int CalcLevelExp(int playerLevel)
+    {
+        var expEveryLevel = 0;
+        var totalExp = 0;
+        for (var i = 0; i < playerLevel; i++)
+        {
+            if (i % 10 == 0)
+            {
+                expEveryLevel += 100;
+            }
+
+            totalExp += expEveryLevel;
+        }
+
+        return totalExp;
+    }
+
+    /// <summary>
+    /// 计算达成目标等级所需要的经验
+    /// </summary>
+    /// <param name="currentLevel"></param>
+    /// <param name="targetLevel"></param>
+    /// <param name="currentExp"></param>
+    /// <returns></returns>
+    internal static int CalcExpToLevel(int currentLevel, int targetLevel, int currentExp = 0)
+    {
+        var nowExp = Math.Max(CalcLevelExp(currentLevel), currentExp);
+        var targetExp = CalcLevelExp(targetLevel);
+        return targetExp - nowExp;
     }
 }

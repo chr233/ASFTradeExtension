@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace ASFTradeExtension.Data.Steam;
 
-internal sealed record SellItemResponse
+public sealed record SellItemResponse
 {
     [JsonPropertyName("success")]
     public bool Success { get; set; }

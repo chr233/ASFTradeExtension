@@ -1,10 +1,9 @@
-﻿using ArchiSteamFarm.Steam.Data;
-
+using ArchiSteamFarm.Steam.Data;
 using System.Text.Json.Serialization;
 
-namespace ASFLevelUpBot.Data.Core;
+namespace ASFTradeExtension.Data.Core;
 
-internal sealed record LevelCardSetData
+public sealed record LevelCardSetData
 {
     public LevelCardSetData(int cardSet, int cardType, List<Asset> tradeItems)
     {

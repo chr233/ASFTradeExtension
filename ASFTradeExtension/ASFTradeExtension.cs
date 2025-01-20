@@ -356,6 +356,10 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "SLU" when argLength == 3 && access >= EAccess.Master =>
                     Command.ResponseSendLevelUpTrade(args[1], args[2], autoConfirm),
 
+                "SENDLEVELUPSET" or
+                "SLUS" when argLength == 3 && access >= EAccess.Master =>
+                    Command.ResponseSendLevelUpTradeSet(args[1], args[2], autoConfirm),
+
                 //重新加载库存
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Command.ResponseReloadCache(),

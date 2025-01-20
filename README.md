@@ -50,7 +50,10 @@ Not compatible with the common version of ASF, use generic version of ASF instea
 
 | ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                                 |
 | --------------------------------------------------------------------------- | :-----------: | ---------------------------------------- |
-| [1.2.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.5.0) |    6.1.0.2    | ASF -> 6.1.0.2                           |
+| [1.2.1.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.2.1.1) |    6.1.1.3    | ASF -> 6.1.1.3                           |
+| [1.2.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.2.0.0) |    6.1.0.2    | ASF -> 6.1.0.2                           |
+| [1.2.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.2.0.0) |    6.1.0.2    | ASF -> 6.1.0.2                           |
+| [1.1.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.6.1) |    6.0.7.5    | ASF -> 6.0.7.5                           |
 | [1.1.5.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.5.0) |    6.0.6.4    | ASF -> 6.0.6.4                           |
 | [1.1.4.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.4.0) |    6.0.5.2    | ASF -> 6.0.5.2                           |
 | [1.1.3.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.3.0) |    6.0.4.4    | 支持发送宝珠                             |
@@ -136,8 +139,8 @@ ASF.json
 | `SENDGEMS GemCount TradeLink`                 | `SG`    | `Master` | 向指定交易链接发送指定数量的宝珠, 宝珠袋按照 1000 宝珠计算, 优先使用宝珠袋 |
 | `SENDGEMSBOT GemCount TargetBot`              | `SGB`   | `Master` | 向指定机器人发送指定数量的宝珠, 宝珠袋按照 1000 宝珠计算, 优先使用宝珠袋   |
 | -                                             | -       | -        | -                                                                          |
-| `SENDLEVELUP Level TradeLink`                 | `SLU`   | `Master` | 向指定机器人发送指定数量的宝珠, 宝珠袋按照 1000 宝珠计算, 优先使用宝珠袋   |
-| `SENDLEVELUP Level TradeLink`                 | `SLU`   | `Master` | 向指定机器人发送指定数量的宝珠, 宝珠袋按照 1000 宝珠计算, 优先使用宝珠袋   |
+| `SENDLEVELUP Level TradeLink`                 | `SLU`   | `Master` | 向指定交易链接发送能升级到指定等级的卡牌套数                               |
+| `SENDLEVELUPSET SetCount TradeLink`           | `SLUS`  | `Master` | 向指定交易链接发送指定套数的卡牌                                           |
 
 > 本组命令添加 `2` 前缀可以自动确认报价, 例如 `2SCS`, `2SCSF`, `2SCSB`, `2SCSBF` 等
 

@@ -1,17 +1,60 @@
-using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ASFTradeExtension.Data.Core;
 using SteamKit2;
-using System.Collections.Concurrent;
 using System.Text;
 
 namespace ASFTradeExtension.Core;
 
 internal static class Command
 {
-    internal static ConcurrentDictionary<Bot, InventoryHandler> CoreHandlers { get; } = new();
+    /// <summary>
+    /// 获取发货机器人
+    /// </summary>
+    /// <returns></returns>
+    public static string? ResponseGetMasterBot()
+    {
+        if (string.IsNullOrEmpty(CardSetCache.MasterBotName))
+        {
+            return FormatStaticResponse(Langs.MasterBotNotSet);
+        }
+
+        return FormatStaticResponse($"当前库存机器人为 -> {CardSetCache.MasterBotName}");
+    }
+
+    /// <summary>
+    /// 设置发货机器人
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
+    public static async Task<string?> ResponseSetMasterBot(Bot bot)
+    {
+        if (!bot.HasMobileAuthenticator)
+        {
+            return FormatStaticResponse("设置失败, 发货机器人需导入手机令牌");
+        }
+
+        await CardSetCache.SetMasterBotName(bot.BotName).ConfigureAwait(false);
+        await CardSetCache.SaveCacheFile().ConfigureAwait(false);
+        return FormatStaticResponse($"设置发货机器人为 -> {CardSetCache.MasterBotName}");
+    }
+
+    /// <summary>
+    /// 设置发货机器人
+    /// </summary>
+    /// <param name="botName"></param>
+    /// <returns></returns>
+    public static Task<string?> ResponseSetMasterBot(string botName)
+    {
+        var bot = Bot.GetBot(botName);
+        if (bot == null)
+        {
+            return Task.FromResult<string?>("设置失败, 未找到机器人");
+        }
+
+        return ResponseSetMasterBot(bot);
+    }
 
     /// <summary>
     /// 获取成套卡牌套数列表
@@ -20,16 +63,22 @@ internal static class Command
     /// <param name="query"></param>
     /// <param name="foilCard"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseFullSetList(Bot bot, string? query, bool foilCard)
+    internal static async Task<string?> ResponseFullSetList(string? query, bool foilCard)
     {
-        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            return bot.FormatBotResponse(Langs.InternalError);
+            return FormatStaticResponse("未设置发货机器人");
         }
 
         if (!bot.IsConnectedAndLoggedOn)
         {
-            return bot.FormatBotResponse(Strings.BotNotConnected);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
         }
 
         var page = 0;
@@ -128,49 +177,26 @@ internal static class Command
     }
 
     /// <summary>
-    /// 获取成套卡牌套数 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <param name="query"></param>
-    /// <param name="foilCard"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseFullSetList(string botNames, string? query, bool foilCard)
-    {
-        if (string.IsNullOrEmpty(botNames))
-        {
-            throw new ArgumentNullException(nameof(botNames));
-        }
-
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
-        {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
-        }
-
-        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetList(bot, query, foilCard)))
-            .ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-    }
-
-    /// <summary>
     /// 获取促销卡牌套数
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseFullSetListSaleEvent(Bot bot)
+    internal static async Task<string?> ResponseFullSetListSaleEvent()
     {
-        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            return bot.FormatBotResponse(Langs.InternalError);
+            return FormatStaticResponse("未设置发货机器人");
         }
 
         if (!bot.IsConnectedAndLoggedOn)
         {
-            return bot.FormatBotResponse(Strings.BotNotConnected);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
         }
 
         var inventoryBundles = await handler.GetCardSetCache(false).ConfigureAwait(false);
@@ -240,47 +266,26 @@ internal static class Command
     }
 
     /// <summary>
-    /// 获取促销卡牌套数 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseFullSetListSaleEvent(string botNames)
-    {
-        if (string.IsNullOrEmpty(botNames))
-        {
-            throw new ArgumentNullException(nameof(botNames));
-        }
-
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
-        {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
-        }
-
-        var results = await Utilities.InParallel(bots.Select(static bot => ResponseFullSetListSaleEvent(bot)))
-            .ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-    }
-
-    /// <summary>
     /// 获取宝珠信息
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseGemsInfo(Bot bot)
+    internal static async Task<string?> ResponseGemsInfo()
     {
-        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            return bot.FormatBotResponse(Langs.InternalError);
+            return FormatStaticResponse("未设置发货机器人");
         }
 
         if (!bot.IsConnectedAndLoggedOn)
         {
-            return bot.FormatBotResponse(Strings.BotNotConnected);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
         }
 
         var gemsInfo = await handler.GetGemsInfoCache(false).ConfigureAwait(false);
@@ -330,49 +335,28 @@ internal static class Command
     }
 
     /// <summary>
-    /// 获取宝珠信息 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseGemsInfo(string botNames)
-    {
-        if (string.IsNullOrEmpty(botNames))
-        {
-            throw new ArgumentNullException(nameof(botNames));
-        }
-
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
-        {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
-        }
-
-        var results = await Utilities.InParallel(bots.Select(static bot => ResponseGemsInfo(bot)))
-            .ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-    }
-
-    /// <summary>
     /// 获取指定游戏成套卡牌套数
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="query"></param>
     /// <param name="foilCard"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseFullSetCountOfGame(Bot bot, string query, bool foilCard)
+    internal static async Task<string?> ResponseFullSetCountOfGame(string query, bool foilCard)
     {
-        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            return bot.FormatBotResponse(Langs.InternalError);
+            return FormatStaticResponse("未设置发货机器人");
         }
 
         if (!bot.IsConnectedAndLoggedOn)
         {
-            return bot.FormatBotResponse(Strings.BotNotConnected);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
         }
 
         var entries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -436,35 +420,6 @@ internal static class Command
     }
 
     /// <summary>
-    /// 获取指定游戏成套卡牌套数 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <param name="query"></param>
-    /// <param name="foilCard"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseFullSetCountOfGame(string botNames, string query, bool foilCard)
-    {
-        if (string.IsNullOrEmpty(botNames))
-        {
-            throw new ArgumentNullException(nameof(botNames));
-        }
-
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
-        {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
-        }
-
-        var results = await Utilities.InParallel(bots.Select(bot => ResponseFullSetCountOfGame(bot, query, foilCard)))
-            .ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-    }
-
-    /// <summary>
     /// 向机器人发送指定套数的卡牌
     /// </summary>
     /// <param name="bot"></param>
@@ -474,18 +429,29 @@ internal static class Command
     /// <param name="autoConfirm"></param>
     /// <param name="foilCard"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendCardSetBot(Bot bot, string strAppId, string strSetCount,
+    internal static async Task<string?> ResponseSendCardSetBot(string strAppId, string strSetCount,
         string botName, bool autoConfirm, bool foilCard)
     {
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
+        {
+            return FormatStaticResponse("未设置发货机器人");
+        }
+
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
+        }
+
         var targetBot = Bot.GetBot(botName);
         if (targetBot == null)
         {
             return bot.FormatBotResponse(Strings.BotNotFound, botName);
-        }
-
-        if (!CoreHandlers.TryGetValue(targetBot, out var handler))
-        {
-            return bot.FormatBotResponse(Langs.InternalError);
         }
 
         var tradeLink = await handler.GetTradeLink().ConfigureAwait(false);
@@ -494,43 +460,8 @@ internal static class Command
             return bot.FormatBotResponse(Langs.FetchTradeLinkFailed);
         }
 
-        return await ResponseSendCardSet(bot, strAppId, strSetCount, tradeLink, autoConfirm, foilCard)
+        return await ResponseSendCardSet(strAppId, strSetCount, tradeLink, autoConfirm, foilCard)
             .ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// 向机器人发送指定套数的卡牌 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <param name="strAppId"></param>
-    /// <param name="strSetCount"></param>
-    /// <param name="botName"></param>
-    /// <param name="autoConfirm"></param>
-    /// <param name="foilCard"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseSendCardSetBot(string botNames, string strAppId, string strSetCount,
-        string botName, bool autoConfirm, bool foilCard)
-    {
-        if (string.IsNullOrEmpty(botNames))
-        {
-            throw new ArgumentNullException(nameof(botNames));
-        }
-
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
-        {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
-        }
-
-        var results = await Utilities
-            .InParallel(bots.Select(bot =>
-                ResponseSendCardSetBot(bot, strAppId, strSetCount, botName, autoConfirm, foilCard)))
-            .ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
 
     /// <summary>
@@ -543,33 +474,35 @@ internal static class Command
     /// <param name="autoConfirm"></param>
     /// <param name="foilCard"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendCardSet(Bot bot, string strAppId, string strSetCount,
+    internal static async Task<string?> ResponseSendCardSet(string strAppId, string strSetCount,
         string tradeLink, bool autoConfirm, bool foilCard)
     {
-        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            return bot.FormatBotResponse(Langs.InternalError);
+            return FormatStaticResponse("未设置发货机器人");
         }
 
         if (!bot.IsConnectedAndLoggedOn)
         {
-            return bot.FormatBotResponse(Strings.BotNotConnected);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
         }
 
-        var match = RegexUtils.MatchTradeLink.Match(tradeLink);
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
+        }
 
-        if (!uint.TryParse(strAppId, out var appId) || !uint.TryParse(strSetCount, out var setCount) || !match.Success)
+        var (valid, targetSteamId, tradeToken) = ParseTradeLink(tradeLink);
+        if (!valid || string.IsNullOrEmpty(tradeToken))
         {
             return bot.FormatBotResponse(Langs.ArgumentInvalidSCS);
         }
 
-        if (appId == 0 || setCount == 0)
+        if (!uint.TryParse(strAppId, out var appId) || !uint.TryParse(strSetCount, out var setCount) || appId == 0 || setCount == 0)
         {
             return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
         }
-
-        var targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
-        var tradeToken = match.Groups[2].Value;
 
         if (!new SteamID(targetSteamId).IsIndividualAccount)
         {
@@ -661,41 +594,6 @@ internal static class Command
     }
 
     /// <summary>
-    /// 根据指定交易报价发送指定套数的卡牌 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <param name="strAppId"></param>
-    /// <param name="strSetCount"></param>
-    /// <param name="tradeLink"></param>
-    /// <param name="autoConfirm"></param>
-    /// <param name="foilCard"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseSendCardSet(string botNames, string strAppId, string strSetCount,
-        string tradeLink, bool autoConfirm, bool foilCard)
-    {
-        if (string.IsNullOrEmpty(botNames))
-        {
-            throw new ArgumentNullException(nameof(botNames));
-        }
-
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
-        {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
-        }
-
-        var results = await Utilities
-            .InParallel(bots.Select(bot =>
-                ResponseSendCardSet(bot, strAppId, strSetCount, tradeLink, autoConfirm, foilCard)))
-            .ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-    }
-
-    /// <summary>
     /// 向机器人发送指定数量的宝珠
     /// </summary>
     /// <param name="bot"></param>
@@ -703,18 +601,23 @@ internal static class Command
     /// <param name="botName"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendGemsBot(Bot bot, string? strGemCount, string botName,
+    internal static async Task<string?> ResponseSendGemsBot(string? strGemCount, string botName,
         bool autoConfirm)
     {
-        var targetBot = Bot.GetBot(botName);
-        if (targetBot == null)
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            return bot.FormatBotResponse(Strings.BotNotFound, botName);
+            return FormatStaticResponse("未设置发货机器人");
         }
 
-        if (!CoreHandlers.TryGetValue(targetBot, out var handler))
+        if (!bot.IsConnectedAndLoggedOn)
         {
-            return bot.FormatBotResponse(Langs.InternalError);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
         }
 
         var tradeLink = await handler.GetTradeLink().ConfigureAwait(false);
@@ -723,39 +626,7 @@ internal static class Command
             return bot.FormatBotResponse(Langs.FetchTradeLinkFailed);
         }
 
-        return await ResponseSendGems(bot, strGemCount, tradeLink, autoConfirm).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// 向机器人发送指定数量的宝珠 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <param name="strGemCount"></param>
-    /// <param name="botName"></param>
-    /// <param name="autoConfirm"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseSendGemsBot(string botNames, string? strGemCount, string botName,
-        bool autoConfirm)
-    {
-        if (string.IsNullOrEmpty(botNames))
-        {
-            throw new ArgumentNullException(nameof(botNames));
-        }
-
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
-        {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
-        }
-
-        var results = await Utilities
-            .InParallel(bots.Select(bot => ResponseSendGemsBot(bot, strGemCount, botName, autoConfirm)))
-            .ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+        return await ResponseSendGems(strGemCount, tradeLink, autoConfirm).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -766,33 +637,35 @@ internal static class Command
     /// <param name="tradeLink"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendGems(Bot bot, string? strGemCount, string tradeLink,
+    internal static async Task<string?> ResponseSendGems(string? strGemCount, string tradeLink,
         bool autoConfirm)
     {
-        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            return bot.FormatBotResponse(Langs.InternalError);
+            return FormatStaticResponse("未设置发货机器人");
         }
 
         if (!bot.IsConnectedAndLoggedOn)
         {
-            return bot.FormatBotResponse(Strings.BotNotConnected);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
         }
 
-        var match = RegexUtils.MatchTradeLink.Match(tradeLink);
-
-        if (!ulong.TryParse(strGemCount, out var gemCount))
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
         {
-            gemCount = 0;
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
         }
 
-        if (gemCount == 0 || !match.Success)
+        var (valid, targetSteamId, tradeToken) = ParseTradeLink(tradeLink);
+        if (!valid || string.IsNullOrEmpty(tradeToken))
+        {
+            return bot.FormatBotResponse(Langs.ArgumentInvalidSCS);
+        }
+
+        if (!uint.TryParse(strGemCount, out var gemCount) || gemCount == 0)
         {
             return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
         }
-
-        var targetSteamId = Steam322SteamId(ulong.Parse(match.Groups[1].Value));
-        var tradeToken = match.Groups[2].Value;
 
         if (!new SteamID(targetSteamId).IsIndividualAccount)
         {
@@ -897,52 +770,26 @@ internal static class Command
     }
 
     /// <summary>
-    /// 根据指定交易报价发送指定数量的宝珠 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <param name="strGemCount"></param>
-    /// <param name="tradeLink"></param>
-    /// <param name="autoConfirm"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseSendGems(string botNames, string? strGemCount, string tradeLink,
-        bool autoConfirm)
-    {
-        if (string.IsNullOrEmpty(botNames))
-        {
-            throw new ArgumentNullException(nameof(botNames));
-        }
-
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
-        {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
-        }
-
-        var results = await Utilities
-            .InParallel(bots.Select(bot => ResponseSendGems(bot, strGemCount, tradeLink, autoConfirm)))
-            .ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-    }
-
-    /// <summary>
     /// 刷新库存缓存
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseReloadCache(Bot bot)
+    internal static async Task<string?> ResponseReloadCache()
     {
-        if (!CoreHandlers.TryGetValue(bot, out var handler))
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            return bot.FormatBotResponse(Langs.InternalError);
+            return FormatStaticResponse("未设置发货机器人");
         }
 
         if (!bot.IsConnectedAndLoggedOn)
         {
-            return bot.FormatBotResponse(Strings.BotNotConnected);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
         }
 
         handler.ExpiredCache();
@@ -951,29 +798,179 @@ internal static class Command
         return bot.FormatBotResponse(Langs.ReloadInventoryCacheDone);
     }
 
-    /// <summary>
-    /// 刷新库存缓存 (多个Bot)
-    /// </summary>
-    /// <param name="botNames"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal static async Task<string?> ResponseReloadCache(string botNames)
+    public static async Task<string?> ResponseGetBotStock()
     {
-        if (string.IsNullOrEmpty(botNames))
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
         {
-            throw new ArgumentNullException(nameof(botNames));
+            return FormatStaticResponse("未设置发货机器人");
         }
 
-        var bots = Bot.GetBots(botNames);
-
-        if (bots == null || bots.Count == 0)
+        if (!bot.IsConnectedAndLoggedOn)
         {
-            return FormatStaticResponse(Strings.BotNotFound, botNames);
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
         }
 
-        var results = await Utilities.InParallel(bots.Select(bot => ResponseReloadCache(bot))).ConfigureAwait(false);
-        var responses = new List<string>(results.Where(static result => !string.IsNullOrEmpty(result))!);
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
+        }
 
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+        try
+        {
+            var invCache = await handler.GetCardSetCache(false).ConfigureAwait(false);
+            await handler.FullLoadAppCardGroup(invCache).ConfigureAwait(false);
+
+            if (invCache.Count == 0)
+            {
+                return FormatStaticResponse("机器人库存为空");
+            }
+
+            var sortedInv = invCache
+                .Select(static x => x.Value)
+                .OrderByDescending(static x => x.TradableSetCount);
+
+            var sb = new StringBuilder();
+
+            var totalSet = 0;
+            var totalCard = 0;
+            var notLoaded = 0;
+
+            sb.AppendLine("机器人库存:");
+            foreach (var inv in sortedInv)
+            {
+                if (inv.Loaded)
+                {
+                    sb.AppendLine(
+                        $"AppID: {inv.AppId}, 可交易卡牌 {inv.TradableSetCount} 套 + {inv.ExtraTradableCount} 张, 每套 {inv.CardCountPerSet} 张");
+                    totalSet += inv.TradableSetCount;
+                    totalCard += inv.TradableSetCount * inv.CardCountPerSet;
+                }
+                else
+                {
+                    sb.AppendLine($"AppID: {inv.AppId}, 套数信息未加载完成");
+                    notLoaded++;
+                }
+            }
+
+            return FormatStaticResponse($"库存机器人 {bot.BotName} 共有 {0} 套卡牌, {0} 张卡牌");
+        }
+        catch (Exception ex)
+        {
+            ASFLogger.LogGenericError("获取库存失败");
+            ASFLogger.LogGenericException(ex);
+            return FormatStaticResponse("获取库存失败");
+        }
+    }
+
+    /// <summary>
+    /// 发货交易报价
+    /// </summary>
+    /// <param name="strLevel"></param>
+    /// <param name="tradeLink"></param>
+    /// <param name="autoConfirm"></param>
+    /// <returns></returns>
+    public static async Task<string?> ResponseSendLevelUpTrade(string strLevel, string tradeLink, bool autoConfirm)
+    {
+        if (!int.TryParse(strLevel, out var targetLevel) || targetLevel <= 0)
+        {
+            return FormatStaticResponse("参数错误, 用法 LEVELUP 目标等级 交易链接");
+        }
+
+        if (targetLevel < 1 || targetLevel > 1000)
+        {
+            return FormatStaticResponse("目标等级无效, 有效范围 1~1000, 用法 LEVELUP 目标等级 交易链接");
+        }
+
+        var (tradeLinkValid, targetSteamId, tradeToken) = ParseTradeLink(tradeLink);
+        if (!tradeLinkValid || targetSteamId == 0 || string.IsNullOrEmpty(tradeToken))
+        {
+            return FormatStaticResponse("交易链接无效, 用法 LEVELUP 目标等级 交易链接");
+        }
+
+        var (bot, handler) = GetRandomBot();
+        if (bot == null || handler == null)
+        {
+            return FormatStaticResponse("未设置发货机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
+        }
+
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
+        }
+
+        try
+        {
+            var userInfo = await handler.GetUserBasicInfo(targetSteamId).ConfigureAwait(false);
+            if (userInfo == null || !userInfo.IsValid)
+            {
+                return FormatStaticResponse($"交易链接似乎无效, 找不到用户 {targetSteamId}");
+            }
+
+            var badgeInfo = await handler.GetUserBadgeSummary(userInfo.ProfilePath!, true).ConfigureAwait(false);
+            if (badgeInfo == null)
+            {
+                return FormatStaticResponse($"读取用户 {targetSteamId} 的徽章信息失败");
+            }
+
+            if (targetLevel <= badgeInfo.Level)
+            {
+                return FormatStaticResponse($"用户 {badgeInfo.Nickname}({targetSteamId}) 的等级 {badgeInfo.Level} 大于等于目标等级");
+            }
+
+            var needExp = CalcExpToLevel(badgeInfo.Level, targetLevel, badgeInfo.Experience);
+            var needSet = (needExp / 100) + 1;
+
+            var avilableSets = await handler.SelectFullSetCards(badgeInfo.Badges, needSet)
+                .ConfigureAwait(false);
+
+            var offer = avilableSets.TradeItems;
+            if (needSet != avilableSets.CardSet || offer.Count == 0)
+            {
+                return FormatStaticResponse($"发货失败, 可用卡牌库存不足, 需要 {needSet} 套, 可发货 {avilableSets.CardSet} 套");
+            }
+
+            await handler.AddInTradeItems(avilableSets.TradeItems).ConfigureAwait(false);
+
+            var tradeMsg = $"共发货 {needSet} 套 {offer.Count} 张卡牌, 可以从 {badgeInfo.Level} 级升到 {targetLevel} 级";
+
+            var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler
+                .SendTradeOffer(targetSteamId, offer, null, tradeToken, tradeMsg, false, Config.MaxItemPerTrade)
+                .ConfigureAwait(false);
+
+            if (!success)
+            {
+                return FormatStaticResponse("发货失败, 发送报价失败, 可能网络问题");
+            }
+
+            if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+            {
+                var (twoFactorSuccess, _, _) = await bot.Actions
+                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                        mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+                if (!twoFactorSuccess)
+                {
+                    return FormatStaticResponse("发货失败, 自动确认交易失败");
+                }
+
+                return FormatStaticResponse(
+                    $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 从 {badgeInfo.Level} 级升级到 {targetLevel} 级还需要 {needExp} 点经验, 需要合成 {needSet} 套卡牌, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
+            }
+
+            return FormatStaticResponse(
+                $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 需要手动确认报价, 从 {badgeInfo.Level} 级升级到 {targetLevel} 级还需要 {needExp} 点经验, 需要合成 {needSet} 套卡牌, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
+        }
+        catch (Exception ex)
+        {
+            ASFLogger.LogGenericError("发货失败");
+            ASFLogger.LogGenericException(ex);
+            return FormatStaticResponse("发货失败, 执行发货出错");
+        }
     }
 }

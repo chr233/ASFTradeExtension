@@ -179,7 +179,7 @@
     <value>В инвентаре отсутствуют карточки</value>
   </data>
   <data name="CurrentCardInventoryShow" xml:space="preserve">
-    <value>{0}: 总计 {1}张, 每套 {2}张, 可交易 {3}套 +{4}张, 不可交易 {5}张</value>
+    <value>{0,-7}: 总计 {1}张, 每套 {2}张, 可交易 {3}套 {4}张, 不可交易 {5}张</value>
   </data>
   <data name="Failure" xml:space="preserve">
     <value>Неудачно</value>

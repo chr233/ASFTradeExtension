@@ -148,14 +148,14 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
 
     public Task OnBotDestroy(Bot bot)
     {
-        Command.CoreHandlers.TryRemove(bot, out _);
+        CoreHandlers.TryRemove(bot, out _);
         return Task.CompletedTask;
     }
 
     public Task OnBotInit(Bot bot)
     {
         var botHandler = new InventoryHandler(bot);
-        Command.CoreHandlers.TryAdd(bot, botHandler);
+        CoreHandlers.TryAdd(bot, botHandler);
         return Task.CompletedTask;
     }
 
@@ -264,125 +264,88 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 //获取卡牌信息
                 "FULLSETLIST" or
                     "FSL" when access >= EAccess.Operator =>
-                    Command.ResponseFullSetList(bot, null, false),
+                    Command.ResponseFullSetList(null, false),
 
                 "FULLSETLISTFOIL" or
                     "FSLF" when access >= EAccess.Operator =>
-                    Command.ResponseFullSetList(bot, null, true),
+                    Command.ResponseFullSetList(null, true),
 
                 "FULLSETLISTSALE" or
                     "FSLS" when access >= EAccess.Operator =>
-                    Command.ResponseFullSetListSaleEvent(bot),
+                    Command.ResponseFullSetListSaleEvent(),
 
                 //获取宝珠信息
                 "GEMSINFO" or
                     "GI" when access >= EAccess.Operator =>
-                    Command.ResponseGemsInfo(bot),
+                    Command.ResponseGemsInfo(),
 
                 //重新加载库存
                 "RELOADCACHE" when access >= EAccess.Operator =>
-                    Command.ResponseReloadCache(bot),
+                    Command.ResponseReloadCache(),
 
                 _ => null
             },
             _ => cmd switch //带参数
             {
+                "SETMASTERBOT" or "SETMASTER" or "SM" when access >= EAccess.Master =>
+                   Command.ResponseSetMasterBot(Utilities.GetArgsAsText(args, 1, ",")),
+
                 //获取卡牌信息
                 "FULLSETLIST" or
-                    "FSL" when access >= EAccess.Operator && argLength == 2 =>
-                    Command.ResponseFullSetList(args[1], null, false),
-                "FULLSETLIST" or
-                    "FSL" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                    Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ","), false),
-                "FULLSETLIST" or
                     "FSL" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                    Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), false),
+                    Command.ResponseFullSetList(Utilities.GetArgsAsText(args, 1, ","), false),
 
-                "FULLSETLISTFOIL" or
-                    "FSLF" when access >= EAccess.Operator && argLength == 2 =>
-                    Command.ResponseFullSetList(args[1], null, true),
-                "FULLSETLISTFOIL" or
-                    "FSLF" when access >= EAccess.Operator && argLength % 2 == 0 =>
-                    Command.ResponseFullSetList(args[1], Utilities.GetArgsAsText(args, 2, ","), true),
                 "FULLSETLISTFOIL" or
                     "FSLF" when access >= EAccess.Operator && argLength % 2 != 0 =>
-                    Command.ResponseFullSetList(bot, Utilities.GetArgsAsText(args, 1, ","), true),
-
-                "FULLSETLISTSALE" or
-                    "FSLS" when access >= EAccess.Operator =>
-                    Command.ResponseFullSetListSaleEvent(Utilities.GetArgsAsText(args, 1, ",")),
+                    Command.ResponseFullSetList(Utilities.GetArgsAsText(args, 1, ","), true),
 
                 //获取指定游戏卡牌套数
                 "FULLSET" or
-                    "FS" when argLength >= 3 && access >= EAccess.Operator =>
-                    Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ","), false),
-                "FULLSET" or
                     "FS" when access >= EAccess.Operator =>
-                    Command.ResponseFullSetCountOfGame(bot, args[1], false),
+                    Command.ResponseFullSetCountOfGame(Utilities.GetArgsAsText(args, 1, ","), false),
 
-                "FULLSETFOIL" or
-                    "FSF" when argLength >= 3 && access >= EAccess.Operator =>
-                    Command.ResponseFullSetCountOfGame(args[1], Utilities.GetArgsAsText(args, 2, ","), true),
                 "FULLSETFOIL" or
                     "FSF" when access >= EAccess.Operator =>
-                    Command.ResponseFullSetCountOfGame(bot, args[1], true),
-
-                //获取宝珠信息
-                "GEMSINFO" or
-                    "GI" when access >= EAccess.Operator =>
-                    Command.ResponseGemsInfo(Utilities.GetArgsAsText(args, 1, ",")),
+                    Command.ResponseFullSetCountOfGame(Utilities.GetArgsAsText(args, 1, ","), true),
 
                 //发送套卡给机器人
                 "SENDCARDSETBOT" or
-                    "SCSB" when access >= EAccess.Master && argLength == 5 =>
-                    Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, false),
-                "SENDCARDSETBOT" or
                     "SCSB" when access >= EAccess.Master && argLength == 4 =>
-                    Command.ResponseSendCardSetBot(bot, args[1], args[2], args[3], autoConfirm, false),
+                    Command.ResponseSendCardSetBot(args[1], args[2], args[3], autoConfirm, false),
 
                 //发送套卡给交易链接
                 "SENDCARDSET" or
-                    "SCS" when access >= EAccess.Master && argLength == 5 =>
-                    Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, false),
-                "SENDCARDSET" or
                     "SCS" when access >= EAccess.Master && argLength == 4 =>
-                    Command.ResponseSendCardSet(bot, args[1], args[2], args[3], autoConfirm, false),
+                    Command.ResponseSendCardSet(args[1], args[2], args[3], autoConfirm, false),
 
                 //发送闪卡套卡给机器人
                 "SENDCARDSETBOTFOIL" or
-                    "SCSBF" when access >= EAccess.Master && argLength == 5 =>
-                    Command.ResponseSendCardSetBot(args[1], args[2], args[3], args[4], autoConfirm, true),
-                "SENDCARDSETBOTFOIL" or
                     "SCSBF" when access >= EAccess.Master && argLength == 4 =>
-                    Command.ResponseSendCardSetBot(bot, args[1], args[2], args[3], autoConfirm, true),
+                    Command.ResponseSendCardSetBot(args[1], args[2], args[3], autoConfirm, true),
 
                 //发送闪卡套卡给交易链接
                 "SENDCARDSETFOIL" or
-                    "SCSF" when access >= EAccess.Master && argLength == 5 =>
-                    Command.ResponseSendCardSet(args[1], args[2], args[3], args[4], autoConfirm, true),
-                "SENDCARDSETFOIL" or
                     "SCSF" when access >= EAccess.Master && argLength == 4 =>
-                    Command.ResponseSendCardSet(bot, args[1], args[2], args[3], autoConfirm, true),
+                    Command.ResponseSendCardSet(args[1], args[2], args[3], autoConfirm, true),
 
                 //发送宝珠给机器人
                 "SENDGEMSBOT" or
-                    "SGB" when access >= EAccess.Master && argLength == 4 =>
-                    Command.ResponseSendGemsBot(args[1], args[2], args[3], autoConfirm),
-                "SENDGEMSBOT" or
                     "SGB" when access >= EAccess.Master && argLength == 3 =>
-                    Command.ResponseSendGemsBot(bot, args[1], args[2], autoConfirm),
+                    Command.ResponseSendGemsBot(args[1], args[2], autoConfirm),
 
                 //发送宝珠给交易链接
                 "SENDGEMS" or
-                    "SG" when access >= EAccess.Master && argLength == 4 =>
-                    Command.ResponseSendGems(args[1], args[2], args[3], autoConfirm),
-                "SENDGEMS" or
                     "SG" when access >= EAccess.Master && argLength == 3 =>
-                    Command.ResponseSendGems(bot, args[1], args[2], autoConfirm),
+                    Command.ResponseSendGems(args[1], args[2], autoConfirm),
+
+                //发送成套卡牌
+                "SENDLEVELUP" or
+                    "SLU" when argLength == 3 && access >= EAccess.Master =>
+                    Command.ResponseSendLevelUpTrade(args[1], args[2], autoConfirm),
 
                 //重新加载库存
                 "RELOADCACHE" when access >= EAccess.Operator =>
-                    Command.ResponseReloadCache(Utilities.GetArgsAsText(args, 1, ",")),
+                    Command.ResponseReloadCache(),
 
                 _ => null
             }

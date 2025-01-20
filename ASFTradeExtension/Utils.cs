@@ -7,6 +7,7 @@ using ASFTradeExtension.Cache;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data.Plugin;
 using SteamKit2.Internal;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
 
@@ -14,6 +15,8 @@ namespace ASFTradeExtension;
 
 internal static class Utils
 {
+    internal static ConcurrentDictionary<Bot, InventoryHandler> CoreHandlers { get; } = new();
+
     /// <summary>
     /// 促销卡牌
     /// </summary>
@@ -166,7 +169,7 @@ internal static class Utils
     /// <returns></returns>
     internal static (Bot? bot, InventoryHandler? handler) GetRandomBot()
     {
-        var botHandlers = Command.CoreHandlers
+        var botHandlers = CoreHandlers
             .Where(kv => kv.Key.BotName != CardSetCache.MasterBotName)
             .ToList();
 
@@ -188,7 +191,7 @@ internal static class Utils
         if (!string.IsNullOrEmpty(CardSetCache.MasterBotName))
         {
             var bot = Bot.GetBot(CardSetCache.MasterBotName);
-            if (bot != null && Command.CoreHandlers.TryGetValue(bot, out var handler))
+            if (bot != null && CoreHandlers.TryGetValue(bot, out var handler))
             {
                 if (!bot.HasMobileAuthenticator)
                 {

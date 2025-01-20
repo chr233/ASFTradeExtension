@@ -258,89 +258,102 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
             {
                 //插件信息
                 "ASFTRADEEXTENSION" or
-                    "ATE" when access >= EAccess.FamilySharing =>
+                "ATE" when access >= EAccess.FamilySharing =>
                     Task.FromResult(PluginInfo),
+
+                "GETMASTERBOT" or
+                "GETMASTER" or
+                "GM" when access >= EAccess.Master =>
+                    Task.FromResult(Command.ResponseGetMasterBot()),
+
+                "SETMASTERBOT" or
+                "SETMASTER" or
+                "SM" when access >= EAccess.Master =>
+                    Command.ResponseSetMasterBot(bot),
+
 
                 //获取卡牌信息
                 "FULLSETLIST" or
-                    "FSL" when access >= EAccess.Operator =>
+                "FSL" when access >= EAccess.Master =>
                     Command.ResponseFullSetList(null, false),
 
                 "FULLSETLISTFOIL" or
-                    "FSLF" when access >= EAccess.Operator =>
+                "FSLF" when access >= EAccess.Master =>
                     Command.ResponseFullSetList(null, true),
 
                 "FULLSETLISTSALE" or
-                    "FSLS" when access >= EAccess.Operator =>
+                "FSLS" when access >= EAccess.Master =>
                     Command.ResponseFullSetListSaleEvent(),
 
                 //获取宝珠信息
                 "GEMSINFO" or
-                    "GI" when access >= EAccess.Operator =>
+                "GI" when access >= EAccess.Master =>
                     Command.ResponseGemsInfo(),
 
                 //重新加载库存
-                "RELOADCACHE" when access >= EAccess.Operator =>
+                "RELOADCACHE" when access >= EAccess.Master =>
                     Command.ResponseReloadCache(),
 
                 _ => null
             },
             _ => cmd switch //带参数
             {
-                "SETMASTERBOT" or "SETMASTER" or "SM" when access >= EAccess.Master =>
+                "SETMASTERBOT" or
+                "SETMASTER" or
+                "SM" when access >= EAccess.Master =>
                    Command.ResponseSetMasterBot(Utilities.GetArgsAsText(args, 1, ",")),
 
                 //获取卡牌信息
                 "FULLSETLIST" or
-                    "FSL" when access >= EAccess.Operator && argLength % 2 != 0 =>
+                "FSL" when access >= EAccess.Master && argLength % 2 != 0 =>
                     Command.ResponseFullSetList(Utilities.GetArgsAsText(args, 1, ","), false),
 
                 "FULLSETLISTFOIL" or
-                    "FSLF" when access >= EAccess.Operator && argLength % 2 != 0 =>
+                "FSLF" when access >= EAccess.Master && argLength % 2 != 0 =>
                     Command.ResponseFullSetList(Utilities.GetArgsAsText(args, 1, ","), true),
 
                 //获取指定游戏卡牌套数
                 "FULLSET" or
-                    "FS" when access >= EAccess.Operator =>
+                "FS" when access >= EAccess.Master =>
                     Command.ResponseFullSetCountOfGame(Utilities.GetArgsAsText(args, 1, ","), false),
 
                 "FULLSETFOIL" or
-                    "FSF" when access >= EAccess.Operator =>
+                "FSF" when access >= EAccess.Master =>
                     Command.ResponseFullSetCountOfGame(Utilities.GetArgsAsText(args, 1, ","), true),
 
                 //发送套卡给机器人
                 "SENDCARDSETBOT" or
-                    "SCSB" when access >= EAccess.Master && argLength == 4 =>
+                "SCSB" when access >= EAccess.Master && argLength == 4 =>
                     Command.ResponseSendCardSetBot(args[1], args[2], args[3], autoConfirm, false),
 
                 //发送套卡给交易链接
                 "SENDCARDSET" or
-                    "SCS" when access >= EAccess.Master && argLength == 4 =>
+                "SCS" when access >= EAccess.Master && argLength == 4 =>
                     Command.ResponseSendCardSet(args[1], args[2], args[3], autoConfirm, false),
 
                 //发送闪卡套卡给机器人
                 "SENDCARDSETBOTFOIL" or
-                    "SCSBF" when access >= EAccess.Master && argLength == 4 =>
+                "SCSBF" when access >= EAccess.Master && argLength == 4 =>
                     Command.ResponseSendCardSetBot(args[1], args[2], args[3], autoConfirm, true),
 
                 //发送闪卡套卡给交易链接
                 "SENDCARDSETFOIL" or
-                    "SCSF" when access >= EAccess.Master && argLength == 4 =>
+                "SCSF" when access >= EAccess.Master && argLength == 4 =>
                     Command.ResponseSendCardSet(args[1], args[2], args[3], autoConfirm, true),
 
                 //发送宝珠给机器人
                 "SENDGEMSBOT" or
-                    "SGB" when access >= EAccess.Master && argLength == 3 =>
+                "SGB" when access >= EAccess.Master && argLength == 3 =>
                     Command.ResponseSendGemsBot(args[1], args[2], autoConfirm),
 
                 //发送宝珠给交易链接
                 "SENDGEMS" or
-                    "SG" when access >= EAccess.Master && argLength == 3 =>
+                "SG" when access >= EAccess.Master && argLength == 3 =>
                     Command.ResponseSendGems(args[1], args[2], autoConfirm),
 
                 //发送成套卡牌
                 "SENDLEVELUP" or
-                    "SLU" when argLength == 3 && access >= EAccess.Master =>
+                "SLU" when argLength == 3 && access >= EAccess.Master =>
                     Command.ResponseSendLevelUpTrade(args[1], args[2], autoConfirm),
 
                 //重新加载库存

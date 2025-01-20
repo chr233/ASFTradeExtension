@@ -874,18 +874,18 @@ internal static class Command
     {
         if (!int.TryParse(strLevel, out var targetLevel) || targetLevel <= 0)
         {
-            return FormatStaticResponse("参数错误, 用法 LEVELUP 目标等级 交易链接");
+            return FormatStaticResponse("参数错误, 用法 SENDLEVELUP 目标等级 交易链接");
         }
 
         if (targetLevel < 1 || targetLevel > 1000)
         {
-            return FormatStaticResponse("目标等级无效, 有效范围 1~1000, 用法 LEVELUP 目标等级 交易链接");
+            return FormatStaticResponse("目标等级无效, 有效范围 1~1000, 用法 SENDLEVELUP 目标等级 交易链接");
         }
 
         var (tradeLinkValid, targetSteamId, tradeToken) = ParseTradeLink(tradeLink);
         if (!tradeLinkValid || targetSteamId == 0 || string.IsNullOrEmpty(tradeToken))
         {
-            return FormatStaticResponse("交易链接无效, 用法 LEVELUP 目标等级 交易链接");
+            return FormatStaticResponse("交易链接无效, 用法 SENDLEVELUP 目标等级 交易链接");
         }
 
         var (bot, handler) = GetRandomBot();
@@ -965,6 +965,104 @@ internal static class Command
 
             return FormatStaticResponse(
                 $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 需要手动确认报价, 从 {badgeInfo.Level} 级升级到 {targetLevel} 级还需要 {needExp} 点经验, 需要合成 {needSet} 套卡牌, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
+        }
+        catch (Exception ex)
+        {
+            ASFLogger.LogGenericError("发货失败");
+            ASFLogger.LogGenericException(ex);
+            return FormatStaticResponse("发货失败, 执行发货出错");
+        }
+    }
+
+    /// <summary>
+    /// 发货交易报价
+    /// </summary>
+    /// <param name="strLevel"></param>
+    /// <param name="tradeLink"></param>
+    /// <param name="autoConfirm"></param>
+    /// <returns></returns>
+    public static async Task<string?> ResponseSendLevelUpTradeSet(string steSetCount, string tradeLink, bool autoConfirm)
+    {
+        if (!int.TryParse(steSetCount, out var targetSet) || targetSet <= 0)
+        {
+            return FormatStaticResponse("参数错误, 用法 SENDLEVELUPSET 目标套数 交易链接");
+        }
+
+        var (tradeLinkValid, targetSteamId, tradeToken) = ParseTradeLink(tradeLink);
+        if (!tradeLinkValid || targetSteamId == 0 || string.IsNullOrEmpty(tradeToken))
+        {
+            return FormatStaticResponse("交易链接无效, 参数错误, 用法 SENDLEVELUPSET 目标套数 交易链接");
+        }
+
+        var (bot, handler) = GetRandomBot();
+        if (bot == null || handler == null)
+        {
+            return FormatStaticResponse("未设置发货机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
+        }
+
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
+        }
+
+        try
+        {
+            var userInfo = await handler.GetUserBasicInfo(targetSteamId).ConfigureAwait(false);
+            if (userInfo == null || !userInfo.IsValid)
+            {
+                return FormatStaticResponse($"交易链接似乎无效, 找不到用户 {targetSteamId}");
+            }
+
+            var badgeInfo = await handler.GetUserBadgeSummary(userInfo.ProfilePath!, true).ConfigureAwait(false);
+            if (badgeInfo == null)
+            {
+                return FormatStaticResponse($"读取用户 {targetSteamId} 的徽章信息失败");
+            }
+
+            var avilableSets = await handler.SelectFullSetCards(badgeInfo.Badges, targetSet)
+                .ConfigureAwait(false);
+
+            var offer = avilableSets.TradeItems;
+            if (targetSet != avilableSets.CardSet || offer.Count == 0)
+            {
+                return FormatStaticResponse($"发货失败, 可用卡牌库存不足, 需要 {targetSet} 套, 可发货 {avilableSets.CardSet} 套");
+            }
+
+            await handler.AddInTradeItems(avilableSets.TradeItems).ConfigureAwait(false);
+
+            var tradeMsg = $"共发货 {targetSet} 套 {offer.Count} 张卡牌";
+
+            var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler
+                .SendTradeOffer(targetSteamId, offer, null, tradeToken, tradeMsg, false, Config.MaxItemPerTrade)
+                .ConfigureAwait(false);
+
+            if (!success)
+            {
+                return FormatStaticResponse("发货失败, 发送报价失败, 可能网络问题");
+            }
+
+            if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+            {
+                var (twoFactorSuccess, _, _) = await bot.Actions
+                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                        mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+                if (!twoFactorSuccess)
+                {
+                    return FormatStaticResponse("发货失败, 自动确认交易失败");
+                }
+
+                return FormatStaticResponse(
+                    $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
+            }
+
+            return FormatStaticResponse(
+                $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 需要手动确认报价, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
         }
         catch (Exception ex)
         {

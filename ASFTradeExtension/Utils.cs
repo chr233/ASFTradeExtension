@@ -209,8 +209,13 @@ internal static class Utils
     /// </summary>
     /// <param name="tradeLink"></param>
     /// <returns></returns>
-    public static (bool valid, ulong steamId64, string? tradeToken) ParseTradeLink(string tradeLink)
+    public static (bool valid, ulong steamId64, string? tradeToken) ParseTradeLink(string? tradeLink)
     {
+        if (string.IsNullOrEmpty(tradeLink))
+        {
+            return (false, 0, null);
+        }
+
         var match = RegexUtils.MatchTradeLink.Match(tradeLink);
 
         if (!match.Success)

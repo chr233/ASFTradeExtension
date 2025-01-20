@@ -111,7 +111,7 @@ internal static class Command
                 sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                     bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
                     bundle.TradableSetCount, bundle.ExtraTradableCount,
-                    bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
+                    bundle.ExtraNonTradableCount
                 );
             }
             else if (bundle.CardCountPerSet == -1)
@@ -193,7 +193,7 @@ internal static class Command
                 sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                     bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
                     bundle.TradableSetCount, bundle.ExtraTradableCount,
-                    bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
+                    bundle.ExtraNonTradableCount
                 );
             }
             else if (bundle.CardCountPerSet == -1)
@@ -219,7 +219,7 @@ internal static class Command
                 sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                     foilBundle.AppId, foilBundle.Assets.Count, foilBundle.CardCountPerSet,
                     foilBundle.TradableSetCount, foilBundle.ExtraTradableCount,
-                    foilBundle.NonTradableSetCount, foilBundle.ExtraNonTradableCount
+                    foilBundle.ExtraNonTradableCount
                 );
             }
             else if (foilBundle.CardCountPerSet == -1)
@@ -411,7 +411,7 @@ internal static class Command
                             Langs.CurrentCardInventoryShow,
                             appId, bundle.Assets.Count, bundle.CardCountPerSet,
                             bundle.TradableSetCount, bundle.ExtraTradableCount,
-                            bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
+                            bundle.ExtraNonTradableCount
                         );
                     }
                     else if (bundle.CardCountPerSet == -1)
@@ -594,7 +594,7 @@ internal static class Command
             sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
                 appId, bundle.Assets.Count, bundle.CardCountPerSet,
                 bundle.TradableSetCount, bundle.ExtraTradableCount,
-                bundle.NonTradableSetCount, bundle.ExtraNonTradableCount
+                bundle.ExtraNonTradableCount
             );
 
             if (bundle.TradableSetCount < setCount)

@@ -296,7 +296,6 @@ public class InventoryHandler(Bot _bot)
             var extraNonTradableCount = nonTradableSet.Values.Sum() - (bundle.CardCountPerSet * nonTradableCount);
 
             bundle.TradableSetCount = tradableCount;
-            bundle.NonTradableSetCount = nonTradableCount;
             bundle.ExtraTradableCount = extraTradableCount;
             bundle.ExtraNonTradableCount = extraNonTradableCount;
         }
@@ -368,7 +367,7 @@ public class InventoryHandler(Bot _bot)
                 //可交易clsId张数
                 var tradableSet = new Dictionary<ulong, int>();
                 //所有clsId张数
-                var nonTradableSet = new Dictionary<ulong, int>();
+                var extraNonTradableCount = 0;
 
                 if (bundle.Assets != null)
                 {
@@ -383,20 +382,16 @@ public class InventoryHandler(Bot _bot)
                         }
                         else
                         {
-                            Increase(nonTradableSet, clsId);
+                            extraNonTradableCount++;
                         }
                     }
                 }
 
                 //统计套数信息
                 var tradableCount = tradableSet.Count == bundle.CardCountPerSet ? tradableSet.Values.Min() : 0;
-                var nonTradableCount = nonTradableSet.Count == bundle.CardCountPerSet ? nonTradableSet.Values.Min() : 0;
-
                 var extraTradableCount = tradableSet.Values.Sum() - (bundle.CardCountPerSet * tradableCount);
-                var extraNonTradableCount = nonTradableSet.Values.Sum() - (bundle.CardCountPerSet * nonTradableCount);
 
                 bundle.TradableSetCount = tradableCount;
-                bundle.NonTradableSetCount = nonTradableCount;
                 bundle.ExtraTradableCount = extraTradableCount;
                 bundle.ExtraNonTradableCount = extraNonTradableCount;
             }
@@ -443,7 +438,7 @@ public class InventoryHandler(Bot _bot)
                 //可交易clsId张数
                 var tradableSet = new Dictionary<ulong, int>();
                 //所有clsId张数
-                var nonTradableSet = new Dictionary<ulong, int>();
+                var extraNonTradableCount = 0;
 
                 if (bundle.Assets != null)
                 {
@@ -458,20 +453,16 @@ public class InventoryHandler(Bot _bot)
                         }
                         else
                         {
-                            Increase(nonTradableSet, clsId);
+                            extraNonTradableCount++;
                         }
                     }
                 }
 
                 //统计套数信息
                 var tradableCount = tradableSet.Count == bundle.CardCountPerSet ? tradableSet.Values.Min() : 0;
-                var nonTradableCount = nonTradableSet.Count == bundle.CardCountPerSet ? nonTradableSet.Values.Min() : 0;
-
                 var extraTradableCount = tradableSet.Values.Sum() - (bundle.CardCountPerSet * tradableCount);
-                var extraNonTradableCount = nonTradableSet.Values.Sum() - (bundle.CardCountPerSet * nonTradableCount);
 
                 bundle.TradableSetCount = tradableCount;
-                bundle.NonTradableSetCount = nonTradableCount;
                 bundle.ExtraTradableCount = extraTradableCount;
                 bundle.ExtraNonTradableCount = extraNonTradableCount;
             }
@@ -483,7 +474,7 @@ public class InventoryHandler(Bot _bot)
                 //可交易clsId张数
                 var tradableSet = new Dictionary<ulong, int>();
                 //所有clsId张数
-                var nonTradableSet = new Dictionary<ulong, int>();
+                var extraNonTradableCount = 0;
 
                 if (foilBundle.Assets != null)
                 {
@@ -498,22 +489,16 @@ public class InventoryHandler(Bot _bot)
                         }
                         else
                         {
-                            Increase(nonTradableSet, clsId);
+                            extraNonTradableCount++;
                         }
                     }
                 }
 
                 //统计套数信息
                 var tradableCount = tradableSet.Count == foilBundle.CardCountPerSet ? tradableSet.Values.Min() : 0;
-                var nonTradableCount =
-                    nonTradableSet.Count == foilBundle.CardCountPerSet ? nonTradableSet.Values.Min() : 0;
-
                 var extraTradableCount = tradableSet.Values.Sum() - (foilBundle.CardCountPerSet * tradableCount);
-                var extraNonTradableCount =
-                    nonTradableSet.Values.Sum() - (foilBundle.CardCountPerSet * nonTradableCount);
 
                 foilBundle.TradableSetCount = tradableCount;
-                foilBundle.NonTradableSetCount = nonTradableCount;
                 foilBundle.ExtraTradableCount = extraTradableCount;
                 foilBundle.ExtraNonTradableCount = extraNonTradableCount;
             }

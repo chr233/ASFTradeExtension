@@ -3,7 +3,7 @@ namespace ASFTradeExtension.IPC.Requests;
 /// <summary>
 /// 发送卡牌请求
 /// </summary>
-public sealed record SendCardSetRequest
+public sealed record DeliveryCardSetsRequest
 {
     /// <summary>
     /// 套数信息

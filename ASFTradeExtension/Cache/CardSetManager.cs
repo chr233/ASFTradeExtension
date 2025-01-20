@@ -2,6 +2,7 @@ using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Steam;
 using ASFTradeExtension.Data.Plugin;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ASFTradeExtension.Cache;
 
@@ -132,6 +133,7 @@ internal class CardSetManager
     /// 加载缓存文件
     /// </summary>
     /// <returns></returns>
+    [SuppressMessage("Code", "CAC001", Justification = "<挂起>")]
     internal async Task LoadCacheFile()
     {
         try
@@ -170,6 +172,7 @@ internal class CardSetManager
     /// 保存缓存文件
     /// </summary>
     /// <returns></returns>
+    [SuppressMessage("Code", "CAC001", Justification = "<挂起>")]
     internal async Task SaveCacheFile()
     {
         try

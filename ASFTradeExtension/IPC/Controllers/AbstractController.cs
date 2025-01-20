@@ -7,6 +7,7 @@ namespace ASFTradeExtension.IPC.Controllers;
 /// </summary>
 [ApiController]
 [Produces("application/json")]
+[Route("/Api/[controller]/[action]")]
 public abstract class AbstractController : ControllerBase
 {
 }

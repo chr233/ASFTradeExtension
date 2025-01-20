@@ -11,7 +11,6 @@ public sealed record AssetBundle
         AppId = appId;
         CardCountPerSet = cardCountPerSet;
         TradableSetCount = 0;
-        NonTradableSetCount = 0;
         ExtraTradableCount = 0;
         ExtraNonTradableCount = 0;
     }
@@ -41,11 +40,6 @@ public sealed record AssetBundle
     /// 可交易的套数(不含交易中)
     /// </summary>
     public int TradableSetCount { get; set; }
-
-    /// <summary>
-    /// 不可交易套数(不含交易中)
-    /// </summary>
-    public int NonTradableSetCount { get; set; }
 
     /// <summary>
     /// 多余可交易张数(不含交易中)

@@ -2,6 +2,7 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ASFTradeExtension.Data.Core;
+using SteamKit2;
 using System.Text;
 
 namespace ASFTradeExtension.Core;

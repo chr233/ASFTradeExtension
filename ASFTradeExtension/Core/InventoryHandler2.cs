@@ -28,7 +28,7 @@ public partial class InventoryHandler
             return null;
         }
 
-        var inputEle = response.Content.SelectSingleNode<IElement>("//input[@id='trade_offer_access_url']");
+        var inputEle = response.Content.QuerySelector("#trade_offer_access_url");
 
         TradeLink = inputEle?.GetAttribute("value");
         return TradeLink;

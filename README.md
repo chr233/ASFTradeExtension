@@ -46,36 +46,6 @@ Not compatible with the common version of ASF, use generic version of ASF instea
 > 支持 ASF 自带的插件更新机制
 > 使用 `UPDATEPLUGINS stable ASFTradeExtension` 更新插件
 
-### 更新日志
-
-| ASFTradeExtension 版本                                                      | 适配 ASF 版本 | 更新说明                                 |
-| --------------------------------------------------------------------------- | :-----------: | ---------------------------------------- |
-| [1.2.1.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.2.1.1) |    6.1.1.3    | ASF -> 6.1.1.3                           |
-| [1.2.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.2.0.0) |    6.1.0.2    | ASF -> 6.1.0.2                           |
-| [1.2.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.2.0.0) |    6.1.0.2    | ASF -> 6.1.0.2                           |
-| [1.1.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.6.1) |    6.0.7.5    | ASF -> 6.0.7.5                           |
-| [1.1.5.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.5.0) |    6.0.6.4    | ASF -> 6.0.6.4                           |
-| [1.1.4.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.4.0) |    6.0.5.2    | ASF -> 6.0.5.2                           |
-| [1.1.3.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.3.0) |    6.0.4.4    | 支持发送宝珠                             |
-| [1.1.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.2.0) |    6.0.4.4    | ASF -> 6.0.4.4, 支持用机器人名称发送报价 |
-| [1.1.1.3](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.3) |    6.0.3.4    | ASF -> 6.0.3.4, 支持闪卡                 |
-| [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |    6.0.0.3    | ASF -> 6.0.0.3                           |
-| [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |   5.5.0.11    | ASF -> 5.5.0.11, 新的缓存机制            |
-| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |   5.4.10.3    | ASF -> 5.4.10.3                          |
-| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |    5.4.9.3    | ASF -> 5.4.9.3                           |
-| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |    5.4.8.3    | 修改了一些代码, 卡牌交易功能有待测试     |
-| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复                                 |
-| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本                               |
-
-<details>
-  <summary>历史版本</summary>
-
-| ASFTradeExtension 版本 | 依赖 ASF 版本 | 5.3.1.2 | 5.3.2.4 | 5.4.0.3 | 5.4.1.11 |
-| ---------------------- | :-----------: | :-----: | :-----: | :-----: | :------: |
-| -                      |       -       |   ❌    |   ❌    |   ✔️    |    ✔️    |
-
-</details>
-
 ## 插件配置说明
 
 > 本插件的配置不是必须的, 保持默认配置即可使用大部分功能

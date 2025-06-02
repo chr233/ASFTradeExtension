@@ -40,33 +40,6 @@
 > 支持 ASF 自带的插件更新机制
 > 使用 `UPDATEPLUGINS stable ASFTradeExtension` 更新插件
 
-### Журнал изменений
-
-| Версия ASFTradeExtension                                                    | Совместимая версия ASF | Описание                                                                         |
-| --------------------------------------------------------------------------- | :--------------------: | -------------------------------------------------------------------------------- |
-| [1.1.5.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.5.0) |        6.0.6.4         | ASF -> 6.0.6.4                                                                   |
-| [1.1.4.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.4.0) |        6.0.5.2         | ASF -> 6.0.5.2                                                                   |
-| [1.1.3.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.3.0) |        6.0.4.4         | 支持发送宝珠                                                                     |
-| [1.1.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.2.0) |        6.0.4.4         | ASF -> 6.0.4.4, 支持用机器人名称发送报价                                         |
-| [1.1.1.3](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.1.3) |        6.0.3.4         | ASF -> 6.0.3.4, 支持闪卡                                                         |
-| [1.1.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.1.0.0) |        6.0.0.3         | ASF -> 6.0.0.3                                                                   |
-| [1.0.9.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.9.0) |        5.5.0.11        | ASF -> 5.5.0.11, 新的缓存机制                                                    |
-| [1.0.8.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.8.0) |        5.4.10.3        | ASF -> 5.4.10.3                                                                  |
-| [1.0.7.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.7.0) |        5.4.9.3         | ASF -> 5.4.9.3                                                                   |
-| [1.0.6.1](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.1) |        5.4.8.3         | Модифицирован некоторый код торговли картами                                     |
-| [1.0.6.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.6.0) |        5.4.8.3         | Модифицирован некоторый код, функция торговли картами должна быть протестирована |
-| [1.0.2.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.2.0) |        5.4.4.5         | Исправления ошибок                                                               |
-| [1.0.0.0](https://github.com/chr233/ASFTradeExtension/releases/tag/1.0.0.0) |        5.4.2.13        | Первая версия                                                                    |
-
-<details>
-  <summary>История версий</summary>
-
-| Версия ASFTradeExtension | Совместимая версия ASF | 5.3.1.2 | 5.3.2.4 | 5.4.0.3 | 5.4.1.11 |
-| ------------------------ | :--------------------: | :-----: | :-----: | :-----: | :------: |
-|                          |           -            |   ❌    |   ❌    |   ✔️    |    ✔️    |
-
-</details>
-
 ## Конфигурация плагина
 
 > Настройка этого плагина не требуется, большинство функций доступно в настройках по умолчанию

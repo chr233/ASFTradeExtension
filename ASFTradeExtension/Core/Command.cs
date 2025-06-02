@@ -30,10 +30,10 @@ internal static class Command
     /// <returns></returns>
     public static async Task<string?> ResponseSetMasterBot(Bot bot)
     {
-        if (!bot.HasMobileAuthenticator)
-        {
-            return FormatStaticResponse("设置失败, 发货机器人需导入手机令牌");
-        }
+        //if (!bot.HasMobileAuthenticator)
+        //{
+        //    return FormatStaticResponse("设置失败, 发货机器人需导入手机令牌");
+        //}
 
         await CardSetCache.SetMasterBotName(bot.BotName).ConfigureAwait(false);
         await CardSetCache.SaveCacheFile().ConfigureAwait(false);
@@ -1070,5 +1070,10 @@ internal static class Command
             ASFLogger.LogGenericException(ex);
             return FormatStaticResponse("发货失败, 执行发货出错");
         }
+    }
+
+    public static async Task<string> ResponseLootEx(Bot bot, string query)
+    {
+        return bot.FormatBotResponse("123");
     }
 }

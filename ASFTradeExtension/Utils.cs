@@ -193,14 +193,7 @@ internal static class Utils
             var bot = Bot.GetBot(CardSetCache.MasterBotName);
             if (bot != null && CoreHandlers.TryGetValue(bot, out var handler))
             {
-                if (!bot.HasMobileAuthenticator)
-                {
-                    ASFLogger.LogGenericWarning("MasterBot 未启用令牌, 无法用于自动发货");
-                }
-                else
-                {
-                    return (bot, handler);
-                }
+                return (bot, handler);
             }
         }
 

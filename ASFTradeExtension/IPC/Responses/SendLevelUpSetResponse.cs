@@ -18,12 +18,12 @@ public sealed record SendLevelUpSetResponse
         AutoConfirm = autoConfirm;
     }
 
-    public string? NickName { get; set; }
-    public int CurrentLevel { get; set; }
-    public int CurrentExp { get; set; }
-    public int TargetLevel { get; set; }
-    public int CardSet { get; set; }
-    public int CardCount { get; set; }
-    public int CardType { get; set; }
-    public bool AutoConfirm { get; set; }
+    public string? NickName { get; init; }
+    public int CurrentLevel { get; init; }
+    public int CurrentExp { get; init; }
+    public int TargetLevel { get; init; }
+    public int CardSet { get; init; }
+    public int CardCount { get; init; }
+    public int CardType { get; init; }
+    public bool AutoConfirm { get; init; }
 }

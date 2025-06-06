@@ -34,7 +34,14 @@
 		</Using>
 	</ItemGroup>
 
+	<ItemGroup>
+		<ResourceDlls Include="bin\$(Configuration)\$(TargetFramework)\**\ASFBatchCmd.resources.dll" />
+	</ItemGroup>
+
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Copy SourceFiles="$(TargetPath)" DestinationFolder="..\ArchiSteamFarm\ArchiSteamFarm\bin\$(Configuration)\$(TargetFramework)\plugins\" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(ResourceDlls)" DestinationFiles="@(ResourceDlls->'..\ArchiSteamFarm\ArchiSteamFarm\bin\$(Configuration)\$(TargetFramework)\plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\Users\ASUS\Downloads\ASF-6.1.6.7\plugins\" SkipUnchangedFiles="true" />
 	</Target>
 </Project>

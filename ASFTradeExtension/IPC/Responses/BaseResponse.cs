@@ -1,5 +1,4 @@
 using ArchiSteamFarm.Localization;
-using System.ComponentModel.DataAnnotations;
 
 namespace ASFAwardTool.IPC.Responses;
 
@@ -81,6 +80,5 @@ public record BaseResponse
     /// <summary>
     /// Boolean type that specifies if the request has succeeded.
     /// </summary>
-    [Required]
     public bool Success { get; private set; }
 }

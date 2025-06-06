@@ -1,8 +1,11 @@
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Steam;
+using ASFTradeExtension.Data.Core;
 using ASFTradeExtension.Data.Plugin;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Json;
+using System.Text;
 
 namespace ASFTradeExtension.Cache;
 
@@ -44,6 +47,18 @@ internal class CardSetManager
     {
         MasterBotName = botName;
         return SaveCacheFile();
+    }
+
+    const int QueryLimit = 60;
+
+    private async Task<Dictionary<uint, int>?> FetchCardSetBatch(Bot bot, List<uint> appIds)
+    {
+        var request = new Uri("https://api.1vmp.com/GameInfo/GetGameCards");
+        var data = JsonContent.Create(appIds.ToJsonText());
+
+        var response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<GetGameCardsResponse, JsonContent>(request, null, data).ConfigureAwait(false);
+
+        return response?.Content?.Result;
     }
 
     /// <summary>
@@ -133,7 +148,6 @@ internal class CardSetManager
     /// 加载缓存文件
     /// </summary>
     /// <returns></returns>
-    [SuppressMessage("Code", "CAC001", Justification = "<挂起>")]
     internal async Task LoadCacheFile()
     {
         try
@@ -142,9 +156,7 @@ internal class CardSetManager
 
             if (File.Exists(FilePath))
             {
-                await using var fs = File.Open(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite,
-                    FileShare.ReadWrite);
-                using var sr = new StreamReader(fs);
+                using var sr = new StreamReader(FilePath, Encoding.UTF8);
                 var raw = await sr.ReadToEndAsync().ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(raw))
                 {

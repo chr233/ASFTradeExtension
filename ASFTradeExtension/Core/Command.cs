@@ -1072,7 +1072,7 @@ internal static class Command
         }
     }
 
-    public static async Task<string> ResponseLootEx(Bot bot, string query)
+    public static async Task<string> ResponseTransferEx(Bot bot, string strAppId, string strContextId, string query)
     {
         return bot.FormatBotResponse("123");
     }

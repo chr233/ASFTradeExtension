@@ -336,6 +336,19 @@ public partial class InventoryHandler(Bot _bot)
         }
 
         var semaphore = new SemaphoreSlim(5, 5);
+
+        List<uint> needLoadAppIds = [];
+        foreach (var bundle in lazyLoadBundles)
+        {
+            if (!bundle.Loaded)
+            {
+                needLoadAppIds.Add(bundle.AppId);
+            }
+        }
+
+
+
+
         var countPerSets = await Utilities
             .InParallel(lazyLoadBundles.Select(bundle =>
                 Utils.CardSetCache.GetCardSetCount(_bot, subPath, bundle.AppId, semaphore))).ConfigureAwait(false);

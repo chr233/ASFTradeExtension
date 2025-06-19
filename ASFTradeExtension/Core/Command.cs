@@ -1072,8 +1072,49 @@ internal static class Command
         }
     }
 
-    public static async Task<string> ResponseTransferEx(Bot bot, string strAppId, string strContextId, string query)
+    /// <summary>
+    /// 使用交易链接转移卡牌
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="strAppId"></param>
+    /// <returns></returns>
+    public static async Task<string> ResponseTransferEx(Bot bot, string strAppId, string tradeLink, bool autoConfirm)
     {
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return FormatStaticResponse("机器人当前离线, 请稍后再试");
+        }
+
+        if (!int.TryParse(strAppId, out var appId) || appId <= 0)
+        {
+            return FormatStaticResponse("参数错误, 用法 TRANSFEREX [Bot] [AppId] 交易链接");
+        }
+
+        var (tradeLinkValid, targetSteamId, tradeToken) = ParseTradeLink(tradeLink);
+        if (!tradeLinkValid || targetSteamId == 0 || string.IsNullOrEmpty(tradeToken))
+        {
+            return FormatStaticResponse("交易链接无效, 用法 TRANSFEREX [Bot] [AppId] 交易链接");
+        }
+
+        var inventory = await bot.ArchiHandler.GetMyInventoryAsync(753, 6, true).ToListAsync().ConfigureAwait(false);
+
+        List<Asset> itemToTrade = [];
+
+        foreach (var inv in inventory)
+        {
+            if (inv.RealAppID == appId)
+            {
+                itemToTrade.Add(inv);
+            }
+        }
+
+        if (itemToTrade.Count == 0)
+        {
+            return bot.FormatBotResponse("当前筛选条件下无可交易物品");
+        }
+
+        await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, itemToTrade, null, tradeToken, "Send via ASFTradeExtension", false, Config.MaxItemPerTrade).ConfigureAwait(false);
+
         return bot.FormatBotResponse("123");
     }
 }

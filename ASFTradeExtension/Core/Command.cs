@@ -13,7 +13,7 @@ internal static class Command
     /// 获取发货机器人
     /// </summary>
     /// <returns></returns>
-    public static string? ResponseGetMasterBot()
+    public static string ResponseGetMasterBot()
     {
         if (string.IsNullOrEmpty(CardSetCache.MasterBotName))
         {
@@ -28,7 +28,7 @@ internal static class Command
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    public static async Task<string?> ResponseSetMasterBot(Bot bot)
+    public static async Task<string> ResponseSetMasterBot(Bot bot)
     {
         //if (!bot.HasMobileAuthenticator)
         //{
@@ -45,12 +45,12 @@ internal static class Command
     /// </summary>
     /// <param name="botName"></param>
     /// <returns></returns>
-    public static Task<string?> ResponseSetMasterBot(string botName)
+    public static Task<string> ResponseSetMasterBot(string botName)
     {
         var bot = Bot.GetBot(botName);
         if (bot == null)
         {
-            return Task.FromResult<string?>("设置失败, 未找到机器人");
+            return Task.FromResult("设置失败, 未找到机器人");
         }
 
         return ResponseSetMasterBot(bot);
@@ -63,7 +63,7 @@ internal static class Command
     /// <param name="query"></param>
     /// <param name="foilCard"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseFullSetList(string? query, bool foilCard)
+    internal static async Task<string> ResponseFullSetList(string? query, bool foilCard)
     {
         var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
@@ -181,7 +181,7 @@ internal static class Command
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseFullSetListSaleEvent()
+    internal static async Task<string> ResponseFullSetListSaleEvent()
     {
         var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
@@ -270,7 +270,7 @@ internal static class Command
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseGemsInfo()
+    internal static async Task<string> ResponseGemsInfo()
     {
         var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
@@ -341,7 +341,7 @@ internal static class Command
     /// <param name="query"></param>
     /// <param name="foilCard"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseFullSetCountOfGame(string query, bool foilCard)
+    internal static async Task<string> ResponseFullSetCountOfGame(string query, bool foilCard)
     {
         var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
@@ -429,7 +429,7 @@ internal static class Command
     /// <param name="autoConfirm"></param>
     /// <param name="foilCard"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendCardSetBot(string strAppId, string strSetCount,
+    internal static async Task<string> ResponseSendCardSetBot(string strAppId, string strSetCount,
         string botName, bool autoConfirm, bool foilCard)
     {
         var (bot, handler) = GetMasterBot();
@@ -474,7 +474,7 @@ internal static class Command
     /// <param name="autoConfirm"></param>
     /// <param name="foilCard"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendCardSet(string strAppId, string strSetCount,
+    internal static async Task<string> ResponseSendCardSet(string strAppId, string strSetCount,
         string tradeLink, bool autoConfirm, bool foilCard)
     {
         var (bot, handler) = GetMasterBot();
@@ -601,7 +601,7 @@ internal static class Command
     /// <param name="botName"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendGemsBot(string? strGemCount, string botName,
+    internal static async Task<string> ResponseSendGemsBot(string? strGemCount, string botName,
         bool autoConfirm)
     {
         var (bot, handler) = GetMasterBot();
@@ -637,7 +637,7 @@ internal static class Command
     /// <param name="tradeLink"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseSendGems(string? strGemCount, string tradeLink,
+    internal static async Task<string> ResponseSendGems(string? strGemCount, string tradeLink,
         bool autoConfirm)
     {
         var (bot, handler) = GetMasterBot();
@@ -774,7 +774,7 @@ internal static class Command
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseReloadCache()
+    internal static async Task<string> ResponseReloadCache()
     {
         var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
@@ -798,7 +798,7 @@ internal static class Command
         return bot.FormatBotResponse(Langs.ReloadInventoryCacheDone);
     }
 
-    public static async Task<string?> ResponseGetBotStock()
+    public static async Task<string> ResponseGetBotStock()
     {
         var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
@@ -870,7 +870,7 @@ internal static class Command
     /// <param name="tradeLink"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
-    public static async Task<string?> ResponseSendLevelUpTrade(string strLevel, string tradeLink, bool autoConfirm)
+    public static async Task<string> ResponseSendLevelUpTrade(string strLevel, string tradeLink, bool autoConfirm)
     {
         if (!int.TryParse(strLevel, out var targetLevel) || targetLevel <= 0)
         {
@@ -981,7 +981,7 @@ internal static class Command
     /// <param name="tradeLink"></param>
     /// <param name="autoConfirm"></param>
     /// <returns></returns>
-    public static async Task<string?> ResponseSendLevelUpTradeSet(string steSetCount, string tradeLink, bool autoConfirm)
+    public static async Task<string> ResponseSendLevelUpTradeSet(string steSetCount, string tradeLink, bool autoConfirm)
     {
         if (!int.TryParse(steSetCount, out var targetSet) || targetSet <= 0)
         {
@@ -1096,25 +1096,59 @@ internal static class Command
             return FormatStaticResponse("交易链接无效, 用法 TRANSFEREX [Bot] [AppId] 交易链接");
         }
 
-        var inventory = await bot.ArchiHandler.GetMyInventoryAsync(753, 6, true).ToListAsync().ConfigureAwait(false);
-
-        List<Asset> itemToTrade = [];
-
-        foreach (var inv in inventory)
+        try
         {
-            if (inv.RealAppID == appId)
+            var inventory = await bot.ArchiHandler.GetMyInventoryAsync(753, 6, true).ToListAsync().ConfigureAwait(false);
+
+            List<Asset> itemToTrade = [];
+
+            foreach (var inv in inventory)
             {
-                itemToTrade.Add(inv);
+                if (inv.RealAppID == appId)
+                {
+                    itemToTrade.Add(inv);
+                }
             }
-        }
 
-        if (itemToTrade.Count == 0)
+            if (itemToTrade.Count == 0)
+            {
+                return bot.FormatBotResponse("当前筛选条件下无可交易物品");
+            }
+
+            var tradeMsg = $"共发货 {itemToTrade.Count} 张卡牌";
+
+            var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler
+                .SendTradeOffer(targetSteamId, itemToTrade, null, tradeToken, tradeMsg, false, Config.MaxItemPerTrade)
+                .ConfigureAwait(false);
+
+            if (!success)
+            {
+                return FormatStaticResponse("发货失败, 发送报价失败, 可能网络问题");
+            }
+
+            if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+            {
+                var (twoFactorSuccess, _, _) = await bot.Actions
+                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                        mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+                if (!twoFactorSuccess)
+                {
+                    return FormatStaticResponse("发货失败, 自动确认交易失败");
+                }
+
+                return FormatStaticResponse(
+                    $"发送报价给 {targetSteamId} 成功, 总计发送了 {itemToTrade.Count} 张卡牌");
+            }
+
+            return FormatStaticResponse(
+                $"发送报价给 {targetSteamId} 成功, 需要手动确认报价, 总计发送了 {itemToTrade.Count} 张卡牌");
+        }
+        catch (Exception ex)
         {
-            return bot.FormatBotResponse("当前筛选条件下无可交易物品");
+            ASFLogger.LogGenericError("发货失败");
+            ASFLogger.LogGenericException(ex);
+            return FormatStaticResponse("发货失败, 执行发货出错");
         }
-
-        await bot.ArchiWebHandler.SendTradeOffer(targetSteamId, itemToTrade, null, tradeToken, "Send via ASFTradeExtension", false, Config.MaxItemPerTrade).ConfigureAwait(false);
-
-        return bot.FormatBotResponse("123");
     }
 }

@@ -3,7 +3,6 @@ using ArchiSteamFarm.Steam;
 using ASFTradeExtension.Data.Core;
 using ASFTradeExtension.Data.Plugin;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
 using System.Text;
 
@@ -185,15 +184,14 @@ internal class CardSetManager
     /// </summary>  
     /// 
     /// <returns></returns>
-    [SuppressMessage("Code", "CAC001", Justification = "<挂起>")]
     internal async Task SaveCacheFile()
     {
         try
         {
             await CacheLock.WaitAsync().ConfigureAwait(false);
 
-            await using var fs = File.Open(FilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-            await using var sw = new StreamWriter(fs);
+            using var fs = File.Open(FilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+            using var sw = new StreamWriter(fs);
             var data = new StorageData(MasterBotName, FullSetCountCache);
             var json = data.ToJsonText();
             await sw.WriteAsync(json).ConfigureAwait(false);

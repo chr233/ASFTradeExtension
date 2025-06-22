@@ -449,12 +449,12 @@ internal static class Command
         }
 
         var targetBot = Bot.GetBot(botName);
-        if (targetBot == null)
+        if (targetBot == null || !CoreHandlers.TryGetValue(targetBot, out var targetHandler))
         {
             return bot.FormatBotResponse(Strings.BotNotFound, botName);
         }
 
-        var tradeLink = await handler.GetTradeLink().ConfigureAwait(false);
+        var tradeLink = await targetHandler.GetTradeLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(tradeLink))
         {
             return bot.FormatBotResponse(Langs.FetchTradeLinkFailed);
@@ -620,7 +620,13 @@ internal static class Command
             return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
         }
 
-        var tradeLink = await handler.GetTradeLink().ConfigureAwait(false);
+        var targetBot = Bot.GetBot(botName);
+        if (targetBot == null || !CoreHandlers.TryGetValue(targetBot, out var targetHandler))
+        {
+            return bot.FormatBotResponse(Strings.BotNotFound, botName);
+        }
+
+        var tradeLink = await targetHandler.GetTradeLink().ConfigureAwait(false);
         if (string.IsNullOrEmpty(tradeLink))
         {
             return bot.FormatBotResponse(Langs.FetchTradeLinkFailed);

@@ -2,7 +2,6 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
-using ArchiSteamFarm.Web.GitHub.Data;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data.Plugin;
 using System.ComponentModel;
@@ -30,6 +29,9 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
 
     public string Name => "ASF Trade Extension";
     public Version Version => MyVersion;
+
+    public bool CanUpdate => true;
+    public string RepositoryName => "chr233/ASFTradeExtension";
 
     /// <summary>
     /// ASF启动事件
@@ -209,26 +211,6 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
 
             return ex.StackTrace;
         }
-    }
-
-    public bool CanUpdate => true;
-    public string RepositoryName => "chr233/ASFEnhance";
-
-    /// <inheritdoc />
-    public Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion,
-        IReadOnlyCollection<ReleaseAsset> releaseAssets)
-    {
-        var result = releaseAssets.Count switch
-        {
-            0 => null,
-            1 => //如果找到一个文件，则第一个
-                releaseAssets.First(),
-            _ => //优先下载当前语言的版本
-                releaseAssets.FirstOrDefault(static x => x.Name.Contains(Langs.CurrentLanguage)) ??
-                releaseAssets.FirstOrDefault(static x => x.Name.Contains("en-US"))
-        };
-
-        return Task.FromResult(result);
     }
 
     /// <summary>

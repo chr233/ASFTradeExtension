@@ -804,6 +804,10 @@ internal static class Command
         return bot.FormatBotResponse(Langs.ReloadInventoryCacheDone);
     }
 
+    /// <summary>
+    /// 获取机器人库存
+    /// </summary>
+    /// <returns></returns>
     public static async Task<string> ResponseGetBotStock()
     {
         var (bot, handler) = GetMasterBot();
@@ -1082,16 +1086,16 @@ internal static class Command
     /// 使用交易链接转移卡牌
     /// </summary>
     /// <param name="bot"></param>
-    /// <param name="strAppId"></param>
+    /// <param name="strRealAppId"></param>
     /// <returns></returns>
-    public static async Task<string> ResponseTransferEx(Bot bot, string strAppId, string tradeLink, bool autoConfirm)
+    public static async Task<string> ResponseTransferEx(Bot bot, string strRealAppId, string tradeLink, bool autoConfirm)
     {
         if (!bot.IsConnectedAndLoggedOn)
         {
             return FormatStaticResponse("机器人当前离线, 请稍后再试");
         }
 
-        if (!int.TryParse(strAppId, out var appId) || appId <= 0)
+        if (!uint.TryParse(strRealAppId, out var appId) || appId == 0)
         {
             return FormatStaticResponse("参数错误, 用法 TRANSFEREX [Bot] [AppId] 交易链接");
         }
@@ -1115,6 +1119,70 @@ internal static class Command
                     itemToTrade.Add(inv);
                 }
             }
+
+            if (itemToTrade.Count == 0)
+            {
+                return bot.FormatBotResponse("当前筛选条件下无可交易物品");
+            }
+
+            var tradeMsg = $"共发货 {itemToTrade.Count} 张卡牌";
+
+            var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler
+                .SendTradeOffer(targetSteamId, itemToTrade, null, tradeToken, tradeMsg, false, Config.MaxItemPerTrade)
+                .ConfigureAwait(false);
+
+            if (!success)
+            {
+                return FormatStaticResponse("发货失败, 发送报价失败, 可能网络问题");
+            }
+
+            if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
+            {
+                var (twoFactorSuccess, _, _) = await bot.Actions
+                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                        mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+                if (!twoFactorSuccess)
+                {
+                    return FormatStaticResponse("发货失败, 自动确认交易失败");
+                }
+
+                return FormatStaticResponse(
+                    $"发送报价给 {targetSteamId} 成功, 总计发送了 {itemToTrade.Count} 张卡牌");
+            }
+
+            return FormatStaticResponse(
+                $"发送报价给 {targetSteamId} 成功, 需要手动确认报价, 总计发送了 {itemToTrade.Count} 张卡牌");
+        }
+        catch (Exception ex)
+        {
+            ASFLogger.LogGenericError("发货失败");
+            ASFLogger.LogGenericException(ex);
+            return FormatStaticResponse("发货失败, 执行发货出错");
+        }
+    }
+
+    public static async Task<string> ResponseTransferEx(Bot bot, string strAppId, string strContextId, string tradeLink, bool autoConfirm)
+    {
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return FormatStaticResponse("机器人当前离线, 请稍后再试");
+        }
+
+        if (!uint.TryParse(strAppId, out var appId) || appId == 0 || !uint.TryParse(strContextId, out var contextId) || contextId == 0)
+        {
+            return FormatStaticResponse("参数错误, 用法 TRANSFEREX^ [Bot] [AppId] [ContextId] 交易链接");
+        }
+
+        var (tradeLinkValid, targetSteamId, tradeToken) = ParseTradeLink(tradeLink);
+        if (!tradeLinkValid || targetSteamId == 0 || string.IsNullOrEmpty(tradeToken))
+        {
+            return FormatStaticResponse("交易链接无效, 用法 TRANSFEREX^ [Bot] [AppId] [ContextId] 交易链接");
+        }
+
+        try
+        {
+            var itemToTrade = await bot.ArchiHandler.GetMyInventoryAsync(appId, contextId, true).ToListAsync().ConfigureAwait(false);
 
             if (itemToTrade.Count == 0)
             {

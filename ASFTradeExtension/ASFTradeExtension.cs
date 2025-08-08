@@ -30,6 +30,9 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
     public string Name => "ASF Trade Extension";
     public Version Version => MyVersion;
 
+    public bool CanUpdate => true;
+    public string RepositoryName => "chr233/ASFTradeExtension";
+
     /// <summary>
     /// ASF启动事件
     /// </summary>
@@ -346,8 +349,12 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Command.ResponseReloadCache(),
 
+                //转移库存
                 "TRANSFEREX" when access >= EAccess.Operator && argLength == 3 =>
                     Command.ResponseTransferEx(bot, args[1], args[2], autoConfirm),
+
+                "TRANSFEREX^" when access >= EAccess.Operator && argLength == 4 =>
+                    Command.ResponseTransferEx(bot, args[1], args[2], args[3], autoConfirm),
 
                 _ => null
             }

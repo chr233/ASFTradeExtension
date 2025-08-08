@@ -20,7 +20,7 @@ internal static class Utils
     /// <summary>
     /// 促销卡牌
     /// </summary>
-    internal static uint SaleEventAppId = 2861690;
+    internal static uint SaleEventAppId = 3558920;
 
     /// <summary>
     /// 插件配置

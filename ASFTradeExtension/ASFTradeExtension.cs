@@ -213,9 +213,6 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
         }
     }
 
-    public bool CanUpdate => true;
-    public string RepositoryName => "chr233/ASFTradeExtension";
-
     /// <summary>
     /// 处理命令
     /// </summary>

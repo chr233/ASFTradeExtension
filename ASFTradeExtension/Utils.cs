@@ -220,12 +220,12 @@ internal static class Utils
         }
 
         var tradeToken = match.Groups[2].Value;
-        if (!ulong.TryParse(match.Groups[1].Value, out var stramId32) || string.IsNullOrEmpty(tradeToken))
+        if (!ulong.TryParse(match.Groups[1].Value, out var steamId32) || string.IsNullOrEmpty(tradeToken))
         {
             return (false, 0, null);
         }
 
-        var steamId64 = Steam322SteamId(stramId32);
+        var steamId64 = Steam322SteamId(steamId32);
 
         return (true, steamId64, tradeToken);
     }

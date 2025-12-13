@@ -15,7 +15,6 @@
 		</PackageReference>
 		<PackageReference Include="SteamKit2" IncludeAssets="compile" />
 		<PackageReference Include="System.Composition.AttributedModel" />
-		<PackageReference Include="System.Linq.Async" IncludeAssets="compile" />
 		<PackageReference Include="Microsoft.CodeAnalysis.ResxSourceGenerator" PrivateAssets="all" />
 	</ItemGroup>
 

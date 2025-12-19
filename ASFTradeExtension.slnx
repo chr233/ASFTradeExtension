@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="DebugFast" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Folder Name="/解决方案项/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+    <File Path="README.ru.md" />
+  </Folder>
+  <Project Path="ArchiSteamFarm/ArchiSteamFarm/ArchiSteamFarm.csproj" />
+  <Project Path="ASFTradeExtension/ASFTradeExtension.csproj" />
+</Solution>

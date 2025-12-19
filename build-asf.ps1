@@ -1,5 +1,5 @@
 
-$runtimes = "linux-x64", "win-x64" #, "win-arm64", "linux-arm64"
+$runtimes = "linux-x64", "win-x64", "win-arm64", "linux-arm64"
 $framework = "net10.0"
 $config = "Release"
 $projectName = "ArchiSteamFarm/ArchiSteamFarm"

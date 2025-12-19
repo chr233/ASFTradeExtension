@@ -3,13 +3,6 @@ $PLUGIN_NAME = "ASFTradeExtension.dll"
 
 dotnet publish $PROJECT_NAME -o ./publish/ -c Release
 
-if (-Not (Test-Path -Path ./dist)) {
-    New-Item -ItemType Directory -Path ./dist
-}
-else {
-    Remove-Item -Path ./dist/* -Recurse -Force
-}
-
 Copy-Item -Path .\publish\$PLUGIN_NAME -Destination .\dist\ 
 
 $dirs = Get-ChildItem -Path ./publish -Directory
@@ -18,7 +11,7 @@ foreach ($dir in $dirs) {
     
     foreach ($file in $subFiles) {
         $resourceName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
-        $opDir = "./dist/$resourceName"
+        $opDir = "./tmp/$resourceName"
         if (-Not (Test-Path -Path $opDir)) {
             New-Item -ItemType Directory -Path $opDir
         }
@@ -30,4 +23,4 @@ foreach ($dir in $dirs) {
     }
 }
 
-Remove-Item -Path ./publish -Recurse -Force
+Remove-Item -Recurse -Force "./tmp"

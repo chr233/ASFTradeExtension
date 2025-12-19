@@ -16,6 +16,7 @@
 		<PackageReference Include="SteamKit2" IncludeAssets="compile" />
 		<PackageReference Include="System.Composition.AttributedModel" />
 		<PackageReference Include="Microsoft.CodeAnalysis.ResxSourceGenerator" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -34,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ResourceDlls Include="bin\$(Configuration)\$(TargetFramework)\**\ASFBatchCmd.resources.dll" />
+		<ResourceDlls Include="bin\$(Configuration)\$(TargetFramework)\**\ASFTradeExtension.resources.dll" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

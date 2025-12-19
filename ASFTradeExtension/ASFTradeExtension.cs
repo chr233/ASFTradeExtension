@@ -276,6 +276,10 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "RELOADCACHE" when access >= EAccess.Master =>
                     Command.ResponseReloadCache(),
 
+                //清除库存缓存
+                "CLEARCACHE" when access >= EAccess.Master =>
+                    Command.ResponseClearCache(),
+
                 _ => null
             },
             _ => cmd switch //带参数
@@ -345,6 +349,10 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 //重新加载库存
                 "RELOADCACHE" when access >= EAccess.Operator =>
                     Command.ResponseReloadCache(),
+
+                //清除库存缓存
+                "CLEARCACHE" when access >= EAccess.Master =>
+                    Command.ResponseClearCache(),
 
                 //转移库存
                 "TRANSFEREX" when access >= EAccess.Operator && argLength == 3 =>

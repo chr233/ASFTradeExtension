@@ -805,6 +805,24 @@ internal static class Command
     }
 
     /// <summary>
+    /// 清除缓存
+    /// </summary>
+    /// <returns></returns>
+    internal static async Task<string> ResponseClearCache()
+    {
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
+        {
+            return FormatStaticResponse("未设置发货机器人");
+        }
+
+        handler.ExpiredCache();
+        await handler.ClearIntradeItems().ConfigureAwait(false);
+
+        return bot.FormatBotResponse("已清除交易中物品缓存");
+    }
+
+    /// <summary>
     /// 获取机器人库存
     /// </summary>
     /// <returns></returns>

@@ -84,17 +84,18 @@ ASF.json
 
 #### 查询命令
 
-| 命令                          | 缩写   | 权限     | 说明                                                             |
-| ----------------------------- | ------ | -------- | ---------------------------------------------------------------- |
-| `GETMASTERBOT`                | `GM`   | `Master` | 获取发货 Bot                                                     |
-| `SETMASTERBOT [bot]`          | `SM`   | `Master` | 设置发货 Bot                                                     |
-| `FULLSETLIST [Config]`        | `FSL`  | `Master` | 显示普通卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
-| `FULLSETLISTFOIL [Config]`    | `FSLF` | `Master` | 显示闪卡卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
-| `FULLSETLISTSALE`             | `FSLS` | `Master` | 显示促销卡牌套数信息                                             |
-| `FULLSET [Bots] <appIds>`     | `FS`   | `Master` | 显示指定 App 的普通卡牌套数信息                                  |
-| `FULLSETFOIL [Bots] <appIds>` | `FSF`  | `Master` | 显示指定 App 的闪亮卡牌套数信息                                  |
-| `GEMSINFO [Bots]`             | `GI`   | `Master` | 显示指定机器人的宝珠库存数量                                     |
-| `RELOADCACHE [Bots]`          |        | `Master` | 刷新库存缓存                                                     |
+| 命令                          | 缩写   | 权限     | 说明                                                                    |
+| ----------------------------- | ------ | -------- | ----------------------------------------------------------------------- |
+| `GETMASTERBOT`                | `GM`   | `Master` | 获取发货 Bot                                                            |
+| `SETMASTERBOT [bot]`          | `SM`   | `Master` | 设置发货 Bot                                                            |
+| `FULLSETLIST [Config]`        | `FSL`  | `Master` | 显示普通卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]        |
+| `FULLSETLISTFOIL [Config]`    | `FSLF` | `Master` | 显示闪卡卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]        |
+| `FULLSETLISTSALE`             | `FSLS` | `Master` | 显示促销卡牌套数信息                                                    |
+| `FULLSET [Bots] <appIds>`     | `FS`   | `Master` | 显示指定 App 的普通卡牌套数信息                                         |
+| `FULLSETFOIL [Bots] <appIds>` | `FSF`  | `Master` | 显示指定 App 的闪亮卡牌套数信息                                         |
+| `GEMSINFO [Bots]`             | `GI`   | `Master` | 显示指定机器人的宝珠库存数量                                            |
+| `RELOADCACHE [Bots]`          |        | `Master` | 刷新库存缓存                                                            |
+| `CLEARCACHE [Bots]`           |        | `Master` | 清除交易中物品的记录 (如果有未接受的报价可能会导致同一个物品被重复发货) |
 
 #### 交易命令
 

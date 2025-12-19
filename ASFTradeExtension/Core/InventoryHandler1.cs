@@ -538,6 +538,12 @@ public partial class InventoryHandler(Bot _bot)
         UpdateTime = DateTime.MinValue;
     }
 
+    public async Task ClearIntradeItems()
+    {
+        InTradeItemAssetIDs.Clear();
+        await UpdateBotCache().ConfigureAwait(false);
+    }
+
     /// <summary>
     /// 添加交易中物品列表
     /// </summary>

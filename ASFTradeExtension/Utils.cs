@@ -6,6 +6,7 @@ using ArchiSteamFarm.Steam.Integration;
 using ASFTradeExtension.Cache;
 using ASFTradeExtension.Core;
 using ASFTradeExtension.Data.Plugin;
+using SteamKit2;
 using SteamKit2.Internal;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -226,6 +227,11 @@ internal static class Utils
         }
 
         var steamId64 = Steam322SteamId(steamId32);
+
+        if (!new SteamID(steamId64).IsIndividualAccount)
+        {
+            return (false, 0, null);
+        }
 
         return (true, steamId64, tradeToken);
     }

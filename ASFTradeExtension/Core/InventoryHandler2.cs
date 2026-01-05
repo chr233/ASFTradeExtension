@@ -1,4 +1,3 @@
-using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam.Data;
 using ASFTradeExtension.Data.Core;
@@ -65,38 +64,12 @@ public partial class InventoryHandler
         return result;
     }
 
-
-    /// <summary>
-    /// 获取提货人徽章信息
-    /// </summary>
-    /// <param name="bot"></param>
-    /// <param name="profilePath"></param>
-    /// <param name="page"></param>
-    /// <param name="cancel"></param>
-    /// <returns></returns>
-    private async Task<IDocument?> FetchBadgePage(string profilePath, int page = 1, CancellationToken cancel = default)
-    {
-        try
-        {
-            var request = new Uri(SteamCommunityURL, $"/{profilePath}/badges/?sort=c&p={page}&l=schinese");
-            var response = await _bot.ArchiWebHandler
-                .UrlGetToHtmlDocumentWithSession(request, cancellationToken: cancel).ConfigureAwait(false);
-
-            return response?.Content;
-        }
-        catch (Exception ex)
-        {
-            ASFLogger.LogGenericException(ex);
-            return null;
-        }
-    }
-
     /// <summary>
     /// 获取徽章信息
     /// </summary>
     /// <param name="steamId"></param>
     /// <returns></returns>
-    public async Task<GetBadgesResponse?> GetUserBadges(ulong steamId, CancellationToken cancellation)
+    private async Task<GetBadgesResponse?> GetUserBadges(ulong steamId, CancellationToken cancellation)
     {
         var token = _bot.AccessToken ?? throw new Exception("Bot access token is null");
         var request = new Uri(SteamApiURL, $"/IPlayerService/GetBadges/v1/?steamid={steamId}&access_token={token}");
@@ -110,8 +83,6 @@ public partial class InventoryHandler
     /// <summary>
     /// 获取提货人徽章信息
     /// </summary>
-    /// <param name="profilePath"></param>
-    /// <param name="fullLoad"></param>
     /// <param name="cancellation"></param>
     /// <returns></returns>
     public async Task<UserBadgeInfo?> GetUserBadgeSummary(ulong steamId,

@@ -37,7 +37,7 @@ public sealed class TradeController : AbstractController
             return Ok(new GenericResponse(false, "交易链接无效"));
         }
 
-        var (bot, handler) = GetRandomBot();
+        var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
         {
             return Ok(new GenericResponse(false, "未设置发货机器人"));
@@ -126,7 +126,7 @@ public sealed class TradeController : AbstractController
     public async Task<ActionResult<BaseResponse<SendCardSetResponse>>> DeliveryCardSets(
         [FromBody] DeliveryCardSetsRequest payload)
     {
-        var (bot, handler) = GetRandomBot();
+        var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
         {
             return Ok(new GenericResponse(false, "未设置发货机器人"));
@@ -233,5 +233,31 @@ public sealed class TradeController : AbstractController
 
         return Ok(new BaseResponse<SendCardSetResponse>(true,
             $"发送报价成功, 发送了 {response.SetCount} 套 {response.CardCount} 张卡牌", response));
+    }
+
+    [HttpPost]
+    [EndpointSummary("往指定链接发货")]
+    public async Task<ActionResult> GetBadgesInfo(
+      ulong steamId)
+    {
+        var (bot, handler) = GetMasterBot();
+        if (bot == null || handler == null)
+        {
+            return Ok(new GenericResponse(false, "未设置发货机器人"));
+        }
+
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return Ok(new GenericResponse(false, "发货机器人当前离线, 请稍后再试"));
+        }
+
+        if (bot.IsAccountLimited || bot.IsAccountLocked)
+        {
+            return Ok(new GenericResponse(false, "发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人"));
+        }
+
+        var response = await handler.GetUserBadgeSummary(steamId).ConfigureAwait(false);
+
+        return Ok(response);
     }
 }

@@ -11,8 +11,6 @@ public sealed record UserBadgeInfo
     /// <param name="nickname"></param>
     /// <param name="level"></param>
     /// <param name="experience"></param>
-    /// <param name="totalPages"></param>
-    /// <param name="fullLoaded"></param>
     /// <param name="badges"></param>
     public UserBadgeInfo(string? nickname, int level, int experience, List<BadgeData>? badges)
     {
@@ -47,16 +45,6 @@ public sealed record UserBadgeInfo
     /// 经验
     /// </summary>
     public int Experience { get; init; }
-
-    /// <summary>
-    /// 全部徽章页数
-    /// </summary>
-    public int TotalPages { get; init; }
-
-    /// <summary>
-    /// 已加载徽章页数
-    /// </summary>
-    public bool FullLoaded { get; init; }
 
     /// <summary>
     /// 徽章等级

@@ -236,7 +236,7 @@ public sealed class TradeController : AbstractController
     }
 
     [HttpPost]
-    [EndpointSummary("往指定链接发货")]
+    [EndpointSummary("获取用户徽章信息")]
     public async Task<ActionResult> GetBadgesInfo(
       ulong steamId)
     {

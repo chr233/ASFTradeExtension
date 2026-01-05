@@ -61,7 +61,7 @@ public sealed class TradeController : AbstractController
                 return Ok(new GenericResponse(false, $"交易链接似乎无效, 找不到用户 {targetSteamId}"));
             }
 
-            var badgeInfo = await handler.GetUserBadgeSummary(userInfo.ProfilePath!, true).ConfigureAwait(false);
+            var badgeInfo = await handler.GetUserBadgeSummary(targetSteamId).ConfigureAwait(false);
             if (badgeInfo == null)
             {
                 return Ok(new GenericResponse(false, $"读取用户 {targetSteamId} 的徽章信息失败"));

@@ -940,7 +940,7 @@ internal static class Command
                 return FormatStaticResponse($"交易链接似乎无效, 找不到用户 {targetSteamId}");
             }
 
-            var badgeInfo = await handler.GetUserBadgeSummary(userInfo.ProfilePath!, true).ConfigureAwait(false);
+            var badgeInfo = await handler.GetUserBadgeSummary(targetSteamId).ConfigureAwait(false);
             if (badgeInfo == null)
             {
                 return FormatStaticResponse($"读取用户 {targetSteamId} 的徽章信息失败");
@@ -1046,7 +1046,7 @@ internal static class Command
                 return FormatStaticResponse($"交易链接似乎无效, 找不到用户 {targetSteamId}");
             }
 
-            var badgeInfo = await handler.GetUserBadgeSummary(userInfo.ProfilePath!, true).ConfigureAwait(false);
+            var badgeInfo = await handler.GetUserBadgeSummary(targetSteamId).ConfigureAwait(false);
             if (badgeInfo == null)
             {
                 return FormatStaticResponse($"读取用户 {targetSteamId} 的徽章信息失败");
@@ -1242,123 +1242,5 @@ internal static class Command
             ASFLogger.LogGenericException(ex);
             return FormatStaticResponse("发货失败, 执行发货出错");
         }
-    }
-
-    /// <summary>
-    /// 根据指定交易报价发送指定套数的卡牌
-    /// </summary>
-    /// <param name="strSetCount"></param>
-    /// <param name="tradeLink"></param>
-    /// <param name="autoConfirm"></param>
-    /// <returns></returns>
-    internal static async Task<string> ResponseSendLevelUpCardSet(string strSetCount, string tradeLink, bool autoConfirm)
-    {
-        var (bot, handler) = GetMasterBot();
-        if (bot == null || handler == null)
-        {
-            return FormatStaticResponse("未设置发货机器人");
-        }
-
-        if (!bot.IsConnectedAndLoggedOn)
-        {
-            return bot.FormatBotResponse("发货机器人当前离线, 请稍后再试");
-        }
-
-        if (bot.IsAccountLimited || bot.IsAccountLocked)
-        {
-            return bot.FormatBotResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
-        }
-
-        var (valid, targetSteamId, tradeToken) = ParseTradeLink(tradeLink);
-        if (!valid || string.IsNullOrEmpty(tradeToken))
-        {
-            return bot.FormatBotResponse("参数无效, 交易链接无效");
-        }
-
-        if (!uint.TryParse(strSetCount, out var setCount) || setCount == 0)
-        {
-            return bot.FormatBotResponse(Langs.ArgumentInvalidSCS2);
-        }
-
-        var inventory = await handler.GetCardSetCache(false).ConfigureAwait(false);
-
-        if (!inventory.TryGetValue(appId, out var bundle))
-        {
-            return bot.FormatBotResponse(Langs.TwoItem, appId, Langs.NoAvilableCards);
-        }
-
-        var sb = new StringBuilder();
-        sb.AppendLine(Langs.MultipleLineResult);
-
-        if (bundle.Assets != null)
-        {
-            sb.AppendLine(Langs.InventoryStatusBeforeTrade);
-            sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
-                appId, bundle.Assets.Count, bundle.CardCountPerSet,
-                bundle.TradableSetCount, bundle.ExtraTradableCount,
-                bundle.ExtraNonTradableCount
-            );
-
-            if (bundle.TradableSetCount < setCount)
-            {
-                sb.AppendLine(Langs.SendTradeFailedNoEnoughCards);
-            }
-            else
-            {
-                var offer = new List<Asset>();
-                var flag = bundle.Assets.Select(static x => x.ClassID).Distinct()
-                    .ToDictionary(static x => x, _ => setCount);
-
-                foreach (var asset in bundle.Assets)
-                {
-                    var clsId = asset.ClassID;
-                    if (flag[clsId] > 0)
-                    {
-                        offer.Add(asset);
-                        flag[clsId]--;
-                    }
-                }
-
-                if (offer.Count != 0)
-                {
-                    await handler.AddInTradeItems(offer).ConfigureAwait(false);
-
-                    sb.AppendLineFormat(Langs.ExpectToSendCardInfo, setCount, setCount * bundle.CardCountPerSet);
-                    var (success, _, mobileTradeOfferIDs) = await bot.ArchiWebHandler
-                        .SendTradeOffer(targetSteamId, offer, null, tradeToken, null, false, Config.MaxItemPerTrade)
-                        .ConfigureAwait(false);
-
-                    if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
-                    {
-                        var (twoFactorSuccess, _, _) = await bot.Actions
-                            .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
-                                mobileTradeOfferIDs, true).ConfigureAwait(false);
-
-                        sb.AppendLineFormat(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure);
-                    }
-
-                    sb.AppendLineFormat(Langs.SendTradeResult, success ? Langs.Success : Langs.Failure);
-                }
-                else
-                {
-                    sb.AppendLine(Langs.SendTradeFailedNoEnoughCards);
-                }
-            }
-        }
-        else
-        {
-            if (bundle.CardCountPerSet == -1)
-            {
-                sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NetworkError);
-            }
-            else
-            {
-                sb.AppendLineFormat(Langs.TwoItem, appId, Langs.NoAvilableCards);
-            }
-
-            sb.AppendLine(Langs.SendTradeFailedAppIdInvalid);
-        }
-
-        return bot.FormatBotResponse(sb.ToString());
     }
 }

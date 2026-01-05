@@ -14,15 +14,23 @@ public sealed record UserBadgeInfo
     /// <param name="totalPages"></param>
     /// <param name="fullLoaded"></param>
     /// <param name="badges"></param>
-    public UserBadgeInfo(string? nickname, int level, int experience, int totalPages, bool fullLoaded,
-        Dictionary<uint, byte> badges)
+    public UserBadgeInfo(string? nickname, int level, int experience, List<BadgeData>? badges)
     {
         Nickname = nickname;
         Level = level;
         Experience = experience;
-        TotalPages = totalPages;
-        FullLoaded = fullLoaded;
-        Badges = badges;
+
+        Badges = [];
+        if (badges != null)
+        {
+            foreach (var badge in badges)
+            {
+                if (badge.AppId > 0 && badge.BorderColor == 0 && badge.Level < byte.MaxValue)
+                {
+                    Badges[badge.AppId] = (byte)badge.Level;
+                }
+            }
+        }
     }
 
     /// <summary>

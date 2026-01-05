@@ -51,6 +51,10 @@ internal static class Utils
     internal static Uri SteamCommunityURL => ArchiWebHandler.SteamCommunityURL;
 
     /// <summary>
+    /// SteamAPI链接
+    /// </summary>
+    internal static Uri SteamApiURL => new("https://api.steampowered.com");
+    /// <summary>
     /// 日志
     /// </summary>
     internal static ArchiLogger ASFLogger => ASF.ArchiLogger;

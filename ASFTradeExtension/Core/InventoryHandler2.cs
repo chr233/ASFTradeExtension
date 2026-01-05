@@ -27,7 +27,7 @@ public partial class InventoryHandler
         {
             return null;
         }
-            var inputEle = response.Content.QuerySelector("#trade_offer_access_url");
+        var inputEle = response.Content.QuerySelector("#trade_offer_access_url");
 
         TradeLink = inputEle?.GetAttribute("value");
         return TradeLink;
@@ -92,41 +92,19 @@ public partial class InventoryHandler
     }
 
     /// <summary>
-    /// 提取徽章信息
+    /// 获取徽章信息
     /// </summary>
-    /// <param name="document"></param>
+    /// <param name="steamId"></param>
     /// <returns></returns>
-    private static Dictionary<uint, byte> ParseToBadges(IDocument document)
+    public async Task<GetBadgesResponse?> GetUserBadges(ulong steamId, CancellationToken cancellation)
     {
-        Dictionary<uint, byte> badges = [];
+        var token = _bot.AccessToken ?? throw new Exception("Bot access token is null");
+        var request = new Uri(SteamApiURL, $"/IPlayerService/GetBadges/v1/?steamid={steamId}&access_token={token}");
 
-        var badgeEles = document.QuerySelectorAll("div.badge_row.is_link");
-        foreach (var ele in badgeEles)
-        {
-            var url = ele.QuerySelector("a.badge_row_overlay")?.GetAttribute("href");
-            if (url == null)
-            {
-                continue;
-            }
+        var response = await _bot.ArchiWebHandler
+            .UrlGetToJsonObjectWithSession<GetBadgesResponse>(request, cancellationToken: cancellation).ConfigureAwait(false);
 
-            var match = RegexUtils.MatchGameCards.Match(url);
-            if (!match.Success || !uint.TryParse(match.Groups[1].Value, out var appId))
-            {
-                continue;
-            }
-
-            var strLevel = ele.QuerySelector(".badge_info_description>div:nth-child(2)")?.TextContent.Trim() ?? "";
-            match = RegexUtils.MatchBadgeLevel.Match(strLevel);
-
-            if (!match.Success || !byte.TryParse(match.Groups[1].Value, out var level))
-            {
-                continue;
-            }
-
-            badges.TryAdd(appId, level);
-        }
-
-        return badges;
+        return response?.Content;
     }
 
     /// <summary>
@@ -136,11 +114,14 @@ public partial class InventoryHandler
     /// <param name="fullLoad"></param>
     /// <param name="cancellation"></param>
     /// <returns></returns>
-    public async Task<UserBadgeInfo?> GetUserBadgeSummary(string profilePath, bool fullLoad = false,
+    public async Task<UserBadgeInfo?> GetUserBadgeSummary(ulong steamId,
         CancellationToken cancellation = default)
     {
-        var document = await FetchBadgePage(profilePath, 1, cancellation).ConfigureAwait(false);
+        var request = new Uri(SteamCommunityURL, $"/profiles/{steamId}/badges/?l=schinese");
+        var response = await _bot.ArchiWebHandler
+            .UrlGetToHtmlDocumentWithSession(request, cancellationToken: cancellation).ConfigureAwait(false);
 
+        var document = response?.Content;
         if (document == null)
         {
             return null;
@@ -167,46 +148,9 @@ public partial class InventoryHandler
             exp = -1;
         }
 
-        var badges = ParseToBadges(document);
+        var badges = await GetUserBadges(steamId, cancellation).ConfigureAwait(false);
 
-        var strMaxPage = document.QuerySelector("div.pageLinks>a.pagelink:nth-last-child(2)")?.TextContent.Trim();
-        if (!int.TryParse(strMaxPage, out var totalPage))
-        {
-            totalPage = 1;
-        }
-
-        // 加载后续页面
-        if (fullLoad)
-        {
-            if (totalPage > 1)
-            {
-                List<Task<IDocument?>> tasks = [];
-                for (var page = 2; page <= totalPage; page++)
-                {
-                    tasks.Add(FetchBadgePage(profilePath, page, cancellation));
-                }
-
-                var badgeDocuments = await Utilities.InParallel(tasks).ConfigureAwait(false);
-                foreach (var bd in badgeDocuments)
-                {
-                    if (bd == null)
-                    {
-                        continue;
-                    }
-
-                    var bs = ParseToBadges(bd);
-                    if (bs?.Count > 0)
-                    {
-                        foreach (var (k, v) in bs)
-                        {
-                            badges.TryAdd(k, v);
-                        }
-                    }
-                }
-            }
-        }
-
-        var result = new UserBadgeInfo(nickname, level, exp, totalPage, fullLoad, badges);
+        var result = new UserBadgeInfo(nickname, level, exp, badges?.Response?.Badges);
         return result;
     }
 

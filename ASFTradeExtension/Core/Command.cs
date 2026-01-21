@@ -1022,7 +1022,7 @@ internal static class Command
             return FormatStaticResponse("交易链接无效, 参数错误, 用法 SENDLEVELUPSET 目标套数 交易链接");
         }
 
-        var (bot, handler) = GetRandomBot();
+        var (bot, handler) = GetMasterBot();
         if (bot == null || handler == null)
         {
             return FormatStaticResponse("未设置发货机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
@@ -1052,16 +1052,16 @@ internal static class Command
                 return FormatStaticResponse($"读取用户 {targetSteamId} 的徽章信息失败");
             }
 
-            var avilableSets = await handler.SelectFullSetCards(badgeInfo.Badges, targetSet)
+            var availableSets = await handler.SelectFullSetCards(badgeInfo.Badges, targetSet)
                 .ConfigureAwait(false);
 
-            var offer = avilableSets.TradeItems;
-            if (targetSet != avilableSets.CardSet || offer.Count == 0)
+            var offer = availableSets.TradeItems;
+            if (targetSet != availableSets.CardSet || offer.Count == 0)
             {
-                return FormatStaticResponse($"发货失败, 可用卡牌库存不足, 需要 {targetSet} 套, 可发货 {avilableSets.CardSet} 套");
+                return FormatStaticResponse($"发货失败, 可用卡牌库存不足, 需要 {targetSet} 套, 可发货 {availableSets.CardSet} 套");
             }
 
-            await handler.AddInTradeItems(avilableSets.TradeItems).ConfigureAwait(false);
+            await handler.AddInTradeItems(availableSets.TradeItems).ConfigureAwait(false);
 
             var tradeMsg = $"共发货 {targetSet} 套 {offer.Count} 张卡牌";
 
@@ -1086,11 +1086,11 @@ internal static class Command
                 }
 
                 return FormatStaticResponse(
-                    $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
+                    $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 总计发送了 {availableSets.CardSet} 套 {availableSets.CardCount} 张卡牌");
             }
 
             return FormatStaticResponse(
-                $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 需要手动确认报价, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
+                $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 需要手动确认报价, 总计发送了 {availableSets.CardSet} 套 {availableSets.CardCount} 张卡牌");
         }
         catch (Exception ex)
         {

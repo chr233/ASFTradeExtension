@@ -86,7 +86,7 @@ public partial class InventoryHandler
     /// <param name="cancellation"></param>
     /// <returns></returns>
     public async Task<UserBadgeInfo?> GetUserBadgeSummary(ulong steamId,
-        CancellationToken cancellation = default)
+         CancellationToken cancellation = default)
     {
         var request = new Uri(SteamCommunityURL, $"/profiles/{steamId}/badges/?l=schinese");
         var response = await _bot.ArchiWebHandler
@@ -133,12 +133,13 @@ public partial class InventoryHandler
     /// <returns></returns>
     public async Task<LevelCardSetData> SelectFullSetCards(Dictionary<uint, byte> badgeInfo, int targetSet)
     {
-        var invCache = await GetCardSetCache(false).ConfigureAwait(false);
+        var invCache = await GetCardSetCache(true).ConfigureAwait(false);
         await FullLoadAppCardGroup(invCache).ConfigureAwait(false);
 
         var sortedInv = invCache
             .Select(static x => x.Value)
-            .OrderByDescending(static x => x.TradableSetCount);
+            .OrderByDescending(static x => x.TradableSetCount)
+            .ToList();
 
         List<Asset> offer = [];
         var currentSet = 0;

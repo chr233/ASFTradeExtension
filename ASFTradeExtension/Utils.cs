@@ -19,11 +19,6 @@ internal static class Utils
     internal static ConcurrentDictionary<Bot, InventoryHandler> CoreHandlers { get; } = new();
 
     /// <summary>
-    /// 促销卡牌
-    /// </summary>
-    internal static uint SaleEventAppId = 3558920;
-
-    /// <summary>
     /// 插件配置
     /// </summary>
     internal static PluginConfig Config { get; set; } = new();
@@ -274,5 +269,55 @@ internal static class Utils
         var nowExp = Math.Max(CalcLevelExp(currentLevel), currentExp);
         var targetExp = CalcLevelExp(targetLevel);
         return targetExp - nowExp;
+    }
+
+
+    /// <summary>
+    /// 原子写入文件：写入临时文件，然后使用 File.Replace（存在时）或 File.Move（不存在时）替换目标文件。
+    /// 保证在写入过程中不会生成不完整的目标文件（NTFS 上为原子替换）。
+    /// </summary>
+    internal static async Task WriteFileAtomicAsync(string destinationPath, string content)
+    {
+        var directory = Path.GetDirectoryName(destinationPath);
+        if (string.IsNullOrEmpty(directory))
+        {
+            directory = Path.GetTempPath();
+        }
+
+        Directory.CreateDirectory(directory);
+
+        var tempFile = Path.Combine(directory, $"{Path.GetFileName(destinationPath)}.{Guid.NewGuid():N}.tmp");
+
+        await File.WriteAllTextAsync(tempFile, content).ConfigureAwait(false);
+
+        try
+        {
+            if (File.Exists(destinationPath))
+            {
+                // 当目标存在时，使用 File.Replace 可在多数 NTFS 场景下保证原子替换（并可保留备份）
+                File.Replace(tempFile, destinationPath, null);
+            }
+            else
+            {
+                // 目标不存在时，直接移动临时文件到目标位置
+                File.Move(tempFile, destinationPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            // 若替换失败，尝试删除临时文件然后抛出异常以便上层记录日志
+            try
+            {
+                if (File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
+            }
+            catch { }
+
+            ASFLogger.LogGenericException(ex);
+
+            throw;
+        }
     }
 }

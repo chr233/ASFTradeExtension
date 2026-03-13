@@ -263,10 +263,6 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "FSLF" when access >= EAccess.Master =>
                     Command.ResponseFullSetList(null, true),
 
-                "FULLSETLISTSALE" or
-                "FSLS" when access >= EAccess.Master =>
-                    Command.ResponseFullSetListSaleEvent(),
-
                 //获取宝珠信息
                 "GEMSINFO" or
                 "GI" when access >= EAccess.Master =>

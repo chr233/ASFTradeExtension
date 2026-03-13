@@ -57,6 +57,44 @@ internal static class Command
     }
 
     /// <summary>
+    /// 获取发货机器人
+    /// </summary>
+    /// <returns></returns>
+    public static string ResponseGetExcludeList()
+    {
+        return FormatStaticResponse("排除列表: {value}", string.Join(", ", CardSetCache.ExcludedAppIds.Count));
+    }
+
+    /// <summary>
+    /// 设置发货机器人
+    /// </summary>
+    /// <param name="botName"></param>
+    /// <returns></returns>
+    public static string ResponseSetExcludeList(string query)
+    {
+        if (!string.IsNullOrEmpty(query))
+        {
+            CardSetCache.ExcludedAppIds.Clear();
+
+            var queries = query.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var item in queries)
+            {
+                if (uint.TryParse(item, out var p) && p > 0)
+                {
+                    CardSetCache.ExcludedAppIds.Add(p);
+                }
+            }
+        }
+        else
+        {
+            CardSetCache.ExcludedAppIds.Clear();
+        }
+
+        return FormatStaticResponse("排除列表已设置: {value}", string.Join(", ", CardSetCache.ExcludedAppIds.Count));
+    }
+
+    /// <summary>
     /// 获取成套卡牌套数列表
     /// </summary>
     /// <param name="bot"></param>
@@ -136,10 +174,7 @@ internal static class Command
         List<AssetBundle> bundles = [];
         foreach (var (appId, bundle) in invBundles)
         {
-            if (appId != SaleEventAppId)
-            {
-                bundles.Add(bundle);
-            }
+            bundles.Add(bundle);
         }
 
         if (bundles.Count == 0)
@@ -171,95 +206,6 @@ internal static class Command
             {
                 sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NoAvilableCards);
             }
-        }
-
-        return bot.FormatBotResponse(sb.ToString());
-    }
-
-    /// <summary>
-    /// 获取促销卡牌套数
-    /// </summary>
-    /// <param name="bot"></param>
-    /// <returns></returns>
-    internal static async Task<string> ResponseFullSetListSaleEvent()
-    {
-        var (bot, handler) = GetMasterBot();
-        if (bot == null || handler == null)
-        {
-            return FormatStaticResponse("未设置发货机器人");
-        }
-
-        if (!bot.IsConnectedAndLoggedOn)
-        {
-            return FormatStaticResponse("发货机器人当前离线, 请稍后再试");
-        }
-
-        if (bot.IsAccountLimited || bot.IsAccountLocked)
-        {
-            return FormatStaticResponse("发货机器人受限或者被锁定, 请更换机器人, 用法 SETMASTERBOT [Bot] 设置发货机器人");
-        }
-
-        var inventoryBundles = await handler.GetCardSetCache(false).ConfigureAwait(false);
-        var foilInventoryBundles = await handler.GetFoilCardSetCache(false).ConfigureAwait(false);
-
-        var bundle = inventoryBundles.GetValueOrDefault(SaleEventAppId);
-
-        var foilBundle = foilInventoryBundles.GetValueOrDefault(SaleEventAppId);
-
-        await handler.LoadEventAppCardGroup(bundle, foilBundle).ConfigureAwait(false);
-
-        var sb = new StringBuilder();
-        sb.AppendLine(Langs.MultipleLineResult);
-        sb.AppendLine(Langs.SaleEventCardInventory);
-
-        if (bundle != null)
-        {
-            if (bundle.Assets != null)
-            {
-                sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
-                    bundle.AppId, bundle.Assets.Count, bundle.CardCountPerSet,
-                    bundle.TradableSetCount, bundle.ExtraTradableCount,
-                    bundle.ExtraNonTradableCount
-                );
-            }
-            else if (bundle.CardCountPerSet == -1)
-            {
-                sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NetworkError);
-            }
-            else
-            {
-                sb.AppendLineFormat(Langs.TwoItem, bundle.AppId, Langs.NoAvilableCards);
-            }
-        }
-        else
-        {
-            sb.AppendLine(Langs.NoInventory);
-        }
-
-        sb.AppendLine(Langs.FoilSaleEventCardInventory);
-
-        if (foilBundle != null)
-        {
-            if (foilBundle.Assets != null)
-            {
-                sb.AppendLineFormat(Langs.CurrentCardInventoryShow,
-                    foilBundle.AppId, foilBundle.Assets.Count, foilBundle.CardCountPerSet,
-                    foilBundle.TradableSetCount, foilBundle.ExtraTradableCount,
-                    foilBundle.ExtraNonTradableCount
-                );
-            }
-            else if (foilBundle.CardCountPerSet == -1)
-            {
-                sb.AppendLineFormat(Langs.TwoItem, foilBundle.AppId, Langs.NetworkError);
-            }
-            else
-            {
-                sb.AppendLineFormat(Langs.TwoItem, foilBundle.AppId, Langs.NoAvilableCards);
-            }
-        }
-        else
-        {
-            sb.AppendLine(Langs.NoInventory);
         }
 
         return bot.FormatBotResponse(sb.ToString());

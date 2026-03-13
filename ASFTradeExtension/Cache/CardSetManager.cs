@@ -4,7 +4,6 @@ using ASFTradeExtension.Data.Core;
 using ASFTradeExtension.Data.Plugin;
 using System.Collections.Concurrent;
 using System.Net.Http.Json;
-using System.Text;
 
 namespace ASFTradeExtension.Cache;
 
@@ -26,6 +25,11 @@ internal class CardSetManager
     /// 发货机器人名称
     /// </summary>
     public string? MasterBotName { get; private set; }
+
+    /// <summary>
+    /// 排除的游戏ID列表
+    /// </summary>
+    public HashSet<uint> ExcludedAppIds { get; private set; } = [];
 
     /// <summary>
     /// 卡牌套数信息缓存
@@ -155,8 +159,7 @@ internal class CardSetManager
 
             if (File.Exists(FilePath))
             {
-                using var sr = new StreamReader(FilePath, Encoding.UTF8);
-                var raw = await sr.ReadToEndAsync().ConfigureAwait(false);
+                var raw = await File.ReadAllTextAsync(FilePath).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(raw))
                 {
                     var data = raw.ToJsonObject<StorageData>();
@@ -164,6 +167,7 @@ internal class CardSetManager
                     {
                         MasterBotName = data.MasterBotName;
                         FullSetCountCache = data.FullSetCount ?? [];
+                        ExcludedAppIds = data.ExcludedAppIds ?? [];
                     }
                 }
             }
@@ -190,11 +194,14 @@ internal class CardSetManager
         {
             await CacheLock.WaitAsync().ConfigureAwait(false);
 
-            using var fs = File.Open(FilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-            using var sw = new StreamWriter(fs);
-            var data = new StorageData(MasterBotName, FullSetCountCache);
+            var data = new StorageData
+            {
+                MasterBotName = MasterBotName,
+                FullSetCount = FullSetCountCache,
+                ExcludedAppIds = ExcludedAppIds,
+            };
             var json = data.ToJsonText();
-            await sw.WriteAsync(json).ConfigureAwait(false);
+            await WriteFileAtomicAsync(FilePath, json).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

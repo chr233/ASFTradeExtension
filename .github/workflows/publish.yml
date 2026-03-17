@@ -83,7 +83,7 @@ jobs:
 
               $outputDir = "./tmp/$buildName"
 
-              dotnet publish $projectName --output "$outputDir-fde" --self-contained --runtime $runtime --configuration $config --no-restore --nologo -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:ContinuousIntegrationBuild=true -p:UseAppHost=true
+              dotnet publish $projectName --output "$outputDir" --self-contained --runtime $runtime --configuration $config --no-restore --nologo -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:ContinuousIntegrationBuild=true -p:UseAppHost=true
           }
 
       - name: Zip files
@@ -97,8 +97,16 @@ jobs:
             $asfPath1 = Join-Path -Path $dir.FullName -ChildPath "ArchiSteamFarm"
             $asfPath2 = Join-Path -Path $dir.FullName -ChildPath "ArchiSteamFarm.exe"
 
-            7z a -bd -slp -tzip -mm=Deflate -mx=5 -mfb=150 -mpass=10 "./dist/${{ env.REPO_NAME }}.zip" "./tmp/*"
+            if (Test-Path -Path $asfPath1) {
+              $asfExe = $asfPath1
+            } elseif (Test-Path -Path $asfPath2) {
+              $asfExe = $asfPath2
+            } else {
+              continue
+            }
 
+            $zipName = "$zipDist/$($dir.Name).zip"
+            7z a -bd -slp -tzip -mm=Deflate -mx=5 -mfb=150 -mpass=10 "$zipName" "$asfExe"
           }
 
 

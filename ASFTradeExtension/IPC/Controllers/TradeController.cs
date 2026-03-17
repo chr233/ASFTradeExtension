@@ -101,7 +101,7 @@ public sealed class TradeController : AbstractController
             if (payload.AutoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
             {
                 var (twoFactorSuccess, _, _) = await bot.Actions
-                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                    .HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade,
                         mobileTradeOfferIDs, true).ConfigureAwait(false);
             }
 
@@ -219,7 +219,7 @@ public sealed class TradeController : AbstractController
         if (payload.AutoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
         {
             var (twoFactorSuccess, _, _) = await bot.Actions
-                .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                .HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade,
                     mobileTradeOfferIDs, true).ConfigureAwait(false);
         }
 

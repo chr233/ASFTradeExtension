@@ -57,7 +57,7 @@ internal static class Command
     }
 
     /// <summary>
-    /// 获取发货机器人
+    /// 获取排除列表
     /// </summary>
     /// <returns></returns>
     public static string ResponseGetExcludeList()
@@ -66,7 +66,7 @@ internal static class Command
     }
 
     /// <summary>
-    /// 设置发货机器人
+    /// 设置排除列表
     /// </summary>
     /// <param name="botName"></param>
     /// <returns></returns>
@@ -508,7 +508,7 @@ internal static class Command
                     if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
                     {
                         var (twoFactorSuccess, _, _) = await bot.Actions
-                            .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                            .HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade,
                                 mobileTradeOfferIDs, true).ConfigureAwait(false);
 
                         sb.AppendLineFormat(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure);
@@ -709,7 +709,7 @@ internal static class Command
             if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
             {
                 var (twoFactorSuccess, _, _) = await bot.Actions
-                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                    .HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade,
                         mobileTradeOfferIDs, true).ConfigureAwait(false);
 
                 sb.AppendLineFormat(Langs.TFAConfirmResult, twoFactorSuccess ? Langs.Success : Langs.Failure);
@@ -900,16 +900,16 @@ internal static class Command
             var needExp = CalcExpToLevel(badgeInfo.Level, targetLevel, badgeInfo.Experience);
             var needSet = (needExp / 100) + 1;
 
-            var avilableSets = await handler.SelectFullSetCards(badgeInfo.Badges, needSet)
+            var availableSets = await handler.SelectFullSetCards(badgeInfo.Badges, needSet)
                 .ConfigureAwait(false);
 
-            var offer = avilableSets.TradeItems;
-            if (needSet != avilableSets.CardSet || offer.Count == 0)
+            var offer = availableSets.TradeItems;
+            if (needSet != availableSets.CardSet || offer.Count == 0)
             {
-                return FormatStaticResponse($"发货失败, 可用卡牌库存不足, 需要 {needSet} 套, 可发货 {avilableSets.CardSet} 套");
+                return FormatStaticResponse($"发货失败, 可用卡牌库存不足, 需要 {needSet} 套, 可发货 {availableSets.CardSet} 套");
             }
 
-            await handler.AddInTradeItems(avilableSets.TradeItems).ConfigureAwait(false);
+            await handler.AddInTradeItems(availableSets.TradeItems).ConfigureAwait(false);
 
             var tradeMsg = $"共发货 {needSet} 套 {offer.Count} 张卡牌, 可以从 {badgeInfo.Level} 级升到 {targetLevel} 级";
 
@@ -925,7 +925,7 @@ internal static class Command
             if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
             {
                 var (twoFactorSuccess, _, _) = await bot.Actions
-                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                    .HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade,
                         mobileTradeOfferIDs, true).ConfigureAwait(false);
 
                 if (!twoFactorSuccess)
@@ -934,11 +934,11 @@ internal static class Command
                 }
 
                 return FormatStaticResponse(
-                    $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 从 {badgeInfo.Level} 级升级到 {targetLevel} 级还需要 {needExp} 点经验, 需要合成 {needSet} 套卡牌, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
+                    $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 从 {badgeInfo.Level} 级升级到 {targetLevel} 级还需要 {needExp} 点经验, 需要合成 {needSet} 套卡牌, 总计发送了 {availableSets.CardSet} 套 {availableSets.CardCount} 张卡牌");
             }
 
             return FormatStaticResponse(
-                $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 需要手动确认报价, 从 {badgeInfo.Level} 级升级到 {targetLevel} 级还需要 {needExp} 点经验, 需要合成 {needSet} 套卡牌, 总计发送了 {avilableSets.CardSet} 套 {avilableSets.CardCount} 张卡牌");
+                $"发送报价给 {badgeInfo.Nickname}({targetSteamId}) 成功, 需要手动确认报价, 从 {badgeInfo.Level} 级升级到 {targetLevel} 级还需要 {needExp} 点经验, 需要合成 {needSet} 套卡牌, 总计发送了 {availableSets.CardSet} 套 {availableSets.CardCount} 张卡牌");
         }
         catch (Exception ex)
         {
@@ -1023,7 +1023,7 @@ internal static class Command
             if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
             {
                 var (twoFactorSuccess, _, _) = await bot.Actions
-                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                    .HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade,
                         mobileTradeOfferIDs, true).ConfigureAwait(false);
 
                 if (!twoFactorSuccess)
@@ -1103,7 +1103,7 @@ internal static class Command
             if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
             {
                 var (twoFactorSuccess, _, _) = await bot.Actions
-                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                    .HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade,
                         mobileTradeOfferIDs, true).ConfigureAwait(false);
 
                 if (!twoFactorSuccess)
@@ -1167,7 +1167,7 @@ internal static class Command
             if (autoConfirm && mobileTradeOfferIDs?.Count > 0 && bot.HasMobileAuthenticator)
             {
                 var (twoFactorSuccess, _, _) = await bot.Actions
-                    .HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade,
+                    .HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade,
                         mobileTradeOfferIDs, true).ConfigureAwait(false);
 
                 if (!twoFactorSuccess)

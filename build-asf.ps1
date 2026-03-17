@@ -13,8 +13,8 @@ foreach ($runtime in $runtimes) {
 
     $outputDir = "./dist/$buildName"
 
-    dotnet publish $projectName --output "$outputDir-fde" --self-contained --runtime $runtime --framework $framework --configuration $config --no-restore --nologo -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:ContinuousIntegrationBuild=true -p:UseAppHost=true
-    dotnet publish $projectName --output "$outputDir" --no-self-contained --runtime $runtime --framework $framework --configuration $config --no-restore --nologo -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:ContinuousIntegrationBuild=true -p:UseAppHost=true
+    dotnet publish $projectName --output "$outputDir-fde" --self-contained --runtime $runtime  --configuration $config --no-restore --nologo -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:ContinuousIntegrationBuild=true -p:UseAppHost=true
+    dotnet publish $projectName --output "$outputDir" --no-self-contained --runtime $runtime  --configuration $config --no-restore --nologo -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:ContinuousIntegrationBuild=true -p:UseAppHost=true
 
     if ($true -eq $zip) {
         Write-Debug "Creating zip archive for $buildName"

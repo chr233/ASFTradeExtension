@@ -68,13 +68,51 @@ jobs:
       - name: Zip files
         run: 7z a -bd -slp -tzip -mm=Deflate -mx=5 -mfb=150 -mpass=10 "./dist/${{ env.REPO_NAME }}.zip" "./tmp/*"
 
+      - name: Build ASF-Generic
+        shell: pwsh
+        run: |
+          $runtimes = "linux-x64", "win-x64", "win-arm64", "linux-arm64"
+          $config = "Release"
+          $projectName = "ArchiSteamFarm/ArchiSteamFarm"
+
+          dotnet restore $projectName
+
+          foreach ($runtime in $runtimes) {
+              Write-Debug "Publishing for runtime: $runtime
+              $buildName = "ASF-$runtime"
+
+              $outputDir = "./tmp/$buildName"
+
+              dotnet publish $projectName --output "$outputDir-fde" --self-contained --runtime $runtime --configuration $config --no-restore --nologo -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:ContinuousIntegrationBuild=true -p:UseAppHost=true
+          }
+
+      - name: Zip files
+        shell: pwsh
+        run: |
+          $root = "./tmp"
+          $dirList = Get-ChildItem -Path $root -Directory
+          $zipDist = "./dist"
+
+          foreach($dir in $dirList) {
+            $asfPath1 = Join-Path -Path $dir.FullName -ChildPath "ArchiSteamFarm"
+            $asfPath2 = Join-Path -Path $dir.FullName -ChildPath "ArchiSteamFarm.exe"
+
+            7z a -bd -slp -tzip -mm=Deflate -mx=5 -mfb=150 -mpass=10 "./dist/${{ env.REPO_NAME }}.zip" "./tmp/*"
+
+          }
+
+
+
+      - name: Display structure of upload files
+        run: ls -laR ./dist
+
       - name: Upload ${{ env.PROJECT_NAME }}
         continue-on-error: true
         uses: actions/upload-artifact@v6.0.0
         with:
           if-no-files-found: error
           name: ${{ env.PROJECT_NAME }}.zip
-          path: ./dist/${{ env.PROJECT_NAME }}.zip
+          path: ./dist/*.zip
 
   release:
     needs: build
@@ -87,8 +125,10 @@ jobs:
       - name: Download ${{ env.PROJECT_NAME }} artifact from windows-latest
         uses: actions/download-artifact@v7.0.0
         with:
-          name: ${{ env.PROJECT_NAME }}.zip
           path: out
+
+      - name: Display structure of downloaded files
+        run: ls -laR out
 
       - name: Create ${{ env.PROJECT_NAME }} GitHub release
         uses: ncipollo/release-action@v1.20.0
@@ -100,6 +140,10 @@ jobs:
           name: ${{ env.PROJECT_NAME }} ${{ github.ref_name }}
           body: |
             ![Release](https://img.shields.io/badge/${{ env.REPO_NAME }}-${{ github.ref_name }}-brightgreen) ![Downloads](https://img.shields.io/github/downloads/chr233/${{ env.REPO_NAME }}/${{ github.ref_name }}/total?label=Downloads)
+
+            ---
+            
+            附带自编译版本的 ASF, 解压后覆盖原来的 ArchiSteamFarm 文件使用, 也可以使用 ASF-generic
 
             ---
 

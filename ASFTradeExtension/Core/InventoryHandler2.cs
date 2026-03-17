@@ -1,4 +1,3 @@
-using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam.Data;
 using ASFTradeExtension.Data.Core;
 
@@ -148,6 +147,11 @@ public partial class InventoryHandler
         foreach (var bundle in sortedInv)
         {
             if (bundle.TradableSetCount == 0)
+            {
+                continue;
+            }
+
+            if (Utils.CardSetCache.ExcludedAppIds.Contains(bundle.AppId))
             {
                 continue;
             }

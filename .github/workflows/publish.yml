@@ -108,17 +108,15 @@ jobs:
             7z a -bd -slp -tzip -mm=Deflate -mx=5 -mfb=150 -mpass=10 "$zipName" "$asfExe"
           }
 
-
-
       - name: Display structure of upload files
-        run: ls -laR ./dist
+        shell: pwsh
+        run: Get-ChildItem -Path ./dist
 
       - name: Upload ${{ env.PROJECT_NAME }}
         continue-on-error: true
         uses: actions/upload-artifact@v7.0.0
         with:
           if-no-files-found: error
-          name: ${{ env.PROJECT_NAME }}.zip
           path: ./dist/*.zip
 
   release:
@@ -135,7 +133,8 @@ jobs:
           path: out
 
       - name: Display structure of downloaded files
-        run: ls -laR out
+        shell: pwsh
+        run: Get-ChildItem -Path ./out
 
       - name: Create ${{ env.PROJECT_NAME }} GitHub release
         uses: ncipollo/release-action@v1.20.0

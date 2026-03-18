@@ -258,6 +258,11 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "GE" when access >= EAccess.Master =>
                     Task.FromResult(Command.ResponseGetExcludeList()),
 
+                "SETEXCLUDELIST" or
+                "SETEXCLUDE" or
+                "SE" when access >= EAccess.Master =>
+                    Task.FromResult(Command.ResponseSetExcludeList(null)),
+
                 //获取卡牌信息
                 "FULLSETLIST" or
                 "FSL" when access >= EAccess.Master =>
@@ -293,6 +298,11 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "SETMASTER" or
                 "SM" when access >= EAccess.Master =>
                    Command.ResponseSetMasterBot(Utilities.GetArgsAsText(args, 1, ",")),
+
+                "GETEXCLUDELIST" or
+                "GETEXCLUDE" or
+                "GE" when access >= EAccess.Master =>
+                    Task.FromResult(Command.ResponseGetExcludeList()),
 
                 "SETEXCLUDELIST" or
                 "SETEXCLUDE" or

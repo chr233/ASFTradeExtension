@@ -70,7 +70,7 @@ internal static class Command
     /// </summary>
     /// <param name="botName"></param>
     /// <returns></returns>
-    public static string ResponseSetExcludeList(string query)
+    public static string ResponseSetExcludeList(string? query)
     {
         if (!string.IsNullOrEmpty(query))
         {

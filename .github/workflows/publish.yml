@@ -137,7 +137,7 @@ jobs:
         run: Get-ChildItem -Path ./out
 
       - name: Create ${{ env.PROJECT_NAME }} GitHub release
-        uses: ncipollo/release-action@v1.20.0
+        uses: ncipollo/release-action@v1.21.0
         with:
           artifacts: "out/*"
           makeLatest: false

@@ -82,15 +82,21 @@ ASF.json
 
 ### 插件命令
 
+#### 设置命令
+
+| 命令                  | 缩写 | 权限     | 说明                                                                               |
+| --------------------- | ---- | -------- | ---------------------------------------------------------------------------------- |
+| `GETMASTERBOT`        | `GM` | `Master` | 获取发货 Bot                                                                       |
+| `SETMASTERBOT [bot]`  | `SM` | `Master` | 设置发货 Bot                                                                       |
+| `GETEXCLUDE`          | `GE` | `Master` | 获取当前排除的卡牌 AppIds                                                          |
+| `SETEXCLUDE <AppIds>` | `SE` | `Master` | 设置当前排除的卡牌 AppIds, 排除后不会通过 `SENDLEVELUP` 或者 `SENDLEVELUPSET` 发送 |
+
 #### 查询命令
 
 | 命令                          | 缩写   | 权限     | 说明                                                                    |
 | ----------------------------- | ------ | -------- | ----------------------------------------------------------------------- |
-| `GETMASTERBOT`                | `GM`   | `Master` | 获取发货 Bot                                                            |
-| `SETMASTERBOT [bot]`          | `SM`   | `Master` | 设置发货 Bot                                                            |
 | `FULLSETLIST [Config]`        | `FSL`  | `Master` | 显示普通卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]        |
 | `FULLSETLISTFOIL [Config]`    | `FSLF` | `Master` | 显示闪卡卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]        |
-| `FULLSETLISTSALE`             | `FSLS` | `Master` | 显示促销卡牌套数信息                                                    |
 | `FULLSET [Bots] <appIds>`     | `FS`   | `Master` | 显示指定 App 的普通卡牌套数信息                                         |
 | `FULLSETFOIL [Bots] <appIds>` | `FSF`  | `Master` | 显示指定 App 的闪亮卡牌套数信息                                         |
 | `GEMSINFO [Bots]`             | `GI`   | `Master` | 显示指定机器人的宝珠库存数量                                            |

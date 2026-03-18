@@ -297,7 +297,7 @@ internal sealed class ASFTradeExtension : IASF, IBot, IBotCommand2, IGitHubPlugi
                 "SETMASTERBOT" or
                 "SETMASTER" or
                 "SM" when access >= EAccess.Master =>
-                   Command.ResponseSetMasterBot(Utilities.GetArgsAsText(args, 1, ",")),
+                    Command.ResponseSetMasterBot(Utilities.GetArgsAsText(args, 1, ",")),
 
                 "GETEXCLUDELIST" or
                 "GETEXCLUDE" or

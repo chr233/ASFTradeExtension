@@ -62,7 +62,7 @@ internal static class Command
     /// <returns></returns>
     public static string ResponseGetExcludeList()
     {
-        return FormatStaticResponse("排除列表: {value}", string.Join(", ", CardSetCache.ExcludedAppIds.Count));
+        return FormatStaticResponse("排除列表: {0}", string.Join(", ", CardSetCache.ExcludedAppIds));
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ internal static class Command
     /// </summary>
     /// <param name="botName"></param>
     /// <returns></returns>
-    public static string ResponseSetExcludeList(string? query)
+    public static async Task<string> ResponseSetExcludeList(string? query)
     {
         if (!string.IsNullOrEmpty(query))
         {
@@ -91,7 +91,9 @@ internal static class Command
             CardSetCache.ExcludedAppIds.Clear();
         }
 
-        return FormatStaticResponse("排除列表已设置: {value}", string.Join(", ", CardSetCache.ExcludedAppIds.Count));
+        await CardSetCache.SaveCacheFile().ConfigureAwait(false);
+
+        return FormatStaticResponse("排除列表已设置: {0}", string.Join(", ", CardSetCache.ExcludedAppIds));
     }
 
     /// <summary>
